@@ -75,7 +75,7 @@ JSON;
 
     protected function setUp(): void
     {
-        array_map(function (string $file) {
+        array_map(function (string $file): void {
             unlink($file);
         }, glob(sprintf('%s/serializer/*.php', self::CACHE_DIR)));
 

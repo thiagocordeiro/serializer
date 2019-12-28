@@ -18,9 +18,6 @@ class ClassFactory
         $this->cacheFolder = sprintf('%s/serializer', rtrim($cachePath, '/'));
     }
 
-    /**
-     * @throws
-     */
     public function createInstance(Serializer $serializer, string $class): Deserializer
     {
         $factoryClass = sprintf('Serializer\Cache\%s_Factory', str_replace('\\', '_', $class));
@@ -50,7 +47,7 @@ class ClassFactory
 
     private function createClassFile(string $class, string $filePath, string $factoryName): void
     {
-        $definition = (new ClassAnalyzer())->analyze($class);
+        $definition = (new ClassAnalyzer($class))->analyze();
         $template = new ClassTemplate($definition, $factoryName);
 
         is_dir($this->cacheFolder) ?: mkdir($this->cacheFolder, 0777, true);

@@ -12,6 +12,9 @@ class ClassDefinition
     /** @var ClassProperty[] */
     private $properties;
 
+    /**
+     * @param ClassProperty[] $properties
+     */
     public function __construct(string $name, array $properties)
     {
         $this->name = $name;
@@ -23,6 +26,9 @@ class ClassDefinition
         return $this->name;
     }
 
+    /**
+     * @return ClassProperty[]
+     */
     public function getProperties(): array
     {
         return $this->properties;

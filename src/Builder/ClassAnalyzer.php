@@ -6,28 +6,46 @@ namespace Serializer\Builder;
 
 use ReflectionClass;
 use ReflectionException;
+use ReflectionMethod;
 use ReflectionParameter;
 use Serializer\Exception\ArrayPropertyMustHaveAnArrayAnnotation;
 use Serializer\Exception\ArrayPropertyMustHaveATypeAnnotation;
+use Serializer\Exception\ClassMustHaveAConstructor;
 use Serializer\Exception\PropertyMustHaveAType;
 
 class ClassAnalyzer
 {
-    private const TYPE_ARRAY = 'array';
+    /** @var string */
+    private $className;
 
-    /**
-     * @throws
-     */
-    public function analyze(string $class): ClassDefinition
+    /** @var ReflectionClass */
+    private $class;
+
+    /** @var ReflectionMethod */
+    private $constructor;
+
+
+    public function __construct(string $className)
     {
-        $reflection = new ReflectionClass($class);
-        $constructor = $reflection->getConstructor();
+        $class = new ReflectionClass($className);
+        $constructor = $class->getConstructor();
 
+        if (!$constructor instanceof ReflectionMethod) {
+            throw new ClassMustHaveAConstructor($className);
+        }
+
+        $this->className = $className;
+        $this->class = $class;
+        $this->constructor = $constructor;
+    }
+
+    public function analyze(): ClassDefinition
+    {
         $properties = array_map(function (ReflectionParameter $param) {
             return $this->createProperty($param);
-        }, $constructor->getParameters());
+        }, $this->constructor->getParameters());
 
-        return new ClassDefinition($class, $properties);
+        return new ClassDefinition($this->className, $properties);
     }
 
     /**
@@ -55,7 +73,7 @@ class ClassAnalyzer
         $type = (string) $param->getType();
 
         if ('' === $type) {
-            throw new PropertyMustHaveAType($param);
+            throw new PropertyMustHaveAType($param, $this->class);
         }
 
         if (true === $this->isScalar($type)) {
@@ -76,7 +94,7 @@ class ClassAnalyzer
 
     private function isArray(string $type): bool
     {
-        return $type === self::TYPE_ARRAY;
+        return $type === 'array';
     }
 
     /**
@@ -86,7 +104,7 @@ class ClassAnalyzer
     private function searchArrayType(ReflectionParameter $param): string
     {
         $type = $this->searchTypeOnDocComment($param);
-        $namespace = $this->searchNamespace($param->getDeclaringClass(), $type);
+        $namespace = $this->searchNamespace($type);
 
         return sprintf('%s%s[]', $namespace, $type);
     }
@@ -97,26 +115,24 @@ class ClassAnalyzer
      */
     private function searchTypeOnDocComment(ReflectionParameter $param): string
     {
+        $docComment = $this->constructor->getDocComment() ?: '';
         $pattern = sprintf('/\@param(.*)\$%s/', $param->getName());
 
-        $class = $param->getDeclaringClass();
-        $constructor = $class->getConstructor();
-
-        preg_match($pattern, $constructor->getDocComment(), $matches);
+        preg_match($pattern, $docComment, $matches);
         $type = trim($matches[1] ?? '');
 
         if ('' === $type) {
-            throw new ArrayPropertyMustHaveATypeAnnotation($param);
+            throw new ArrayPropertyMustHaveATypeAnnotation($param, $this->class);
         }
 
         if (false === strpos($type, '[]')) {
-            throw new ArrayPropertyMustHaveAnArrayAnnotation($param, $type);
+            throw new ArrayPropertyMustHaveAnArrayAnnotation($param, $this->class, $type);
         }
 
         return str_replace('[]', '', $type);
     }
 
-    private function searchNamespace(ReflectionClass $class, string $type): string
+    private function searchNamespace(string $type): string
     {
         $parts = explode('\\', $type);
         $subNs = reset($parts);
@@ -125,7 +141,8 @@ class ClassAnalyzer
             return trim($type, '\\');
         }
 
-        $lines = array_slice(file($class->getFileName()), 0, $class->getStartLine());
+        $file = file($this->class->getFileName() ?: '') ?: [];
+        $lines = array_slice($file, 0, (int) $this->class->getStartLine());
 
         $pattern = sprintf('/use(.*)%s;/', $subNs);
         preg_match($pattern, implode(PHP_EOL, $lines), $matches);
@@ -134,7 +151,7 @@ class ClassAnalyzer
         $namespace = trim($matches[1] ?? '');
 
         if ('' === $namespace && '' === $match && '' !== $subNs) {
-            $namespace = sprintf('%s\\', $class->getNamespaceName());
+            $namespace = sprintf('%s\\', $this->class->getNamespaceName());
         }
 
         return $namespace;
