@@ -75,8 +75,12 @@ JSON;
 
     protected function setUp(): void
     {
+        array_map(function (string $file) {
+            unlink($file);
+        }, glob(sprintf('%s/serializer/*.php', self::CACHE_DIR)));
+
         $this->serializer = new Serializer(
-            new ClassFactory(realpath(self::CACHE_DIR))
+            new ClassFactory(self::CACHE_DIR)
         );
     }
 

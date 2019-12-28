@@ -12,7 +12,7 @@ class Place
     /** @var string string */
     private $country;
 
-    public function __construct(string $city, string $country)
+    public function __construct(string $city, string $country = 'Netherlands')
     {
         $this->city = $city;
         $this->country = $country;
