@@ -11,6 +11,9 @@ abstract class Hydrator
 
     abstract public function fromRawToHydrated(object $data): object;
 
+    /**
+     * @return mixed[] array
+     */
     abstract public function fromHydratedToRaw(object $object): array;
 
     public function __construct(Serializer $serializer)

@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Serializer;
 
-use Throwable;
-
 class JsonSerializer implements Serializer
 {
     /** @var Hydrator[] */
@@ -35,9 +33,7 @@ class JsonSerializer implements Serializer
      */
     public function serialize($data)
     {
-        return json_encode(
-            $this->serializeData($data)
-        );
+        return json_encode($this->serializeData($data)) ?: '';
     }
 
     /**
@@ -69,8 +65,8 @@ class JsonSerializer implements Serializer
             return null;
         }
 
-        if (true == is_array($data)) {
-            return array_map(function ($object): array {
+        if (true === is_array($data)) {
+            return array_map(function ($object): ?array {
                 return $this->serializeData($object);
             }, $data);
         }

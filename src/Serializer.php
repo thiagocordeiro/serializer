@@ -7,13 +7,14 @@ namespace Serializer;
 interface Serializer
 {
     /**
+     * @param mixed $data
      * @return mixed[]|object|null
      */
     public function deserialize($data, string $class);
 
     /**
      * @param mixed[]|object|null $data
-     * @return mixed[]|object|null
+     * @return mixed
      */
     public function serialize($data);
 
@@ -24,8 +25,8 @@ interface Serializer
     public function deserializeData($data, string $class);
 
     /**
-     * @param mixed $object
-     * @return string
+     * @param mixed $data
+     * @return mixed[]
      */
     public function serializeData($data): ?array;
 }
