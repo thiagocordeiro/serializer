@@ -11,6 +11,7 @@ use ReflectionParameter;
 use Serializer\Exception\ArrayPropertyMustHaveAnArrayAnnotation;
 use Serializer\Exception\ArrayPropertyMustHaveATypeAnnotation;
 use Serializer\Exception\ClassMustHaveAConstructor;
+use Serializer\Exception\PropertyHasNoGetter;
 use Serializer\Exception\PropertyMustHaveAType;
 
 class ClassAnalyzer
@@ -23,7 +24,6 @@ class ClassAnalyzer
 
     /** @var ReflectionMethod */
     private $constructor;
-
 
     public function __construct(string $className)
     {
@@ -53,14 +53,16 @@ class ClassAnalyzer
      * @throws ArrayPropertyMustHaveAnArrayAnnotation
      * @throws PropertyMustHaveAType
      * @throws ReflectionException
+     * @throws PropertyHasNoGetter
      */
     private function createProperty(ReflectionParameter $param): ClassProperty
     {
         $name = $param->getName();
         $type = $this->searchParamType($param);
         $defaultValue = ($param->isDefaultValueAvailable() ? $param->getDefaultValue() : 'null') ?: 'null';
+        $getter = $this->searchParamGetter($param, $type);
 
-        return new ClassProperty($name, $type, (string) $defaultValue);
+        return new ClassProperty($name, $type, (string) $defaultValue, $getter);
     }
 
     /**
@@ -155,5 +157,43 @@ class ClassAnalyzer
         }
 
         return $namespace;
+    }
+
+    /**
+     * @throws PropertyHasNoGetter
+     */
+    private function searchParamGetter(ReflectionParameter $param, string $type): string
+    {
+        if ($type === 'bool') {
+            return $this->searchGetterForBoolean($param);
+        }
+
+        $getter = sprintf('get%s', ucfirst($param->getName()));
+
+        if (false === $this->class->hasMethod($getter)) {
+            throw new PropertyHasNoGetter($this->class, $getter);
+        }
+
+        return $getter;
+    }
+
+    /**
+     * @throws PropertyHasNoGetter
+     */
+    private function searchGetterForBoolean(ReflectionParameter $param): string
+    {
+        $isPrefix = sprintf('is%s', ucfirst($param->getName()));
+
+        if (true === $this->class->hasMethod($isPrefix)) {
+            return $isPrefix;
+        }
+
+        $hasPrefix = sprintf('has%s', ucfirst($param->getName()));
+
+        if (true === $this->class->hasMethod($hasPrefix)) {
+            return $hasPrefix;
+        }
+
+        throw new PropertyHasNoGetter($this->class, "{$isPrefix} or {$hasPrefix}");
     }
 }

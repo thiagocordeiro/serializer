@@ -15,11 +15,15 @@ class ClassProperty
     /** @var string */
     private $defaultValue;
 
-    public function __construct(string $name, string $type, string $defaultValue)
+    /** @var string */
+    private $getter;
+
+    public function __construct(string $name, string $type, string $defaultValue, string $getter)
     {
         $this->name = $name;
         $this->type = $type;
         $this->defaultValue = $defaultValue;
+        $this->getter = $getter;
     }
 
     public function getName(): string
@@ -43,6 +47,11 @@ class ClassProperty
         }
 
         return $this->defaultValue;
+    }
+
+    public function getGetter(): string
+    {
+        return $this->getter;
     }
 
     public function isScalar(): bool

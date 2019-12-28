@@ -6,6 +6,7 @@ namespace Test\Serializer\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Serializer\ClassFactory;
+use Serializer\JsonSerializer;
 use Serializer\Serializer;
 use Test\Serializer\Fixture\DTO\Address;
 use Test\Serializer\Fixture\DTO\Collection\UserCollection;
@@ -13,7 +14,7 @@ use Test\Serializer\Fixture\DTO\Place;
 use Test\Serializer\Fixture\DTO\User;
 use TypeError;
 
-class SerializerTest extends TestCase
+class JsonSerializerTest extends TestCase
 {
     private const CACHE_DIR = __DIR__ . '/../../var/cache';
 
@@ -21,7 +22,8 @@ class SerializerTest extends TestCase
 {
   "name": "Arthur Dent",
   "age": 38,
-  "height": 1.69
+  "height": 1.69,
+  "address": null
 }
 JSON;
 
@@ -53,7 +55,8 @@ JSON;
 {
   "name": "Kevin Bacon",
   "age": 42,
-  "height": 1.73
+  "height": 1.73,
+  "address": null
 }
 JSON;
 
@@ -76,15 +79,15 @@ JSON;
     protected function setUp(): void
     {
         array_map(function (string $file): void {
-            unlink($file);
+//            unlink($file);
         }, glob(sprintf('%s/serializer/*.php', self::CACHE_DIR)));
 
-        $this->serializer = new Serializer(
+        $this->serializer = new JsonSerializer(
             new ClassFactory(self::CACHE_DIR)
         );
     }
 
-    public function testWhenGivenValueThenParseIntoObject(): void
+    public function testWhenGivenJsonThenParseIntoObject(): void
     {
         $json = self::USER_1;
 
@@ -104,12 +107,7 @@ JSON;
                 'Chuck Norris',
                 109,
                 1.75,
-                new Address(
-                    'Times Square',
-                    500,
-                    false,
-                    new Place('New York', 'United States')
-                )
+                new Address('Times Square', 500, false, new Place('New York', 'United States'))
             ),
             $parsed
         );
@@ -137,7 +135,7 @@ JSON;
         ], $parsed);
     }
 
-    public function testWhenGivenAnArrayOnAnParamThenParseObjects(): void
+    public function testWhenGivenAnArrayOnAParamThenParseObjects(): void
     {
         $json = sprintf('{"users": [%s,%s,%s]}', self::USER_1, self::USER_3, self::USER_4);
 
@@ -157,7 +155,7 @@ JSON;
         $this->expectException(TypeError::class);
         $this->expectExceptionMessage(
             sprintf(
-                'Argument 4 passed to %s must be an instance of %s, null given, called in %s on line 18',
+                'Argument 4 passed to %s must be an instance of %s, null given, called in %s on line 20',
                 'Test\Serializer\Fixture\DTO\Address::__construct()',
                 'Test\Serializer\Fixture\DTO\Place',
                 realpath(self::CACHE_DIR) . '/serializer/Test_Serializer_Fixture_DTO_Address_Factory.php'
@@ -165,5 +163,55 @@ JSON;
         );
 
         $this->serializer->deserialize($json, User::class);
+    }
+
+    public function testWhenGivenObjectThenParseIntoJson(): void
+    {
+        $object = new User('Arthur Dent', 38, 1.69);
+
+        $serialized = $this->serializer->serialize($object);
+
+        $this->assertJsonStringEqualsJsonString(self::USER_1, $serialized);
+    }
+
+    public function testWhenGivenObjectsWithNestedObjectsThenSerialize(): void
+    {
+        $object = new User(
+            'Chuck Norris',
+            109,
+            1.75,
+            new Address('Times Square', 500, false, new Place('New York', 'United States'))
+        );
+
+        $serialized = $this->serializer->serialize($object);
+
+        $this->assertJsonStringEqualsJsonString(self::USER_2, $serialized);
+    }
+
+    public function testWhenGivenObjectArrayThenParseIntoJson(): void
+    {
+        $array = [
+            new User('Arthur Dent', 38, 1.69),
+            new User('Kevin Bacon', 42, 1.73),
+        ];
+
+        $serialized = $this->serializer->serialize($array);
+
+        $this->assertJsonStringEqualsJsonString(sprintf('[%s,%s]', self::USER_1, self::USER_4), $serialized);
+    }
+
+    public function testWhenGivenAnArrayOnAParamThenParseJson(): void
+    {
+        $collection = new UserCollection([
+            new User('Arthur Dent', 38, 1.69),
+            new User('Kevin Bacon', 42, 1.73),
+        ]);
+
+        $serialized = $this->serializer->serialize($collection);
+
+        $this->assertJsonStringEqualsJsonString(
+            sprintf('{"users": [%s,%s]}', self::USER_1, self::USER_4),
+            $serialized
+        );
     }
 }

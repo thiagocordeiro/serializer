@@ -27,16 +27,28 @@ declare(strict_types=1);
 
 namespace Serializer\Cache;
 
-use Serializer\Deserializer;
-use Serializer\Serializer;
+use Serializer\Hydrator;
 
-class [cacheClassName] extends Deserializer
+class [cacheClassName] extends Hydrator
 {
-    public function parseObjectData(object \$data): object
+    /**
+     * @return \[className]
+     */
+    public function fromRawToHydrated(object \$data): object
     {
         return new \[className](
             [arguments]
         );
+    }
+
+    /**
+     * @param \[className] \$object
+     */
+    public function fromHydratedToRaw(object \$object): array
+    {
+        return [
+            [getters]
+        ];
     }
 }
 STIRNG;
@@ -45,9 +57,14 @@ STIRNG;
             return $this->createArgument($param);
         }, $this->definition->getProperties());
 
+        $getters = array_map(function (ClassProperty $param) {
+            return $this->createGetter($param);
+        }, $this->definition->getProperties());
+
         $string = str_replace('[cacheClassName]', $this->factoryName, $string);
         $string = str_replace('[className]', $this->definition->getName(), $string);
         $string = str_replace('[arguments]', trim(implode(",\n", $arguments)), $string);
+        $string = str_replace('[getters]', trim(implode(",\n", $getters)), $string);
 
         return $string;
     }
@@ -63,20 +80,31 @@ STIRNG;
             );
         }
 
-        if ($property->isArray()) {
-            return vsprintf("%s\$this->parseArrayData(\$data->%s ?? %s, \%s::class)", [
-                str_repeat(' ', 12),
-                $property->getName(),
-                $property->getDefaultValue(),
-                $property->getType(),
-            ]);
-        }
-
-        return vsprintf("%s\$this->serializer()->parseData(\$data->%s ?? %s, \%s::class)", [
+        return sprintf(
+            "%s\$this->serializer()->deserializeData(\$data->%s ?? %s, \%s::class)",
             str_repeat(' ', 12),
             $property->getName(),
             $property->getDefaultValue(),
-            $property->getType(),
-        ]);
+            $property->getType()
+        );
+    }
+
+    private function createGetter(ClassProperty $property): string
+    {
+        if ($property->isScalar()) {
+            return sprintf(
+                "%s'%s' => \$object->%s()",
+                str_repeat(' ', 12),
+                $property->getName(),
+                $property->getGetter()
+            );
+        }
+
+        return sprintf(
+            "%s'%s' => \$this->serializer()->serializeData(\$object->%s())",
+            str_repeat(' ', 12),
+            $property->getName(),
+            $property->getGetter()
+        );
     }
 }

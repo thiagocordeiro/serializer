@@ -18,7 +18,7 @@ class ClassFactory
         $this->cacheFolder = sprintf('%s/serializer', rtrim($cachePath, '/'));
     }
 
-    public function createInstance(Serializer $serializer, string $class): Deserializer
+    public function createInstance(Serializer $serializer, string $class): Hydrator
     {
         $factoryClass = sprintf('Serializer\Cache\%s_Factory', str_replace('\\', '_', $class));
 

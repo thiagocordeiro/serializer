@@ -31,19 +31,9 @@ class User
         return $this->name;
     }
 
-    public function setName(string $name): void
-    {
-        $this->name = $name;
-    }
-
     public function getAge(): int
     {
         return $this->age;
-    }
-
-    public function setAge(int $age): void
-    {
-        $this->age = $age;
     }
 
     public function getHeight(): float
@@ -51,18 +41,8 @@ class User
         return $this->height;
     }
 
-    public function setHeight(float $height): void
-    {
-        $this->height = $height;
-    }
-
     public function getAddress(): ?Address
     {
         return $this->address;
-    }
-
-    public function setAddress(?Address $address): void
-    {
-        $this->address = $address;
     }
 }
