@@ -4,6 +4,10 @@ This package allows you to parse json objects into php classes without the overh
 
 ## How to use
 
+```
+composer require thiagocordeiro/serializer
+```
+
 PHP Serializer does not use setters, so your class must have a constructor with all properties coming from the json.
 
 #### Basic example
