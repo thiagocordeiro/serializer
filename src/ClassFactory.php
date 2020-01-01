@@ -14,14 +14,14 @@ use Serializer\Exception\UnableToLoadOrCreateCacheClass;
 class ClassFactory
 {
     /** @var string */
-    private $cacheFolder;
+    private $cacheDir;
 
     /** @var bool */
     private $checkTimestamp;
 
-    public function __construct(string $cachePath, bool $checkTimestamp = false)
+    public function __construct(string $cacheDir, bool $checkTimestamp = false)
     {
-        $this->cacheFolder = sprintf('%s/serializer', rtrim($cachePath, '/'));
+        $this->cacheDir = sprintf('%s/serializer', rtrim($cacheDir, '/'));
         $this->checkTimestamp = $checkTimestamp;
     }
 
@@ -52,7 +52,7 @@ class ClassFactory
     private function require(string $class): void
     {
         $factoryName = str_replace('\\', '_', $class) . '_Factory';
-        $filePath = sprintf('%s/%s.php', $this->cacheFolder, $factoryName);
+        $filePath = sprintf('%s/%s.php', $this->cacheDir, $factoryName);
 
         if (false === is_file($filePath) || $this->isOutdated($class, $filePath)) {
             $this->createClassFile($class, $filePath, $factoryName);
@@ -69,14 +69,14 @@ class ClassFactory
         $definition = (new ClassAnalyzer($class))->analyze();
         $template = new ClassTemplate($definition, $factoryName);
 
-        is_dir($this->cacheFolder) ?: mkdir($this->cacheFolder, 0777, true);
+        is_dir($this->cacheDir) ?: mkdir($this->cacheDir, 0777, true);
         file_put_contents($filePath, (string) $template);
     }
 
     /**
      * @throws ReflectionException
      */
-    private function isOutdated(string $class, string $cachePath): bool
+    private function isOutdated(string $class, string $cacheFilename): bool
     {
         if (false === $this->checkTimestamp) {
             return false;
@@ -85,7 +85,7 @@ class ClassFactory
         $classPath = (new ReflectionClass($class))->getFileName() ?: '';
 
         $classTime = filemtime($classPath);
-        $cacheTime = filemtime($cachePath);
+        $cacheTime = filemtime($cacheFilename);
 
         return $classTime > $cacheTime;
     }
