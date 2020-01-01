@@ -3,7 +3,7 @@
 This package allows you to parse json objects into php classes without the overhead of annotations, it checks for php object constructor and creates cache classes to convert json into a given class.
 
 ## How to use
-
+For Symfony projects a bundle is available at [`serializer-bundle`](https://github.com/thiagocordeiro/serializer-bundle), otherwise the package is available on composer:
 ```
 composer require thiagocordeiro/serializer
 ```
