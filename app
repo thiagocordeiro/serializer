@@ -18,7 +18,6 @@ function help() { ### Show the list of possible functions - ./app [help]
     echo ""
 }
 
-
 function up() { ### Build and start development environment - ./app up --build --detach
   _compose up "$@"
 }
