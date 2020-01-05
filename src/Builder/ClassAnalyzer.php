@@ -59,10 +59,10 @@ class ClassAnalyzer
     {
         $name = $param->getName();
         $type = $this->searchParamType($param);
-        $defaultValue = ($param->isDefaultValueAvailable() ? $param->getDefaultValue() : 'null') ?: 'null';
+        $defaultValue = ($param->isDefaultValueAvailable() ? (string) $param->getDefaultValue() : null) ?: null;
         $getter = $this->searchParamGetter($param, $type);
 
-        return new ClassProperty($name, $type, (string) $defaultValue, $getter);
+        return new ClassProperty($name, $type, $defaultValue, $getter);
     }
 
     /**
