@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Serializer;
 
-use JsonException;
 use ReflectionException;
 use Serializer\Exception\ClassMustHaveAConstructor;
+use Serializer\Exception\NotAValidJson;
 use Serializer\Exception\UnableToLoadOrCreateCacheClass;
 
 class JsonSerializer extends Serializer
@@ -17,11 +17,15 @@ class JsonSerializer extends Serializer
      * @throws ClassMustHaveAConstructor
      * @throws UnableToLoadOrCreateCacheClass
      * @throws ReflectionException
-     * @throws JsonException
+     * @throws NotAValidJson
      */
     public function deserialize($data, string $class)
     {
-        $json = json_decode($data, false, 512, JSON_THROW_ON_ERROR);
+        $json = json_decode($data, false);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new NotAValidJson($data);
+        }
 
         return $this->deserializeData($json, $class);
     }
