@@ -18,7 +18,7 @@ class ClassProperty
     /** @var string */
     private $getter;
 
-    public function __construct(string $name, string $type, string $defaultValue, string $getter)
+    public function __construct(string $name, string $type, ?string $defaultValue, string $getter)
     {
         $this->name = $name;
         $this->type = $type;
@@ -42,6 +42,10 @@ class ClassProperty
 
     public function getDefaultValue(): string
     {
+        if (null === $this->defaultValue) {
+            return 'null';
+        }
+
         if ($this->isString()) {
             return sprintf("'%s'", $this->defaultValue);
         }
