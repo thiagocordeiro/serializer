@@ -12,7 +12,7 @@ class ClassProperty
     /** @var string */
     private $type;
 
-    /** @var string */
+    /** @var string|null */
     private $defaultValue;
 
     /** @var string */
