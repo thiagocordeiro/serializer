@@ -20,6 +20,7 @@ abstract class Serializer
     /**
      * @param mixed $data
      * @return mixed[]|object|null
+     * @throws MissingOrInvalidProperty
      */
     abstract public function deserialize($data, string $class);
 

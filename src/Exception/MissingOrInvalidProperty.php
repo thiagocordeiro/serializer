@@ -5,17 +5,18 @@ declare(strict_types=1);
 namespace Serializer\Exception;
 
 use Exception;
+use TypeError;
 
 class MissingOrInvalidProperty extends Exception
 {
     /**
      * @param string[] $properties
      */
-    public function __construct(string $errorMessage, array $properties)
+    public function __construct(TypeError $error, array $properties)
     {
-        $message = $this->buildMessage($errorMessage, $properties);
+        $message = $this->buildMessage($error->getMessage(), $properties);
 
-        parent::__construct($message, 0, null);
+        parent::__construct($message, 0, $error);
     }
 
     /**

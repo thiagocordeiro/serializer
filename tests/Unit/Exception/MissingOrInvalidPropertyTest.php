@@ -6,6 +6,7 @@ namespace Test\Serializer\Unit\Exception;
 
 use PHPUnit\Framework\TestCase;
 use Serializer\Exception\MissingOrInvalidProperty;
+use TypeError;
 
 class MissingOrInvalidPropertyTest extends TestCase
 {
@@ -14,7 +15,7 @@ class MissingOrInvalidPropertyTest extends TestCase
      */
     public function testGivenErrorMessageThenCreateMissingRequiredParamMessage(string $error, string $expected): void
     {
-        $exception = new MissingOrInvalidProperty($error, ['name', 'street', 'city']);
+        $exception = new MissingOrInvalidProperty(new TypeError($error), ['name', 'street', 'city']);
 
         $this->assertEquals($expected, $exception->getMessage());
     }

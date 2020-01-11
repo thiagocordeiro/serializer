@@ -43,7 +43,7 @@ class [cacheClassName] extends Hydrator
                 [arguments]
             );
         } catch (TypeError \$e) {
-            throw new MissingOrInvalidProperty(\$e->getMessage(), [[properties]]);
+            throw new MissingOrInvalidProperty(\$e, [[properties]]);
         }
 
         return \$object;
