@@ -6,13 +6,13 @@ namespace Test\Serializer\Unit;
 
 use PHPUnit\Framework\TestCase;
 use Serializer\ClassFactory;
+use Serializer\Exception\MissingOrInvalidProperty;
 use Serializer\JsonSerializer;
 use Serializer\Serializer;
 use Test\Serializer\Fixture\DTO\Address;
 use Test\Serializer\Fixture\DTO\Collection\UserCollection;
 use Test\Serializer\Fixture\DTO\Place;
 use Test\Serializer\Fixture\DTO\User;
-use TypeError;
 
 class JsonSerializerTest extends TestCase
 {
@@ -148,15 +148,8 @@ JSON;
     {
         $json = self::USER_5;
 
-        $this->expectException(TypeError::class);
-        $this->expectExceptionMessage(
-            sprintf(
-                'Argument 4 passed to %s must be an instance of %s, null given, called in %s on line 20',
-                'Test\Serializer\Fixture\DTO\Address::__construct()',
-                'Test\Serializer\Fixture\DTO\Place',
-                realpath(self::CACHE_DIR) . '/serializer/Test_Serializer_Fixture_DTO_Address_Factory.php'
-            )
-        );
+        $this->expectException(MissingOrInvalidProperty::class);
+        $this->expectExceptionMessage('Parameter "place" is required');
 
         $this->serializer->deserialize($json, User::class);
     }
