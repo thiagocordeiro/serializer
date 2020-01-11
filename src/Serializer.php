@@ -6,6 +6,7 @@ namespace Serializer;
 
 use ReflectionException;
 use Serializer\Exception\ClassMustHaveAConstructor;
+use Serializer\Exception\MissingOrInvalidProperty;
 use Serializer\Exception\UnableToLoadOrCreateCacheClass;
 
 abstract class Serializer
@@ -39,6 +40,7 @@ abstract class Serializer
      * @throws ClassMustHaveAConstructor
      * @throws ReflectionException
      * @throws UnableToLoadOrCreateCacheClass
+     * @throws MissingOrInvalidProperty
      */
     public function deserializeData($data, string $class)
     {
