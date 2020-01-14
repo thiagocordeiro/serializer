@@ -18,11 +18,15 @@ class ClassProperty
     /** @var string */
     private $getter;
 
-    public function __construct(string $name, string $type, ?string $defaultValue, string $getter)
+    /** @var bool */
+    private $isArgument;
+
+    public function __construct(string $name, string $type, ?string $defaultValue, bool $isArgument, string $getter)
     {
         $this->name = $name;
         $this->type = $type;
         $this->defaultValue = $defaultValue;
+        $this->isArgument = $isArgument;
         $this->getter = $getter;
     }
 
@@ -51,6 +55,11 @@ class ClassProperty
         }
 
         return $this->defaultValue;
+    }
+
+    public function isArgument(): bool
+    {
+        return $this->isArgument;
     }
 
     public function getGetter(): string
