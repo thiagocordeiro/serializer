@@ -181,6 +181,48 @@ class User
 A json without `type` would result an object with `$type = 'user'`.
 Note: Default value will only be used in case it is not provided, if it is provided as `null` then `null` will be the value.
 
+#### Constructor with arguments
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace App\ValueObject;
+
+class User
+{
+    // properties...
+
+    public function __construct(Place ...$places)
+    {
+        $this->places = $places;
+    }
+
+    // getters
+}
+```
+
+#### Constructor with DateTime/DateTimeImmutable
+```php
+<?php
+
+declare(strict_types=1);
+
+namespace App\ValueObject;
+
+class User
+{
+    // properties...
+
+    public function __construct(DateTime $createdAt, DateTimeImmutable $updatedAt)
+    {
+        $this->createdAt = $createdAt;
+        $this->updatedAt = $updatedAt;
+    }
+
+    // getters
+}
+```
 
 ## Contributing
 Feel free to open issues or submit PRs
