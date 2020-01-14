@@ -43,7 +43,7 @@ abstract class Serializer
      * @throws UnableToLoadOrCreateCacheClass
      * @throws MissingOrInvalidProperty
      */
-    public function deserializeData($data, string $class)
+    public function deserializeData($data, string $class, ?string $propertyName = null)
     {
         if (null === $data) {
             return null;
@@ -57,7 +57,7 @@ abstract class Serializer
 
         $factory = $this->loadOrCreateFactory($class);
 
-        return $factory->fromRawToHydrated($data);
+        return $factory->fromRawToHydrated($data, $propertyName);
     }
 
     /**

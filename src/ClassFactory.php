@@ -32,7 +32,7 @@ class ClassFactory
      */
     public function createInstance(Serializer $serializer, string $class): Hydrator
     {
-        $factoryClass = sprintf('Serializer\Cache\%s_Factory', str_replace('\\', '_', $class));
+        $factoryClass = sprintf('Serializer\Hydrator\%sHydrator', str_replace('\\', '_', $class));
 
         if (false === class_exists($factoryClass)) {
             $this->require($class);
@@ -51,7 +51,7 @@ class ClassFactory
      */
     private function require(string $class): void
     {
-        $factoryName = str_replace('\\', '_', $class) . '_Factory';
+        $factoryName = str_replace('\\', '_', $class) . 'Hydrator';
         $filePath = sprintf('%s/%s.php', $this->cacheDir, $factoryName);
 
         if (false === is_file($filePath) || $this->isOutdated($class, $filePath)) {

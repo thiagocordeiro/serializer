@@ -25,7 +25,7 @@ class ClassTemplate
 
 declare(strict_types=1);
 
-namespace Serializer\Cache;
+namespace Serializer\Hydrator;
 
 use Serializer\Exception\MissingOrInvalidProperty;
 use Serializer\Hydrator;
@@ -36,7 +36,7 @@ class [cacheClassName] extends Hydrator
     /**
      * @return \[className]
      */
-    public function fromRawToHydrated(object \$data): object
+    public function fromRawToHydrated(\$data, ?string \$propertyName = null): object
     {
         try {
             \$object = new \[className](
@@ -52,7 +52,7 @@ class [cacheClassName] extends Hydrator
     /**
      * @param \[className] \$object
      */
-    public function fromHydratedToRaw(object \$object): array
+    public function fromHydratedToRaw(object \$object)
     {
         return [
             [getters]
@@ -94,11 +94,12 @@ STIRNG;
         }
 
         return sprintf(
-            "%s\$this->serializer()->deserializeData(\$data->%s ?? %s, \%s::class)",
+            "%s\$this->serializer()->deserializeData(\$data->%s ?? %s, \%s::class, '%s')",
             str_repeat(' ', 16),
             $property->getName(),
             $property->getDefaultValue(),
-            $property->getType()
+            $property->getType(),
+            $property->getName()
         );
     }
 
@@ -107,7 +108,7 @@ STIRNG;
         if ($property->isScalar()) {
             return sprintf(
                 "%s'%s' => \$object->%s()",
-                str_repeat(' ', 16),
+                str_repeat(' ', 12),
                 $property->getName(),
                 $property->getGetter()
             );
@@ -115,7 +116,7 @@ STIRNG;
 
         return sprintf(
             "%s'%s' => \$this->serializer()->serializeData(\$object->%s())",
-            str_repeat(' ', 16),
+            str_repeat(' ', 12),
             $property->getName(),
             $property->getGetter()
         );
