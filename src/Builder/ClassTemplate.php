@@ -94,8 +94,9 @@ STIRNG;
         }
 
         return sprintf(
-            "%s\$this->serializer()->deserializeData(\$data->%s ?? %s, \%s::class, '%s')",
+            "%s%s\$this->serializer()->deserializeData(\$data->%s ?? %s, \%s::class, '%s')",
             str_repeat(' ', 16),
+            $property->isArgument() ? '...' : '',
             $property->getName(),
             $property->getDefaultValue(),
             $property->getType(),
