@@ -9,12 +9,16 @@ abstract class Hydrator
     /** @var Serializer */
     private $serializer;
 
-    abstract public function fromRawToHydrated(object $data): object;
+    /**
+     * @param string|object $data
+     * @return object
+     */
+    abstract public function fromRawToHydrated($data, ?string $propertyName = null): object;
 
     /**
-     * @return mixed[] array
+     * @return mixed
      */
-    abstract public function fromHydratedToRaw(object $object): array;
+    abstract public function fromHydratedToRaw(object $object);
 
     public function __construct(Serializer $serializer)
     {
