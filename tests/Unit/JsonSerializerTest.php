@@ -9,68 +9,68 @@ use Serializer\ClassFactory;
 use Serializer\Exception\MissingOrInvalidProperty;
 use Serializer\JsonSerializer;
 use Serializer\Serializer;
-use Test\Serializer\Fixture\DTO\Address;
-use Test\Serializer\Fixture\DTO\Collection\UserCollection;
-use Test\Serializer\Fixture\DTO\Place;
-use Test\Serializer\Fixture\DTO\User;
+use Test\Serializer\Fixture\ValueObject\Address;
+use Test\Serializer\Fixture\ValueObject\Collection\UserCollection;
+use Test\Serializer\Fixture\ValueObject\Place;
+use Test\Serializer\Fixture\ValueObject\User;
 
 class JsonSerializerTest extends TestCase
 {
     private const CACHE_DIR = __DIR__ . '/../../var/cache';
 
     private const USER_1 = <<<JSON
-{
-  "name": "Arthur Dent",
-  "age": 38,
-  "height": 1.69,
-  "address": null
-}
+    {
+      "name": "Arthur Dent",
+      "age": 38,
+      "height": 1.69,
+      "address": null
+    }
 JSON;
 
     private const USER_2 = <<<JSON
-{
-  "name": "Chuck Norris",
-  "age": 109,
-  "height": 1.75,
-  "address": {
-    "street": "Times Square",
-    "number": 500,
-    "company": false,
-    "place": {
-      "country": "United States",
-      "city": "New York"
+    {
+      "name": "Chuck Norris",
+      "age": 109,
+      "height": 1.75,
+      "address": {
+        "street": "Times Square",
+        "number": 500,
+        "company": false,
+        "place": {
+          "country": "United States",
+          "city": "New York"
+        }
+      }
     }
-  }
-}
 JSON;
 
     private const USER_3 = <<<JSON
-{
-  "name": "Tony Stark",
-  "age": 42
-}
+    {
+      "name": "Tony Stark",
+      "age": 42
+    }
 
 JSON;
     private const USER_4 = <<<JSON
-{
-  "name": "Kevin Bacon",
-  "age": 42,
-  "height": 1.73,
-  "address": null
-}
+    {
+      "name": "Kevin Bacon",
+      "age": 42,
+      "height": 1.73,
+      "address": null
+    }
 JSON;
 
     private const USER_5 = <<<JSON
-{
-  "name": "Zinedine Zidane",
-  "age": 40,
-  "height": 1.84,
-  "address": {
-    "street": "Champs Elysees",
-    "number": 444,
-    "company": false
-  }
-}
+    {
+      "name": "Zinedine Zidane",
+      "age": 40,
+      "height": 1.84,
+      "address": {
+        "street": "Champs Elysees",
+        "number": 444,
+        "company": false
+      }
+    }
 JSON;
 
     /** @var Serializer */

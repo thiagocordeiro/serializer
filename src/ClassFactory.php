@@ -19,10 +19,14 @@ class ClassFactory
     /** @var bool */
     private $checkTimestamp;
 
-    public function __construct(string $cacheDir, bool $checkTimestamp = false)
+    /** @var string */
+    private $customFactoryNamespace;
+
+    public function __construct(string $cacheDir, bool $checkTimestamp = false, string $customFactoryNamespace = '')
     {
         $this->cacheDir = sprintf('%s/serializer', rtrim($cacheDir, '/'));
         $this->checkTimestamp = $checkTimestamp;
+        $this->customFactoryNamespace = $customFactoryNamespace;
     }
 
     /**
@@ -30,9 +34,15 @@ class ClassFactory
      * @throws ReflectionException
      * @throws UnableToLoadOrCreateCacheClass
      */
-    public function createInstance(Serializer $serializer, string $class): Hydrator
+    public function createInstance(Serializer $serializer, string $class): Parser
     {
-        $factoryClass = sprintf('Serializer\Hydrator\%sHydrator', str_replace('\\', '_', $class));
+        $customClass = sprintf('%s\%sParser', $this->customFactoryNamespace, str_replace('\\', '', $class));
+
+        if (class_exists($customClass)) {
+            return new $customClass($serializer);
+        }
+
+        $factoryClass = sprintf('Serializer\Parser\%sParser', str_replace('\\', '', $class));
 
         if (false === class_exists($factoryClass)) {
             $this->require($class);
@@ -51,7 +61,7 @@ class ClassFactory
      */
     private function require(string $class): void
     {
-        $factoryName = str_replace('\\', '_', $class) . 'Hydrator';
+        $factoryName = str_replace('\\', '', $class) . 'Parser';
         $filePath = sprintf('%s/%s.php', $this->cacheDir, $factoryName);
 
         if (false === is_file($filePath) || $this->isOutdated($class, $filePath)) {

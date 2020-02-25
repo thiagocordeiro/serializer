@@ -4,21 +4,21 @@ declare(strict_types=1);
 
 namespace Serializer;
 
-abstract class Hydrator
+abstract class Parser
 {
     /** @var Serializer */
     private $serializer;
 
     /**
-     * @param string|object $data
+     * @param string|mixed|object $data
      * @return object
      */
-    abstract public function fromRawToHydrated($data, ?string $propertyName = null): object;
+    abstract public function decode($data, ?string $propertyName = null): object;
 
     /**
      * @return mixed
      */
-    abstract public function fromHydratedToRaw(object $object);
+    abstract public function encode(object $object);
 
     public function __construct(Serializer $serializer)
     {

@@ -11,7 +11,7 @@ use Serializer\ClassFactory;
 use Serializer\Exception\InvalidDateTimeProperty;
 use Serializer\JsonSerializer;
 use Serializer\Serializer;
-use Test\Serializer\Fixture\DTO\DateTimeValueObject;
+use Test\Serializer\Fixture\ValueObject\DateTimeValueObject;
 
 class DateTimeSerializerTest extends TestCase
 {
