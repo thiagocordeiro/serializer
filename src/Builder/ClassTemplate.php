@@ -25,18 +25,18 @@ class ClassTemplate
 
 declare(strict_types=1);
 
-namespace Serializer\Hydrator;
+namespace Serializer\Parser;
 
 use Serializer\Exception\MissingOrInvalidProperty;
-use Serializer\Hydrator;
+use Serializer\Parser;
 use TypeError;
 
-class [cacheClassName] extends Hydrator
+class [cacheClassName] extends Parser
 {
     /**
      * @return \[className]
      */
-    public function fromRawToHydrated(\$data, ?string \$propertyName = null): object
+    public function decode(\$data, ?string \$propertyName = null): object
     {
         try {
             \$object = new \[className](
@@ -52,7 +52,7 @@ class [cacheClassName] extends Hydrator
     /**
      * @param \[className] \$object
      */
-    public function fromHydratedToRaw(object \$object)
+    public function encode(object \$object)
     {
         return [
             [getters]

@@ -11,7 +11,7 @@ use Serializer\Exception\UnableToLoadOrCreateCacheClass;
 
 abstract class Serializer
 {
-    /** @var Hydrator[] */
+    /** @var Parser[] */
     private $factories = [];
 
     /** @var ClassFactory */
@@ -57,7 +57,7 @@ abstract class Serializer
 
         $factory = $this->loadOrCreateFactory($class);
 
-        return $factory->fromRawToHydrated($data, $propertyName);
+        return $factory->decode($data, $propertyName);
     }
 
     /**
@@ -83,7 +83,7 @@ abstract class Serializer
 
         $factory = $this->loadOrCreateFactory($class);
 
-        return $factory->fromHydratedToRaw($data);
+        return $factory->encode($data);
     }
 
     /**
@@ -91,7 +91,7 @@ abstract class Serializer
      * @throws UnableToLoadOrCreateCacheClass
      * @throws ReflectionException
      */
-    private function loadOrCreateFactory(string $class): Hydrator
+    private function loadOrCreateFactory(string $class): Parser
     {
         if (false === isset($this->factories[$class])) {
             $this->factories[$class] = $this->classFactory->createInstance($this, $class);
