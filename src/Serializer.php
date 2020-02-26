@@ -62,12 +62,12 @@ abstract class Serializer
 
     /**
      * @param mixed $data
-     * @return mixed[]
+     * @return string[]|mixed[]|null
      * @throws ClassMustHaveAConstructor
      * @throws ReflectionException
      * @throws UnableToLoadOrCreateCacheClass
      */
-    public function serializeData($data): ?array
+    public function serializeData($data)
     {
         if (null === $data) {
             return null;
