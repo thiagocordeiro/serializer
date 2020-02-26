@@ -19,14 +19,14 @@ class DateTimeSerializerTest extends TestCase
 
     private const DATETIME = <<<JSON
 {
-    "expiresAt": "2019-01-01 18:30:15",
-    "createdAt": "2019-01-01 12:12:01"
+    "expiresAt": "2019-01-01T18:30:15+0000",
+    "createdAt": "2019-01-01T12:12:01+0000"
 }
 JSON;
 
     private const DATETIME_NULLABLE = <<<JSON
 {
-    "expiresAt": "2019-01-01 18:30:15",
+    "expiresAt": "2019-01-01T18:30:15+0000",
     "createdAt": null
 }
 JSON;
@@ -40,7 +40,7 @@ JSON;
 
     private const DATETIME_INVALID_2 = <<<JSON
 {
-    "expiresAt": "2019-01-01 18:30:15",
+    "expiresAt": "2019-01-01T18:30:15+0000",
     "createdAt": "invalid-datetime"
 }
 JSON;
@@ -99,5 +99,17 @@ JSON;
         $this->expectExceptionMessage('Parameter "createdAt" is invalid');
 
         $this->serializer->deserialize(self::DATETIME_INVALID_2, DateTimeValueObject::class);
+    }
+
+    public function testWhenGivenADateTimeThenConvertToString(): void
+    {
+        $data = new DateTimeValueObject(
+            new DateTime('2019-01-01 18:30:15'),
+            new DateTimeImmutable('2019-01-01 12:12:01')
+        );
+
+        $json = $this->serializer->serialize($data);
+
+        $this->assertJsonStringEqualsJsonString(self::DATETIME, $json);
     }
 }
