@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Serializer\Builder;
 
+use IteratorAggregate;
 use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
@@ -11,6 +12,7 @@ use ReflectionParameter;
 use Serializer\Exception\ArrayPropertyMustHaveAnArrayAnnotation;
 use Serializer\Exception\ArrayPropertyMustHaveATypeAnnotation;
 use Serializer\Exception\ClassMustHaveAConstructor;
+use Serializer\Exception\IterableMustHaveOneParameterOnly;
 use Serializer\Exception\PropertyHasNoGetter;
 use Serializer\Exception\PropertyMustHaveAType;
 
@@ -41,11 +43,13 @@ class ClassAnalyzer
 
     public function analyze(): ClassDefinition
     {
-        $properties = array_map(function (ReflectionParameter $param) {
-            return $this->createProperty($param);
+        $isCollection = $this->class->implementsInterface(IteratorAggregate::class);
+
+        $properties = array_map(function (ReflectionParameter $param) use ($isCollection) {
+            return $this->createProperty($param, $isCollection);
         }, $this->constructor->getParameters());
 
-        return new ClassDefinition($this->className, $properties);
+        return new ClassDefinition($this->className, $isCollection, ...$properties);
     }
 
     /**
@@ -54,13 +58,14 @@ class ClassAnalyzer
      * @throws PropertyMustHaveAType
      * @throws ReflectionException
      * @throws PropertyHasNoGetter
+     * @throws IterableMustHaveOneParameterOnly
      */
-    private function createProperty(ReflectionParameter $param): ClassProperty
+    private function createProperty(ReflectionParameter $param, bool $isCollection): ClassProperty
     {
         $name = $param->getName();
         $type = $this->searchParamType($param);
         $defaultValue = ($param->isDefaultValueAvailable() ? (string) $param->getDefaultValue() : null) ?: null;
-        $getter = $this->searchParamGetter($param, $type);
+        $getter = $this->searchParamGetter($param, $type, $isCollection);
         $isArgument = $param->isVariadic();
 
         return new ClassProperty($name, $type, $defaultValue, $isArgument, $getter);
@@ -162,9 +167,14 @@ class ClassAnalyzer
 
     /**
      * @throws PropertyHasNoGetter
+     * @throws IterableMustHaveOneParameterOnly
      */
-    private function searchParamGetter(ReflectionParameter $param, string $type): string
+    private function searchParamGetter(ReflectionParameter $param, string $type, bool $isCollection): string
     {
+        if ($isCollection) {
+            return $this->getIteratorGetter();
+        }
+
         if ($type === 'bool') {
             return $this->searchGetterForBoolean($param);
         }
@@ -196,5 +206,19 @@ class ClassAnalyzer
         }
 
         throw new PropertyHasNoGetter($this->class, "{$isPrefix} or {$hasPrefix}");
+    }
+
+    /**
+     * @throws IterableMustHaveOneParameterOnly
+     */
+    private function getIteratorGetter(): string
+    {
+        $params = $this->constructor->getParameters();
+
+        if (count($params) !== 1) {
+            throw new IterableMustHaveOneParameterOnly($this->class->getName(), count($params));
+        }
+
+        return 'getIterator';
     }
 }

@@ -12,18 +12,24 @@ class ClassDefinition
     /** @var ClassProperty[] */
     private $properties;
 
-    /**
-     * @param ClassProperty[] $properties
-     */
-    public function __construct(string $name, array $properties)
+    /** @var bool */
+    private $isCollection;
+
+    public function __construct(string $name, bool $isCollection, ClassProperty ...$properties)
     {
         $this->name = $name;
+        $this->isCollection = $isCollection;
         $this->properties = $properties;
     }
 
     public function getName(): string
     {
         return $this->name;
+    }
+
+    public function isCollection(): bool
+    {
+        return $this->isCollection;
     }
 
     /**

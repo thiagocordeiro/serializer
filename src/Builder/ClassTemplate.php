@@ -58,11 +58,16 @@ class [cacheClassName] extends Parser
             [getters]
         ];
     }
+    
+    public function isCollection(): bool
+    {
+        return [isCollection];
+    }
 }
 STIRNG;
 
         $arguments = array_map(function (ClassProperty $param) {
-            return $this->createArgument($param);
+            return $this->createArgument($param, $this->definition);
         }, $this->definition->getProperties());
 
         $properties = array_map(function (ClassProperty $param) {
@@ -78,11 +83,12 @@ STIRNG;
         $string = str_replace('[arguments]', trim(implode(",\n", $arguments)), $string);
         $string = str_replace('[properties]', trim(implode(", ", $properties)), $string);
         $string = str_replace('[getters]', trim(implode(",\n", $getters)), $string);
+        $string = str_replace('[isCollection]', $this->definition->isCollection() ? 'true' : 'false', $string);
 
         return $string;
     }
 
-    private function createArgument(ClassProperty $property): string
+    private function createArgument(ClassProperty $property, ClassDefinition $definition): string
     {
         if ($property->isScalar()) {
             return sprintf(
@@ -90,6 +96,14 @@ STIRNG;
                 str_repeat(' ', 16),
                 $property->getName(),
                 $property->getDefaultValue()
+            );
+        }
+
+        if ($definition->isCollection()) {
+            return sprintf(
+                "%s...\$this->serializer()->deserializeData(\$data ?? [], \%s::class)",
+                str_repeat(' ', 16),
+                $property->getType()
             );
         }
 
