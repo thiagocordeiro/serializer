@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Serializer;
 
+use IteratorAggregate;
 use ReflectionException;
 use Serializer\Exception\ClassMustHaveAConstructor;
 use Serializer\Exception\MissingOrInvalidProperty;
@@ -75,6 +76,10 @@ abstract class Serializer
     {
         if (null === $data) {
             return null;
+        }
+
+        if ($data instanceof IteratorAggregate) {
+            $data = iterator_to_array($data);
         }
 
         if (true === is_array($data)) {
