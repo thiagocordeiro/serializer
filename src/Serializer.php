@@ -49,13 +49,17 @@ abstract class Serializer
             return null;
         }
 
+        $factory = $this->loadOrCreateFactory($class);
+
+        if ($factory->isCollection()) {
+            return $factory->decode($data, $propertyName);
+        }
+
         if (true === is_array($data)) {
             return array_map(function (object $item) use ($class) {
                 return $this->deserializeData($item, $class);
             }, $data);
         }
-
-        $factory = $this->loadOrCreateFactory($class);
 
         return $factory->decode($data, $propertyName);
     }

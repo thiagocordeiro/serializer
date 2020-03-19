@@ -29,4 +29,9 @@ abstract class Parser
     {
         return $this->serializer;
     }
+
+    public function isCollection(): bool
+    {
+        return false;
+    }
 }
