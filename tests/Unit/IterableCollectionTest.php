@@ -57,4 +57,17 @@ JSON;
             $parsed
         );
     }
+
+    public function testWhenGivenObjectThenParseIntoJson(): void
+    {
+        $json = new PlaceIterableCollection(
+            new Place('New York', 'United States'),
+            new Place('Amsterdam', 'Netherlands'),
+            new Place('São Paulo', 'Brazil')
+        );
+
+        $parsed = $this->serializer->serialize($json, PlaceIterableCollection::class);
+
+        $this->assertJsonStringEqualsJsonString(self::COLLECTION, $parsed);
+    }
 }
