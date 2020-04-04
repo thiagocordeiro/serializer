@@ -13,18 +13,27 @@ class ClassDefinition
     private $properties;
 
     /** @var bool */
+    private $isValueObject;
+
+    /** @var bool */
     private $isCollection;
 
-    public function __construct(string $name, bool $isCollection, ClassProperty ...$properties)
+    public function __construct(string $name, bool $isCollection, bool $isValueObject, ClassProperty ...$properties)
     {
         $this->name = $name;
         $this->isCollection = $isCollection;
+        $this->isValueObject = $isValueObject;
         $this->properties = $properties;
     }
 
     public function getName(): string
     {
         return $this->name;
+    }
+
+    public function isValueObject(): bool
+    {
+        return $this->isValueObject;
     }
 
     public function isCollection(): bool

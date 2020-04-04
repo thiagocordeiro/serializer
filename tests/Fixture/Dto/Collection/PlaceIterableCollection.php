@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Test\Serializer\Fixture\ValueObject\Collection;
+namespace Test\Serializer\Fixture\Dto\Collection;
 
 use ArrayIterator;
 use IteratorAggregate;
-use Test\Serializer\Fixture\ValueObject\Place;
+use Test\Serializer\Fixture\Dto\Place;
 
 class PlaceIterableCollection implements IteratorAggregate
 {

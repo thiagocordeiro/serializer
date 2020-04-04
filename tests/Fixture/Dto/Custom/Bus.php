@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Test\Serializer\Fixture\ValueObject\Custom;
+namespace Test\Serializer\Fixture\Dto\Custom;
 
 class Bus implements Vehicle
 {

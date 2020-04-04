@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Test\Serializer\Fixture\ValueObject\Collection;
+namespace Test\Serializer\Fixture\Dto\Collection;
 
-use Test\Serializer\Fixture\ValueObject\User;
+use Test\Serializer\Fixture\Dto\User;
 
 class UserCollection
 {

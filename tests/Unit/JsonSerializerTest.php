@@ -9,10 +9,10 @@ use Serializer\ClassFactory;
 use Serializer\Exception\MissingOrInvalidProperty;
 use Serializer\JsonSerializer;
 use Serializer\Serializer;
-use Test\Serializer\Fixture\ValueObject\Address;
-use Test\Serializer\Fixture\ValueObject\Collection\UserCollection;
-use Test\Serializer\Fixture\ValueObject\Place;
-use Test\Serializer\Fixture\ValueObject\User;
+use Test\Serializer\Fixture\Dto\Address;
+use Test\Serializer\Fixture\Dto\Collection\UserCollection;
+use Test\Serializer\Fixture\Dto\Place;
+use Test\Serializer\Fixture\Dto\User;
 
 class JsonSerializerTest extends TestCase
 {
