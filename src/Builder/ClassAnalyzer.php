@@ -15,6 +15,7 @@ use Serializer\Exception\ClassMustHaveAConstructor;
 use Serializer\Exception\IterableMustHaveOneParameterOnly;
 use Serializer\Exception\PropertyHasNoGetter;
 use Serializer\Exception\PropertyMustHaveAType;
+use Serializer\Exception\ValueObjectMustHaveScalarValue;
 
 class ClassAnalyzer
 {
@@ -60,6 +61,7 @@ class ClassAnalyzer
      * @throws ReflectionException
      * @throws PropertyHasNoGetter
      * @throws IterableMustHaveOneParameterOnly
+     * @throws ValueObjectMustHaveScalarValue
      */
     private function createProperty(ReflectionParameter $param, bool $isCollection, bool $isValueObject): ClassProperty
     {
@@ -69,7 +71,13 @@ class ClassAnalyzer
         $getter = $isValueObject ? '__toString' : $this->searchParamGetter($param, $type, $isCollection);
         $isArgument = $param->isVariadic();
 
-        return new ClassProperty($name, $type, $defaultValue, $isArgument, $getter);
+        $property = new ClassProperty($name, $type, $defaultValue, $isArgument, $getter);
+
+        if ($isValueObject && false === $property->isScalar()) {
+            throw new ValueObjectMustHaveScalarValue($property, $this->class);
+        }
+
+        return $property;
     }
 
     /**
