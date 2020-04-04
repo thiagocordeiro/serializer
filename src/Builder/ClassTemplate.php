@@ -67,39 +67,10 @@ STIRNG;
         $string = self::TEMPLATE;
 
         if ($this->definition->isValueObject()) {
-            $string = str_replace('[cacheClassName]', $this->factoryName, $string);
-            $string = str_replace('[className]', $this->definition->getName(), $string);
-            $string = str_replace('[arguments]', '$data', $string);
-            $string = str_replace('[properties]', '$propertyName', $string);
-            $string = str_replace('[getters]', '(string) $object', $string);
-            $string = str_replace('[isCollection]', 'false', $string);
-
-            return $string;
+            return $this->compileValueObject($string);
         }
 
-        $arguments = array_map(function (ClassProperty $param) {
-            return $this->createArgument($param, $this->definition);
-        }, $this->definition->getProperties());
-
-        $properties = array_map(function (ClassProperty $param) {
-            return sprintf("'%s'", $param->getName());
-        }, $this->definition->getProperties());
-
-        $getters = array_map(function (ClassProperty $param) {
-            return $this->createGetter($param);
-        }, $this->definition->getProperties());
-
-        $sp1 = str_repeat(" ", 12);
-        $sp2 = str_repeat(" ", 8);
-
-        $string = str_replace('[cacheClassName]', $this->factoryName, $string);
-        $string = str_replace('[className]', $this->definition->getName(), $string);
-        $string = str_replace('[arguments]', trim(implode(",\n", $arguments)), $string);
-        $string = str_replace('[properties]', trim(implode(", ", $properties)), $string);
-        $string = str_replace('[getters]', "[\n" . $sp1 . trim(implode(",\n", $getters)) . ",\n" . $sp2 . "]", $string);
-        $string = str_replace('[isCollection]', $this->definition->isCollection() ? 'true' : 'false', $string);
-
-        return $string;
+        return $this->compileDto($string);
     }
 
     private function createArgument(ClassProperty $property, ClassDefinition $definition): string
@@ -149,5 +120,46 @@ STIRNG;
             $property->getName(),
             $property->getGetter()
         );
+    }
+
+    private function compileValueObject(string $string): string
+    {
+        $property = $this->definition->getProperties()[0];
+
+        $string = str_replace('[cacheClassName]', $this->factoryName, $string);
+        $string = str_replace('[className]', $this->definition->getName(), $string);
+        $string = str_replace('[arguments]', sprintf('(%s) $data', $property->getType()), $string);
+        $string = str_replace('[properties]', '$propertyName', $string);
+        $string = str_replace('[getters]', sprintf('(%s) $object->__toString()', $property->getType()), $string);
+        $string = str_replace('[isCollection]', 'false', $string);
+
+        return $string;
+    }
+
+    private function compileDto(string $string): string
+    {
+        $arguments = array_map(function (ClassProperty $param) {
+            return $this->createArgument($param, $this->definition);
+        }, $this->definition->getProperties());
+
+        $properties = array_map(function (ClassProperty $param) {
+            return sprintf("'%s'", $param->getName());
+        }, $this->definition->getProperties());
+
+        $getters = array_map(function (ClassProperty $param) {
+            return $this->createGetter($param);
+        }, $this->definition->getProperties());
+
+        $sp1 = str_repeat(" ", 12);
+        $sp2 = str_repeat(" ", 8);
+
+        $string = str_replace('[cacheClassName]', $this->factoryName, $string);
+        $string = str_replace('[className]', $this->definition->getName(), $string);
+        $string = str_replace('[arguments]', trim(implode(",\n", $arguments)), $string);
+        $string = str_replace('[properties]', trim(implode(", ", $properties)), $string);
+        $string = str_replace('[getters]', "[\n" . $sp1 . trim(implode(",\n", $getters)) . ",\n" . $sp2 . "]", $string);
+        $string = str_replace('[isCollection]', $this->definition->isCollection() ? 'true' : 'false', $string);
+
+        return $string;
     }
 }
