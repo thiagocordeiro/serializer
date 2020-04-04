@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Test\Serializer\Fixture\ValueObject;
+namespace Test\Serializer\Fixture\Dto;
 
 class Address
 {

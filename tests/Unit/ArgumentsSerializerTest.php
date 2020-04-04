@@ -8,9 +8,9 @@ use PHPUnit\Framework\TestCase;
 use Serializer\ClassFactory;
 use Serializer\JsonSerializer;
 use Serializer\Serializer;
-use Test\Serializer\Fixture\ValueObject\ArgumentsValueObject;
-use Test\Serializer\Fixture\ValueObject\Place;
-use Test\Serializer\Fixture\ValueObject\User;
+use Test\Serializer\Fixture\Dto\ArgumentsValueObject;
+use Test\Serializer\Fixture\Dto\Place;
+use Test\Serializer\Fixture\Dto\User;
 
 class ArgumentsSerializerTest extends TestCase
 {

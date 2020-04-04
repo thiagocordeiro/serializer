@@ -44,12 +44,13 @@ class ClassAnalyzer
     public function analyze(): ClassDefinition
     {
         $isCollection = $this->class->implementsInterface(IteratorAggregate::class);
+        $isValueObject = $this->class->hasMethod('__toString') && $this->constructor->getNumberOfParameters() === 1;
 
-        $properties = array_map(function (ReflectionParameter $param) use ($isCollection) {
-            return $this->createProperty($param, $isCollection);
+        $properties = array_map(function (ReflectionParameter $param) use ($isCollection, $isValueObject) {
+            return $this->createProperty($param, $isCollection, $isValueObject);
         }, $this->constructor->getParameters());
 
-        return new ClassDefinition($this->className, $isCollection, ...$properties);
+        return new ClassDefinition($this->className, $isCollection, $isValueObject, ...$properties);
     }
 
     /**
@@ -60,12 +61,12 @@ class ClassAnalyzer
      * @throws PropertyHasNoGetter
      * @throws IterableMustHaveOneParameterOnly
      */
-    private function createProperty(ReflectionParameter $param, bool $isCollection): ClassProperty
+    private function createProperty(ReflectionParameter $param, bool $isCollection, bool $isValueObject): ClassProperty
     {
         $name = $param->getName();
         $type = $this->searchParamType($param);
         $defaultValue = ($param->isDefaultValueAvailable() ? (string) $param->getDefaultValue() : null) ?: null;
-        $getter = $this->searchParamGetter($param, $type, $isCollection);
+        $getter = $isValueObject ? '__toString' : $this->searchParamGetter($param, $type, $isCollection);
         $isArgument = $param->isVariadic();
 
         return new ClassProperty($name, $type, $defaultValue, $isArgument, $getter);

@@ -8,8 +8,8 @@ use PHPUnit\Framework\TestCase;
 use Serializer\ClassFactory;
 use Serializer\JsonSerializer;
 use Serializer\Serializer;
-use Test\Serializer\Fixture\ValueObject\Collection\PlaceIterableCollection;
-use Test\Serializer\Fixture\ValueObject\Place;
+use Test\Serializer\Fixture\Dto\Collection\PlaceIterableCollection;
+use Test\Serializer\Fixture\Dto\Place;
 
 class IterableCollectionTest extends TestCase
 {

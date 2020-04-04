@@ -7,14 +7,14 @@ namespace Test\Serializer\Fixture\Custom;
 use Exception;
 use Serializer\Exception\MissingOrInvalidProperty;
 use Serializer\Parser;
-use Test\Serializer\Fixture\ValueObject\Custom\Airplane;
-use Test\Serializer\Fixture\ValueObject\Custom\Bus;
-use Test\Serializer\Fixture\ValueObject\Custom\Trip;
-use Test\Serializer\Fixture\ValueObject\Custom\Vehicle;
+use Test\Serializer\Fixture\Dto\Custom\Airplane;
+use Test\Serializer\Fixture\Dto\Custom\Bus;
+use Test\Serializer\Fixture\Dto\Custom\Trip;
+use Test\Serializer\Fixture\Dto\Custom\Vehicle;
 use Throwable;
 use TypeError;
 
-class TestSerializerFixtureValueObjectCustomTripParser extends Parser
+class TestSerializerFixtureDtoCustomTripParser extends Parser
 {
     /**
      * @inheritDoc
