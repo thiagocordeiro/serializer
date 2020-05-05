@@ -83,13 +83,16 @@ abstract class Serializer
         }
 
         if (true === is_array($data)) {
-            return array_map(function ($object): ?array {
+            return array_map(function ($object) {
                 return $this->serializeData($object);
             }, $data);
         }
+        
+        if (false === is_object($data)) {
+            return $data;
+        }
 
         $class = get_class($data);
-
         $factory = $this->loadOrCreateFactory($class);
 
         return $factory->encode($data);
