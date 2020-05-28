@@ -127,7 +127,7 @@ STIRNG;
         $property = $this->definition->getProperties()[0];
         $type = $property->getType();
         $name = $property->getName();
-        $accessValue = sprintf('(%s) ($data[\'value\'] ?? $data[\'%s\'] ?? $data)', $type, $name);
+        $accessValue = sprintf('(%s) ($data->value ?? $data->%s ?? $data)', $type, $name);
 
         $string = str_replace('[cacheClassName]', $this->factoryName, $string);
         $string = str_replace('[className]', $this->definition->getName(), $string);
