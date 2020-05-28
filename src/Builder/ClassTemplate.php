@@ -125,10 +125,13 @@ STIRNG;
     private function compileValueObject(string $string): string
     {
         $property = $this->definition->getProperties()[0];
+        $type = $property->getType();
+        $name = $property->getName();
+        $accessValue = sprintf('(%s) ($data[\'value\'] ?? $data[\'%s\'] ?? $data)', $type, $name);
 
         $string = str_replace('[cacheClassName]', $this->factoryName, $string);
         $string = str_replace('[className]', $this->definition->getName(), $string);
-        $string = str_replace('[arguments]', sprintf('(%s) $data', $property->getType()), $string);
+        $string = str_replace('[arguments]', $accessValue, $string);
         $string = str_replace('[properties]', '$propertyName', $string);
         $string = str_replace('[getters]', sprintf('(%s) $object->__toString()', $property->getType()), $string);
         $string = str_replace('[isCollection]', 'false', $string);
