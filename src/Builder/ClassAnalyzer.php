@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Serializer\Builder;
 
 use IteratorAggregate;
-use ReflectionClass;
-use ReflectionException;
-use ReflectionMethod;
-use ReflectionParameter;
+use Roave\BetterReflection\BetterReflection;
+use Roave\BetterReflection\Reflection\ReflectionClass;
+use Roave\BetterReflection\Reflection\ReflectionMethod;
+use Roave\BetterReflection\Reflection\ReflectionParameter;
 use Serializer\Exception\ArrayPropertyMustHaveAnArrayAnnotation;
 use Serializer\Exception\ArrayPropertyMustHaveATypeAnnotation;
 use Serializer\Exception\ClassMustHaveAConstructor;
@@ -28,9 +28,12 @@ class ClassAnalyzer
     /** @var ReflectionMethod */
     private $constructor;
 
+    /**
+     * @throws ClassMustHaveAConstructor
+     */
     public function __construct(string $className)
     {
-        $class = new ReflectionClass($className);
+        $class = (new BetterReflection())->classReflector()->reflect($className);
         $constructor = $class->getConstructor();
 
         if (!$constructor instanceof ReflectionMethod) {
@@ -58,7 +61,6 @@ class ClassAnalyzer
      * @throws ArrayPropertyMustHaveATypeAnnotation
      * @throws ArrayPropertyMustHaveAnArrayAnnotation
      * @throws PropertyMustHaveAType
-     * @throws ReflectionException
      * @throws PropertyHasNoGetter
      * @throws IterableMustHaveOneParameterOnly
      * @throws ValueObjectMustHaveScalarValue

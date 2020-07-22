@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Serializer\Exception;
 
 use Exception;
-use ReflectionClass;
-use ReflectionParameter;
+use Roave\BetterReflection\Reflection\ReflectionClass;
+use Roave\BetterReflection\Reflection\ReflectionParameter;
 
 class ArrayPropertyMustHaveATypeAnnotation extends Exception
 {
