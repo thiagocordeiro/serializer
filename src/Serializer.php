@@ -78,7 +78,7 @@ abstract class Serializer
             return null;
         }
 
-        if ($data instanceof IteratorAggregate) {
+        if (is_iterable($data)) {
             $data = iterator_to_array($data);
         }
 
