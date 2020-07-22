@@ -1,4 +1,6 @@
 parameters:
     checkGenericClassInNonGenericObjectType: false
     ignoreErrors:
-        - '#Parameter \#1 $argument of class ReflectionClass constructor expects class-string<T of object>|T of object, string given#'
+        -
+            message: '#Cannot cast array\<bool\|float\|int\|string>\|bool\|float\|int\|string\|null to string\.#'
+            path: src/Builder/ClassAnalyzer.php

@@ -10,8 +10,9 @@
     }
   ],
   "require": {
-    "php": ">=7.2",
-    "ext-json": "*"
+    "php": ">=7.2.5",
+    "ext-json": "*",
+    "roave/better-reflection": "^4.3"
   },
   "require-dev": {
     "symfony/var-dumper": "^5.0",
@@ -28,6 +29,11 @@
   "autoload-dev": {
     "psr-4": {
       "Test\\Serializer\\": "tests/"
+    }
+  },
+  "config": {
+    "platform": {
+      "php": "7.2.5"
     }
   },
   "scripts": {

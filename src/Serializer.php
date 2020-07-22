@@ -8,6 +8,7 @@ use ReflectionException;
 use Serializer\Exception\ClassMustHaveAConstructor;
 use Serializer\Exception\MissingOrInvalidProperty;
 use Serializer\Exception\UnableToLoadOrCreateCacheClass;
+use Traversable;
 
 abstract class Serializer
 {
@@ -77,7 +78,7 @@ abstract class Serializer
             return null;
         }
 
-        if (is_iterable($data)) {
+        if ($data instanceof Traversable) {
             $data = iterator_to_array($data);
         }
 
@@ -86,7 +87,7 @@ abstract class Serializer
                 return $this->serializeData($object);
             }, $data);
         }
-        
+
         if (false === is_object($data)) {
             return $data;
         }

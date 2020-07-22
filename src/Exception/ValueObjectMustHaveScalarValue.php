@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Serializer\Exception;
 
 use Exception;
-use ReflectionClass;
+use Roave\BetterReflection\Reflection\ReflectionClass;
 use Serializer\Builder\ClassProperty;
 
 class ValueObjectMustHaveScalarValue extends Exception
