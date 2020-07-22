@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Serializer;
 
-use IteratorAggregate;
 use ReflectionException;
 use Serializer\Exception\ClassMustHaveAConstructor;
 use Serializer\Exception\MissingOrInvalidProperty;
