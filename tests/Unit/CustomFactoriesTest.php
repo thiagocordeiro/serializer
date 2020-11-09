@@ -8,6 +8,7 @@ use PHPUnit\Framework\TestCase;
 use Serializer\ClassFactory;
 use Serializer\JsonSerializer;
 use Serializer\Serializer;
+use Test\Serializer\Fixture\Custom\CustomTripParser;
 use Test\Serializer\Fixture\Dto\Custom\Airplane;
 use Test\Serializer\Fixture\Dto\Custom\Bus;
 use Test\Serializer\Fixture\Dto\Custom\Trip;
@@ -15,7 +16,6 @@ use Test\Serializer\Fixture\Dto\Custom\Trip;
 class CustomFactoriesTest extends TestCase
 {
     private const CACHE_DIR = __DIR__ . '/../../var/cache';
-    private const CUSTOM_NAMESPACE = 'Test\Serializer\Fixture\Custom';
 
     private const AIRPLANE_TRIP = <<<JSON
     {
@@ -63,7 +63,7 @@ JSON;
     protected function setUp(): void
     {
         $this->serializer = new JsonSerializer(
-            new ClassFactory(self::CACHE_DIR, true, self::CUSTOM_NAMESPACE)
+            new ClassFactory(self::CACHE_DIR, true, [Trip::class => CustomTripParser::class])
         );
     }
 

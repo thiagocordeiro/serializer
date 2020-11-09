@@ -14,7 +14,7 @@ use Test\Serializer\Fixture\Dto\Custom\Vehicle;
 use Throwable;
 use TypeError;
 
-class TestSerializerFixtureDtoCustomTripParser extends Parser
+class CustomTripParser extends Parser
 {
     /**
      * @inheritDoc
