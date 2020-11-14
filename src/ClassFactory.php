@@ -18,14 +18,17 @@ class ClassFactory
     /** @var bool */
     private $checkTimestamp;
 
-    /** @var string */
-    private $customFactoryNamespace;
+    /** @var array<string, string> */
+    private $customFactories;
 
-    public function __construct(string $cacheDir, bool $checkTimestamp = false, string $customFactoryNamespace = '')
+    /**
+     * @param array<string, string> $customFactories
+     */
+    public function __construct(string $cacheDir, bool $checkTimestamp = false, array $customFactories = [])
     {
         $this->cacheDir = sprintf('%s/serializer', rtrim($cacheDir, '/'));
         $this->checkTimestamp = $checkTimestamp;
-        $this->customFactoryNamespace = $customFactoryNamespace;
+        $this->customFactories = $customFactories;
     }
 
     /**
@@ -34,9 +37,9 @@ class ClassFactory
      */
     public function createInstance(Serializer $serializer, string $class): Parser
     {
-        $customClass = sprintf('%s\%sParser', $this->customFactoryNamespace, str_replace('\\', '', $class));
+        $customClass = $this->customFactories[$class] ?? null;
 
-        if (class_exists($customClass)) {
+        if ($customClass) {
             return new $customClass($serializer);
         }
 
