@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Serializer\Exception;
 
-use Exception;
 use TypeError;
 
-class MissingOrInvalidProperty extends Exception
+class MissingOrInvalidProperty extends SerializerException
 {
     /**
      * @param string[] $properties

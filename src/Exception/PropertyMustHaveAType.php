@@ -4,11 +4,10 @@ declare(strict_types=1);
 
 namespace Serializer\Exception;
 
-use Exception;
 use Roave\BetterReflection\Reflection\ReflectionClass;
 use Roave\BetterReflection\Reflection\ReflectionParameter;
 
-class PropertyMustHaveAType extends Exception
+class PropertyMustHaveAType extends SerializerException
 {
     public function __construct(ReflectionParameter $param, ReflectionClass $class)
     {

@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Serializer\Exception;
 
-use Exception;
-
-class IterableMustHaveOneParameterOnly extends Exception
+class IterableMustHaveOneParameterOnly extends SerializerException
 {
     public function __construct(string $class, int $count)
     {

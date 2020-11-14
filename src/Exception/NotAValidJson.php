@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Serializer\Exception;
 
-use Exception;
-
-class NotAValidJson extends Exception
+class NotAValidJson extends SerializerException
 {
     public function __construct(string $data)
     {

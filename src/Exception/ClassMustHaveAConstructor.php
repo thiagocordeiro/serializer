@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Serializer\Exception;
 
-use Exception;
-
-class ClassMustHaveAConstructor extends Exception
+class ClassMustHaveAConstructor extends SerializerException
 {
     public function __construct(string $class)
     {

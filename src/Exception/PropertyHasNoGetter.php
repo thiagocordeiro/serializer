@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Serializer\Exception;
 
-use Exception;
 use Roave\BetterReflection\Reflection\ReflectionClass;
 
-class PropertyHasNoGetter extends Exception
+class PropertyHasNoGetter extends SerializerException
 {
     public function __construct(ReflectionClass $class, string $getter)
     {

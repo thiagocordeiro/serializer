@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Serializer\Exception;
 
-use Exception;
 use Throwable;
 
-class InvalidDateTimeProperty extends Exception
+class InvalidDateTimeProperty extends SerializerException
 {
     public function __construct(Throwable $error, string $property)
     {

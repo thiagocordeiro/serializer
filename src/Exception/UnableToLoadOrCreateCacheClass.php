@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Serializer\Exception;
 
-use Exception;
-
-class UnableToLoadOrCreateCacheClass extends Exception
+class UnableToLoadOrCreateCacheClass extends SerializerException
 {
     public function __construct(string $factoryClass)
     {
