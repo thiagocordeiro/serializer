@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Serializer;
 
+/**
+ * @template T of object
+ */
 abstract class Parser
 {
     /** @var Serializer */
@@ -11,7 +14,7 @@ abstract class Parser
 
     /**
      * @param string|mixed|object $data
-     * @return object
+     * @return T
      */
     abstract public function decode($data, ?string $propertyName = null): object;
 

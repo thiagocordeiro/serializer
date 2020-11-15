@@ -19,8 +19,10 @@ abstract class Serializer
     private $classFactory;
 
     /**
+     * @template T of object
+     * @param class-string<T> $class
      * @param mixed $data
-     * @return mixed[]|object|null
+     * @return T|array<T>|null
      * @throws MissingOrInvalidProperty
      */
     abstract public function deserialize($data, string $class);
@@ -38,7 +40,9 @@ abstract class Serializer
 
     /**
      * @param mixed[]|object|null $data
-     * @return mixed[]|object|null
+     * @template T of object
+     * @param class-string<T> $class
+     * @return T|array<T>|null
      * @throws ClassMustHaveAConstructor
      * @throws ReflectionException
      * @throws UnableToLoadOrCreateCacheClass
@@ -99,9 +103,11 @@ abstract class Serializer
     }
 
     /**
+     * @template T of object
+     * @param class-string<T> $class
+     * @return Parser<T>
      * @throws ClassMustHaveAConstructor
      * @throws UnableToLoadOrCreateCacheClass
-     * @throws ReflectionException
      */
     private function loadOrCreateFactory(string $class): Parser
     {
