@@ -43,6 +43,18 @@ class MissingOrInvalidProperty extends SerializerException
      */
     private function getArgument(string $errorMessage, array $properties): ?string
     {
+        /**
+         * php >= 8 parser
+         */
+        preg_match('#\(\$(.*?)\)#', $errorMessage, $matches);
+
+        if ($matches[1] ?? null) {
+            return $matches[1];
+        }
+
+        /**
+         * php < 8
+         */
         preg_match('/Argument (.*) passed/', $errorMessage, $matches);
         $argument = $matches[1] ?? null;
 
