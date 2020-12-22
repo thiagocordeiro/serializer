@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Serializer\Exception;
 
-use Roave\BetterReflection\Reflection\ReflectionClass;
+use ReflectionClass;
 
 class PropertyHasNoGetter extends SerializerException
 {
