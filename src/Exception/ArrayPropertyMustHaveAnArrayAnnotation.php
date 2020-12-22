@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Serializer\Exception;
 
-use Roave\BetterReflection\Reflection\ReflectionClass;
-use Roave\BetterReflection\Reflection\ReflectionParameter;
+use ReflectionClass;
+use ReflectionParameter;
 
 class ArrayPropertyMustHaveAnArrayAnnotation extends SerializerException
 {

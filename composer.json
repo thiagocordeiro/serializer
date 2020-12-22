@@ -11,8 +11,7 @@
   ],
   "require": {
     "php": ">=7.2.5",
-    "ext-json": "*",
-    "roave/better-reflection": "^4.3"
+    "ext-json": "*"
   },
   "require-dev": {
     "symfony/var-dumper": "^5.0",

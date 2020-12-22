@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Serializer\Builder;
 
 use IteratorAggregate;
-use Roave\BetterReflection\BetterReflection;
-use Roave\BetterReflection\Reflection\ReflectionClass;
-use Roave\BetterReflection\Reflection\ReflectionMethod;
-use Roave\BetterReflection\Reflection\ReflectionParameter;
+use ReflectionException;
+use ReflectionMethod;
+use ReflectionNamedType;
+use ReflectionParameter;
 use Serializer\Exception\ArrayPropertyMustHaveAnArrayAnnotation;
 use Serializer\Exception\ArrayPropertyMustHaveATypeAnnotation;
 use Serializer\Exception\ClassMustHaveAConstructor;
@@ -30,10 +30,11 @@ class ClassAnalyzer
 
     /**
      * @throws ClassMustHaveAConstructor
+     * @throws ReflectionException
      */
     public function __construct(string $className)
     {
-        $class = (new BetterReflection())->classReflector()->reflect($className);
+        $class = new ReflectionClass($className);
         $constructor = $class->getConstructor();
 
         if (!$constructor instanceof ReflectionMethod) {
@@ -89,7 +90,9 @@ class ClassAnalyzer
      */
     private function searchParamType(ReflectionParameter $param): string
     {
-        $type = (string) $param->getType();
+        $refType = $param->getType();
+        assert($refType instanceof ReflectionNamedType);
+        $type = $refType->getName();
 
         if ('' === $type) {
             throw new PropertyMustHaveAType($param, $this->class);

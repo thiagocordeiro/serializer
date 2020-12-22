@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Serializer;
 
-use Roave\BetterReflection\BetterReflection;
+use ReflectionException;
 use Serializer\Builder\ClassAnalyzer;
 use Serializer\Builder\ClassTemplate;
+use Serializer\Builder\ReflectionClass;
 use Serializer\Exception\ClassMustHaveAConstructor;
 use Serializer\Exception\UnableToLoadOrCreateCacheClass;
 
@@ -34,6 +35,7 @@ class ClassFactory
     /**
      * @throws ClassMustHaveAConstructor
      * @throws UnableToLoadOrCreateCacheClass
+     * @throws ReflectionException
      */
     public function createInstance(Serializer $serializer, string $class): Parser
     {
@@ -58,6 +60,7 @@ class ClassFactory
 
     /**
      * @throws ClassMustHaveAConstructor
+     * @throws ReflectionException
      */
     private function require(string $class): void
     {
@@ -73,6 +76,7 @@ class ClassFactory
 
     /**
      * @throws ClassMustHaveAConstructor
+     * @throws ReflectionException
      */
     private function createClassFile(string $class, string $filePath, string $factoryName): void
     {
@@ -83,13 +87,16 @@ class ClassFactory
         file_put_contents($filePath, (string) $template);
     }
 
+    /**
+     * @throws ReflectionException
+     */
     private function isOutdated(string $class, string $cacheFilename): bool
     {
         if (false === $this->checkTimestamp) {
             return false;
         }
 
-        $classInfo = (new BetterReflection())->classReflector()->reflect($class);
+        $classInfo = new ReflectionClass($class);
         $classPath = $classInfo->getFileName() ?: '';
 
         $classTime = filemtime($classPath);

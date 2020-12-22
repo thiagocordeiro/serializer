@@ -1,6 +1,4 @@
 parameters:
     checkGenericClassInNonGenericObjectType: false
-    ignoreErrors:
-        -
-            message: '#Cannot cast array\<bool\|float\|int\|string>\|bool\|float\|int\|string\|null to string\.#'
-            path: src/Builder/ClassAnalyzer.php
+    excludes_analyse:
+        - 'src/Builder/ReflectionClass.php'
