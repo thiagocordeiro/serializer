@@ -4,8 +4,13 @@ declare(strict_types=1);
 
 namespace Serializer\Builder;
 
+use Serializer\Exception\PropertyHasNoGetter;
+
 class ClassProperty
 {
+    /** @var string */
+    private $class;
+
     /** @var string */
     private $name;
 
@@ -21,8 +26,15 @@ class ClassProperty
     /** @var bool */
     private $isArgument;
 
-    public function __construct(string $name, string $type, ?string $defaultValue, bool $isArgument, string $getter)
-    {
+    public function __construct(
+        string $class,
+        string $name,
+        string $type,
+        ?string $defaultValue,
+        bool $isArgument,
+        string $getter
+    ) {
+        $this->class = $class;
         $this->name = $name;
         $this->type = $type;
         $this->defaultValue = $defaultValue;
@@ -64,6 +76,10 @@ class ClassProperty
 
     public function getGetter(): string
     {
+        if ($this->getter === '') {
+            throw new PropertyHasNoGetter($this->class, $this->name);
+        }
+
         return $this->getter;
     }
 

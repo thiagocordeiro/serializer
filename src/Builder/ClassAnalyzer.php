@@ -74,7 +74,7 @@ class ClassAnalyzer
         $getter = $isValueObject ? '__toString' : $this->searchParamGetter($param, $type, $isCollection);
         $isArgument = $param->isVariadic();
 
-        $property = new ClassProperty($name, $type, $defaultValue, $isArgument, $getter);
+        $property = new ClassProperty($this->className, $name, $type, $defaultValue, $isArgument, $getter);
 
         if ($isValueObject && false === $property->isScalar()) {
             throw new ValueObjectMustHaveScalarValue($property, $this->class);
@@ -196,7 +196,7 @@ class ClassAnalyzer
         $getter = sprintf('get%s', ucfirst($param->getName()));
 
         if (false === $this->class->hasMethod($getter)) {
-            throw new PropertyHasNoGetter($this->class, $getter);
+            return '';
         }
 
         return $getter;
@@ -207,19 +207,21 @@ class ClassAnalyzer
      */
     private function searchGetterForBoolean(ReflectionParameter $param): string
     {
-        $isPrefix = sprintf('is%s', ucfirst($param->getName()));
+        $name = $param->getName();
+
+        $isPrefix = sprintf('is%s', ucfirst($name));
 
         if (true === $this->class->hasMethod($isPrefix)) {
             return $isPrefix;
         }
 
-        $hasPrefix = sprintf('has%s', ucfirst($param->getName()));
+        $hasPrefix = sprintf('has%s', ucfirst($name));
 
         if (true === $this->class->hasMethod($hasPrefix)) {
             return $hasPrefix;
         }
 
-        throw new PropertyHasNoGetter($this->class, "{$isPrefix} or {$hasPrefix}");
+        throw new PropertyHasNoGetter($this->className, $name, true);
     }
 
     /**

@@ -5,7 +5,8 @@ declare(strict_types=1);
 namespace Test\Serializer\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Serializer\ClassFactory;
+use Serializer\DecoderFactory;
+use Serializer\EncoderFactory;
 use Serializer\JsonSerializer;
 use Serializer\Serializer;
 use Test\Serializer\Fixture\Dto\ArgumentsValueObject;
@@ -44,9 +45,10 @@ JSON;
 
     protected function setUp(): void
     {
-        $this->serializer = new JsonSerializer(
-            new ClassFactory(self::CACHE_DIR, true)
-        );
+        $encoder = new EncoderFactory(self::CACHE_DIR, true);
+        $decoder = new DecoderFactory(self::CACHE_DIR, true);
+
+        $this->serializer = new JsonSerializer($encoder, $decoder);
     }
 
     public function testWhenGivenJsonThenParseIntoObject(): void

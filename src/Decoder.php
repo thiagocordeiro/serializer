@@ -7,7 +7,7 @@ namespace Serializer;
 /**
  * @template T of object
  */
-abstract class Parser
+abstract class Decoder
 {
     /** @var Serializer */
     private $serializer;
@@ -17,11 +17,6 @@ abstract class Parser
      * @return T
      */
     abstract public function decode($data, ?string $propertyName = null): object;
-
-    /**
-     * @return mixed
-     */
-    abstract public function encode(object $object);
 
     public function __construct(Serializer $serializer)
     {

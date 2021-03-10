@@ -4,20 +4,20 @@ declare(strict_types=1);
 
 namespace Serializer\Builder;
 
-class ClassTemplate
+class DecoderTemplate
 {
     private const TEMPLATE = <<<STIRNG
 <?php
 
 declare(strict_types=1);
 
-namespace Serializer\Parser;
+namespace Serializer\Decoder;
 
 use Serializer\Exception\MissingOrInvalidProperty;
-use Serializer\Parser;
+use Serializer\Decoder;
 use TypeError;
 
-class [cacheClassName] extends Parser
+class [cacheClassName] extends Decoder
 {
     /**
      * @return \[className]
@@ -35,14 +35,6 @@ class [cacheClassName] extends Parser
         return \$object;
     }
 
-    /**
-     * @param \[className] \$object
-     */
-    public function encode(object \$object)
-    {
-        return [getters];
-    }
-    
     public function isCollection(): bool
     {
         return [isCollection];
@@ -86,39 +78,20 @@ STIRNG;
 
         if ($definition->isCollection()) {
             return sprintf(
-                "%s...\$this->serializer()->deserializeData(\$data ?? [], \%s::class)",
+                "%s...\$this->serializer()->decode(\$data ?? [], \%s::class)",
                 str_repeat(' ', 16),
                 $property->getType()
             );
         }
 
         return sprintf(
-            "%s%s\$this->serializer()->deserializeData(\$data->%s ?? %s, \%s::class, '%s')",
+            "%s%s\$this->serializer()->decode(\$data->%s ?? %s, \%s::class, '%s')",
             str_repeat(' ', 16),
             $property->isArgument() ? '...' : '',
             $property->getName(),
             $property->getDefaultValue(),
             $property->getType(),
             $property->getName()
-        );
-    }
-
-    private function createGetter(ClassProperty $property): string
-    {
-        if ($property->isScalar()) {
-            return sprintf(
-                "%s'%s' => \$object->%s()",
-                str_repeat(' ', 12),
-                $property->getName(),
-                $property->getGetter()
-            );
-        }
-
-        return sprintf(
-            "%s'%s' => \$this->serializer()->serializeData(\$object->%s())",
-            str_repeat(' ', 12),
-            $property->getName(),
-            $property->getGetter()
         );
     }
 
@@ -133,7 +106,6 @@ STIRNG;
         $string = str_replace('[className]', $this->definition->getName(), $string);
         $string = str_replace('[arguments]', $accessValue, $string);
         $string = str_replace('[properties]', '$propertyName', $string);
-        $string = str_replace('[getters]', sprintf('(%s) $object->__toString()', $property->getType()), $string);
         $string = str_replace('[isCollection]', 'false', $string);
 
         return $string;
@@ -149,18 +121,10 @@ STIRNG;
             return sprintf("'%s'", $param->getName());
         }, $this->definition->getProperties());
 
-        $getters = array_map(function (ClassProperty $param) {
-            return $this->createGetter($param);
-        }, $this->definition->getProperties());
-
-        $sp1 = str_repeat(" ", 12);
-        $sp2 = str_repeat(" ", 8);
-
         $string = str_replace('[cacheClassName]', $this->factoryName, $string);
         $string = str_replace('[className]', $this->definition->getName(), $string);
         $string = str_replace('[arguments]', trim(implode(",\n", $arguments)), $string);
         $string = str_replace('[properties]', trim(implode(", ", $properties)), $string);
-        $string = str_replace('[getters]', "[\n" . $sp1 . trim(implode(",\n", $getters)) . ",\n" . $sp2 . "]", $string);
         $string = str_replace('[isCollection]', $this->definition->isCollection() ? 'true' : 'false', $string);
 
         return $string;

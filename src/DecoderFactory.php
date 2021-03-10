@@ -6,12 +6,12 @@ namespace Serializer;
 
 use ReflectionException;
 use Serializer\Builder\ClassAnalyzer;
-use Serializer\Builder\ClassTemplate;
+use Serializer\Builder\DecoderTemplate;
 use Serializer\Builder\ReflectionClass;
 use Serializer\Exception\ClassMustHaveAConstructor;
 use Serializer\Exception\UnableToLoadOrCreateCacheClass;
 
-class ClassFactory
+class DecoderFactory
 {
     /** @var string */
     private $cacheDir;
@@ -20,16 +20,16 @@ class ClassFactory
     private $checkTimestamp;
 
     /** @var array<string, string> */
-    private $customFactories;
+    private $customDecoders;
 
     /**
-     * @param array<string, string> $customFactories
+     * @param array<string, string> $customDecoders
      */
-    public function __construct(string $cacheDir, bool $checkTimestamp = false, array $customFactories = [])
+    public function __construct(string $cacheDir, bool $checkTimestamp = false, array $customDecoders = [])
     {
         $this->cacheDir = sprintf('%s/serializer', rtrim($cacheDir, '/'));
         $this->checkTimestamp = $checkTimestamp;
-        $this->customFactories = $customFactories;
+        $this->customDecoders = $customDecoders;
     }
 
     /**
@@ -37,15 +37,15 @@ class ClassFactory
      * @throws UnableToLoadOrCreateCacheClass
      * @throws ReflectionException
      */
-    public function createInstance(Serializer $serializer, string $class): Parser
+    public function createDecoder(Serializer $serializer, string $class): Decoder
     {
-        $customClass = $this->customFactories[$class] ?? null;
+        $customClass = $this->customDecoders[$class] ?? null;
 
         if ($customClass) {
             return new $customClass($serializer);
         }
 
-        $factoryClass = sprintf('Serializer\Parser\%sParser', str_replace('\\', '', $class));
+        $factoryClass = sprintf('Serializer\Decoder\%sDecoder', str_replace('\\', '', $class));
 
         if (false === class_exists($factoryClass)) {
             $this->require($class);
@@ -64,8 +64,8 @@ class ClassFactory
      */
     private function require(string $class): void
     {
-        $factoryName = str_replace('\\', '', $class) . 'Parser';
-        $filePath = sprintf('%s/%s.php', $this->cacheDir, $factoryName);
+        $factoryName = str_replace('\\', '', $class) . 'Decoder';
+        $filePath = sprintf('%s/Decoder/%s.php', $this->cacheDir, $factoryName);
 
         if (false === is_file($filePath) || $this->isOutdated($class, $filePath)) {
             $this->createClassFile($class, $filePath, $factoryName);
@@ -81,9 +81,10 @@ class ClassFactory
     private function createClassFile(string $class, string $filePath, string $factoryName): void
     {
         $definition = (new ClassAnalyzer($class))->analyze();
-        $template = new ClassTemplate($definition, $factoryName);
+        $template = new DecoderTemplate($definition, $factoryName);
+        $dirname = dirname($filePath);
 
-        is_dir($this->cacheDir) ?: mkdir($this->cacheDir, 0777, true);
+        is_dir($dirname) ?: mkdir($dirname, 0777, true);
         file_put_contents($filePath, (string) $template);
     }
 

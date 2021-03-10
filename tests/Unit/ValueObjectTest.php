@@ -6,7 +6,8 @@ namespace Test\Serializer\Unit;
 
 use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
-use Serializer\ClassFactory;
+use Serializer\DecoderFactory;
+use Serializer\EncoderFactory;
 use Serializer\JsonSerializer;
 use Serializer\Serializer;
 use Test\Serializer\Fixture\Dto\CreateUser;
@@ -74,9 +75,10 @@ JSON;
 
     protected function setUp(): void
     {
-        $this->serializer = new JsonSerializer(
-            new ClassFactory(self::CACHE_DIR, true)
-        );
+        $encoder = new EncoderFactory(self::CACHE_DIR, true);
+        $decoder = new DecoderFactory(self::CACHE_DIR, true);
+
+        $this->serializer = new JsonSerializer($encoder, $decoder);
     }
 
     public function testWhenBodyContainsValueObjectPropertyThenParseIt(): void

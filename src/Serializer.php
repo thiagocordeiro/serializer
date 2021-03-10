@@ -12,11 +12,17 @@ use Traversable;
 
 abstract class Serializer
 {
-    /** @var Parser[] */
-    private $factories = [];
+    /** @var Encoder[] */
+    private $encoders = [];
 
-    /** @var ClassFactory */
-    private $classFactory;
+    /** @var Decoder[] */
+    private $decoders = [];
+
+    /** @var EncoderFactory */
+    private $encoderFactory;
+
+    /** @var DecoderFactory */
+    private $decoderFactory;
 
     /**
      * @template T of object
@@ -33,9 +39,10 @@ abstract class Serializer
      */
     abstract public function serialize($data);
 
-    public function __construct(ClassFactory $classFactory)
+    public function __construct(EncoderFactory $encoderFactory, DecoderFactory $decoderFactory)
     {
-        $this->classFactory = $classFactory;
+        $this->encoderFactory = $encoderFactory;
+        $this->decoderFactory = $decoderFactory;
     }
 
     /**
@@ -48,25 +55,25 @@ abstract class Serializer
      * @throws UnableToLoadOrCreateCacheClass
      * @throws MissingOrInvalidProperty
      */
-    public function deserializeData($data, string $class, ?string $propertyName = null)
+    public function decode($data, string $class, ?string $propertyName = null)
     {
         if (null === $data) {
             return null;
         }
 
-        $factory = $this->loadOrCreateFactory($class);
+        $decoder = $this->loadOrCreateDecoder($class);
 
-        if ($factory->isCollection()) {
-            return $factory->decode($data, $propertyName);
+        if ($decoder->isCollection()) {
+            return $decoder->decode($data, $propertyName);
         }
 
         if (true === is_array($data)) {
             return array_map(function (object $item) use ($class) {
-                return $this->deserializeData($item, $class);
+                return $this->decode($item, $class);
             }, $data);
         }
 
-        return $factory->decode($data, $propertyName);
+        return $decoder->decode($data, $propertyName);
     }
 
     /**
@@ -76,7 +83,7 @@ abstract class Serializer
      * @throws ReflectionException
      * @throws UnableToLoadOrCreateCacheClass
      */
-    public function serializeData($data)
+    public function encode($data)
     {
         if (null === $data) {
             return null;
@@ -88,7 +95,7 @@ abstract class Serializer
 
         if (true === is_array($data)) {
             return array_map(function ($object) {
-                return $this->serializeData($object);
+                return $this->encode($object);
             }, $data);
         }
 
@@ -97,24 +104,42 @@ abstract class Serializer
         }
 
         $class = get_class($data);
-        $factory = $this->loadOrCreateFactory($class);
+        $encoder = $this->loadOrCreateEncoder($class);
 
-        return $factory->encode($data);
+        return $encoder->encode($data);
     }
 
     /**
      * @template T of object
      * @param class-string<T> $class
-     * @return Parser<T>
+     * @return Encoder<T>
      * @throws ClassMustHaveAConstructor
      * @throws UnableToLoadOrCreateCacheClass
+     * @throws ReflectionException
      */
-    private function loadOrCreateFactory(string $class): Parser
+    private function loadOrCreateEncoder(string $class): Encoder
     {
-        if (false === isset($this->factories[$class])) {
-            $this->factories[$class] = $this->classFactory->createInstance($this, $class);
+        if (false === isset($this->encoders[$class])) {
+            $this->encoders[$class] = $this->encoderFactory->createEncoder($this, $class);
         }
 
-        return $this->factories[$class];
+        return $this->encoders[$class];
+    }
+
+    /**
+     * @template T of object
+     * @param class-string<T> $class
+     * @return Decoder<T>
+     * @throws ClassMustHaveAConstructor
+     * @throws UnableToLoadOrCreateCacheClass
+     * @throws ReflectionException
+     */
+    private function loadOrCreateDecoder(string $class): Decoder
+    {
+        if (false === isset($this->decoders[$class])) {
+            $this->decoders[$class] = $this->decoderFactory->createDecoder($this, $class);
+        }
+
+        return $this->decoders[$class];
     }
 }
