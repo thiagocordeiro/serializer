@@ -4,18 +4,12 @@ declare(strict_types=1);
 
 namespace Serializer\Exception;
 
-use ReflectionClass;
-
 class PropertyHasNoGetter extends SerializerException
 {
-    public function __construct(ReflectionClass $class, string $getter)
+    public function __construct(string $class, string $getter, bool $boolean = false)
     {
-        parent::__construct(
-            sprintf(
-                'Class %s must have a method %s',
-                $class->getName(),
-                $getter
-            )
-        );
+        $message = $boolean ? '%s::%s has no boolean getter (is... or has...)' : '%s::%s has no getter';
+
+        parent::__construct(sprintf($message, $class, $getter));
     }
 }

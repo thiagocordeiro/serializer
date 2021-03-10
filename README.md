@@ -46,8 +46,9 @@ class User
 
 Once you have your class, you can convert json string to it, ex.
 ```php
-$classFactory = new \Serializer\ClassFactory('path/to/cache');  
-$serializer = new \Serializer\JsonSerializer($classFactory);
+$encoder = new \Serializer\EncoderFactory('path/to/cache');
+$decoder = new \Serializer\DecoderFactory('path/to/cache');
+$serializer = new \Serializer\JsonSerializer($encoder, $decoder);
 
 $json = '{"name":"Arthur Dent","email":"arthur.dent@galaxy.org"}';
 $serializer->deserialize($json, \App\ValueObject\User::class);
@@ -65,8 +66,9 @@ $serializer->deserialize($json, \App\ValueObject\User::class);
 ```
 The opposite way, ex.
 ```php
-$classFactory = new \Serializer\ClassFactory('path/to/cache');  
-$serializer = new \Serializer\JsonSerializer($classFactory);
+$encoder = new \Serializer\EncoderFactory('path/to/cache');
+$decoder = new \Serializer\DecoderFactory('path/to/cache');
+$serializer = new \Serializer\JsonSerializer($encoder, $decoder);
 
 $user = new \App\ValueObject\User('Arthur Dent', 'arthur.dent@galaxy.org');
 

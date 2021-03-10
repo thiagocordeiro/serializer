@@ -2,16 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Serializer\Parser;
+namespace Serializer\Decoder;
 
 use DateTime;
-use DateTimeInterface;
 use Exception;
+use Serializer\Decoder;
 use Serializer\Exception\InvalidDateTimeProperty;
-use Serializer\Parser;
 use Throwable;
 
-class DateTimeParser extends Parser
+class DateTimeDecoder extends Decoder
 {
     /**
      * @inheritDoc
@@ -24,14 +23,5 @@ class DateTimeParser extends Parser
         } catch (Throwable $e) {
             throw new InvalidDateTimeProperty($e, (string) $propertyName);
         }
-    }
-
-    /**
-     * @param DateTime $object
-     * @return mixed
-     */
-    public function encode(object $object)
-    {
-        return $object->format(DateTimeInterface::ISO8601);
     }
 }

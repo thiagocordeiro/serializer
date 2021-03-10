@@ -27,7 +27,7 @@ class JsonSerializer extends Serializer
             throw new NotAValidJson($data);
         }
 
-        return $this->deserializeData($json, $class);
+        return $this->decode($json, $class);
     }
 
     /**
@@ -38,6 +38,6 @@ class JsonSerializer extends Serializer
      */
     public function serialize($data)
     {
-        return json_encode($this->serializeData($data)) ?: '';
+        return json_encode($this->encode($data)) ?: '';
     }
 }
