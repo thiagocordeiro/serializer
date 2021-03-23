@@ -49,7 +49,7 @@ abstract class Serializer
      * @param mixed[]|object|null $data
      * @template T of object
      * @param class-string<T> $class
-     * @return T|array<T>|null
+     * @return T|array<T>|mixed|null
      * @throws ClassMustHaveAConstructor
      * @throws ReflectionException
      * @throws UnableToLoadOrCreateCacheClass
