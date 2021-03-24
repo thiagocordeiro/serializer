@@ -221,6 +221,12 @@ class ClassAnalyzer
             return $hasPrefix;
         }
 
+        $wasPrefix = sprintf('was%s', ucfirst($name));
+
+        if (true === $this->class->hasMethod($wasPrefix)) {
+            return $wasPrefix;
+        }
+
         throw new PropertyHasNoGetter($this->className, $name, true);
     }
 
