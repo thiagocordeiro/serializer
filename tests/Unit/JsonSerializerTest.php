@@ -9,7 +9,6 @@ use Serializer\DecoderFactory;
 use Serializer\EncoderFactory;
 use Serializer\Exception\MissingOrInvalidProperty;
 use Serializer\JsonSerializer;
-use Serializer\Serializer;
 use Test\Serializer\Fixture\Dto\Address;
 use Test\Serializer\Fixture\Dto\Collection\UserCollection;
 use Test\Serializer\Fixture\Dto\Place;
@@ -74,7 +73,7 @@ class JsonSerializerTest extends TestCase
     }
     JSON;
 
-    private Serializer $serializer;
+    private JsonSerializer $serializer;
 
     protected function setUp(): void
     {
