@@ -22,7 +22,7 @@ class [cacheClassName] extends Encoder
     /**
      * @param \[className] \$object
      */
-    public function encode(object \$object)
+    public function encode(object \$object): array|string|int|float|bool|null
     {
         return [getters];
     }
@@ -34,11 +34,8 @@ class [cacheClassName] extends Encoder
 }
 STIRNG;
 
-    /** @var ClassDefinition */
-    private $definition;
-
-    /** @var string */
-    private $factoryName;
+    private ClassDefinition $definition;
+    private string $factoryName;
 
     public function __construct(ClassDefinition $definition, string $factoryName)
     {

@@ -6,11 +6,8 @@ namespace Test\Serializer\Fixture\Dto;
 
 class Place
 {
-    /** @var string */
-    private $city;
-
-    /** @var string string */
-    private $country;
+    private string $city;
+    private string $country;
 
     public function __construct(string $city, string $country = 'Netherlands')
     {

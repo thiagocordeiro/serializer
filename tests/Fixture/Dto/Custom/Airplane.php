@@ -6,17 +6,10 @@ namespace Test\Serializer\Fixture\Dto\Custom;
 
 class Airplane implements Vehicle
 {
-    /** @var string */
-    private $airline;
-
-    /** @var string */
-    private $aircraft;
-
-    /** @var string */
-    private $registration;
-
-    /** @var int */
-    private $maxPassengers;
+    private string $airline;
+    private string $aircraft;
+    private string $registration;
+    private int $maxPassengers;
 
     public function __construct(string $airline, string $aircraft, string $registration, int $maxPassengers)
     {

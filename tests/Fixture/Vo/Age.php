@@ -8,8 +8,7 @@ use InvalidArgumentException;
 
 class Age
 {
-    /** @var int */
-    private $age;
+    private int $age;
 
     public function __construct(int $age)
     {

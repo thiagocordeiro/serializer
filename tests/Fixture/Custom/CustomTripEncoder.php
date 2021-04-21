@@ -15,7 +15,7 @@ class CustomTripEncoder extends Encoder
      * @return string[]|mixed[]
      * @throws Throwable
      */
-    public function encode(object $object)
+    public function encode(object $object): array
     {
         return [
             'from' => $object->getFrom(),

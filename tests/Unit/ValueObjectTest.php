@@ -28,7 +28,7 @@ class ValueObjectTest extends TestCase
       "age": 20,
       "height": 1.75
     }
-JSON;
+    JSON;
 
     private const INVALID_IP = <<<JSON
     {
@@ -38,7 +38,7 @@ JSON;
       "age": 20,
       "height": 1.75
     }
-JSON;
+    JSON;
 
     private const INVALID_EMAIL = <<<JSON
     {
@@ -48,7 +48,7 @@ JSON;
       "age": 20,
       "height": 1.75
     }
-JSON;
+    JSON;
 
     private const INVALID_AGE = <<<JSON
     {
@@ -58,7 +58,7 @@ JSON;
       "age": 1,
       "height": 1.75
     }
-JSON;
+    JSON;
 
     private const INVALID_HEIGHT = <<<JSON
     {
@@ -68,10 +68,9 @@ JSON;
       "age": 20,
       "height": 0.01
     }
-JSON;
+    JSON;
 
-    /** @var Serializer */
-    private $serializer;
+    private Serializer $serializer;
 
     protected function setUp(): void
     {
@@ -125,6 +124,9 @@ JSON;
         $this->serializer->deserialize($body, CreateUser::class);
     }
 
+    /**
+     * @return array<string, array<string, string>>
+     */
     public function invalidValueDataProvider(): array
     {
         return [

@@ -6,11 +6,8 @@ namespace Test\Serializer\Fixture\Dto;
 
 class OnlyDecoder
 {
-    /** @var string */
-    private $foo;
-
-    /** @var float */
-    private $bar;
+    private string $foo;
+    private float $bar;
 
     public function __construct(string $foo, float $bar)
     {
@@ -19,7 +16,7 @@ class OnlyDecoder
     }
 
     /**
-     * @return array<string, string|int>
+     * @return array<string, string|float>
      */
     public function toArray(): array
     {

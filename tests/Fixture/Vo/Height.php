@@ -8,8 +8,7 @@ use InvalidArgumentException;
 
 class Height
 {
-    /** @var float */
-    private $height;
+    private float $height;
 
     public function __construct(float $height)
     {

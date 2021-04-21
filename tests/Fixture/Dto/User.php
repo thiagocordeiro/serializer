@@ -6,17 +6,10 @@ namespace Test\Serializer\Fixture\Dto;
 
 class User
 {
-    /** @var string */
-    private $name;
-
-    /** @var int */
-    private $age;
-
-    /** @var float */
-    private $height;
-
-    /** @var Address|null */
-    private $address;
+    private string $name;
+    private int $age;
+    private float $height;
+    private ?Address $address;
 
     public function __construct(string $name, int $age, float $height = 1.50, ?Address $address = null)
     {

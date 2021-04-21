@@ -8,8 +8,7 @@ use InvalidArgumentException;
 
 class Email
 {
-    /** @var string */
-    private $email;
+    private string $email;
 
     public function __construct(string $email)
     {

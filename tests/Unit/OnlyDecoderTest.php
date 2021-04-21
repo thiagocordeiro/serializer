@@ -21,10 +21,9 @@ class OnlyDecoderTest extends TestCase
       "foo": "Foo",
       "bar": 123.45
     }
-JSON;
+    JSON;
 
-    /** @var Serializer */
-    private $serializer;
+    private Serializer $serializer;
 
     protected function setUp(): void
     {

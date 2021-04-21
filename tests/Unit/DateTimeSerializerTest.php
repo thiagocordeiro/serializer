@@ -19,35 +19,34 @@ class DateTimeSerializerTest extends TestCase
     private const CACHE_DIR = __DIR__ . '/../../var/cache';
 
     private const DATETIME = <<<JSON
-{
-    "expiresAt": "2019-01-01T18:30:15+0000",
-    "createdAt": "2019-01-01T12:12:01+0000"
-}
-JSON;
+    {
+      "expiresAt": "2019-01-01T18:30:15+0000",
+      "createdAt": "2019-01-01T12:12:01+0000"
+    }
+    JSON;
 
     private const DATETIME_NULLABLE = <<<JSON
-{
-    "expiresAt": "2019-01-01T18:30:15+0000",
-    "createdAt": null
-}
-JSON;
+    {
+      "expiresAt": "2019-01-01T18:30:15+0000",
+      "createdAt": null
+    }
+    JSON;
 
     private const DATETIME_INVALID_1 = <<<JSON
-{
-    "expiresAt": "invalid-datetime",
-    "createdAt": null
-}
-JSON;
+    {
+      "expiresAt": "invalid-datetime",
+      "createdAt": null
+    }
+    JSON;
 
     private const DATETIME_INVALID_2 = <<<JSON
-{
-    "expiresAt": "2019-01-01T18:30:15+0000",
-    "createdAt": "invalid-datetime"
-}
-JSON;
+    {
+      "expiresAt": "2019-01-01T18:30:15+0000",
+      "createdAt": "invalid-datetime"
+    }
+    JSON;
 
-    /** @var Serializer */
-    private $serializer;
+    private Serializer $serializer;
 
     protected function setUp(): void
     {

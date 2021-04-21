@@ -21,49 +21,48 @@ class CustomFactoriesTest extends TestCase
 
     private const AIRPLANE_TRIP = <<<JSON
     {
-        "from": "Amsterdam",
-        "to": "New York",
-        "type": "flight",
-        "vehicle": {
-            "airline": "KLM Royal Dutch Airlines",
-            "aircraft": "Boeing 777-306ER",
-            "registration": "PH-BVF",
-            "maxPassengers": 408
-        },
-        "custom": "foo:bar"
+      "from": "Amsterdam",
+      "to": "New York",
+      "type": "flight",
+      "vehicle": {
+        "airline": "KLM Royal Dutch Airlines",
+        "aircraft": "Boeing 777-306ER",
+        "registration": "PH-BVF",
+        "maxPassengers": 408
+      },
+      "custom": "foo:bar"
     }
-JSON;
+    JSON;
 
     private const AIRPLANE_BUS = <<<JSON
     {
-        "from": "Amsterdam",
-        "to": "Berlin",
-        "type": "road",
-        "vehicle": {
-            "company": "Flixbus",
-            "model": "AEC Routemaster",
-            "maxPassengers": 64
-        },
-        "custom": "foo:bar"
+      "from": "Amsterdam",
+      "to": "Berlin",
+      "type": "road",
+      "vehicle": {
+        "company": "Flixbus",
+        "model": "AEC Routemaster",
+        "maxPassengers": 64
+      },
+      "custom": "foo:bar"
     }
-JSON;
+    JSON;
 
     private const INVALID_TRIP_TYPE = <<<JSON
     {
-        "from": "Amsterdam",
-        "to": "Berlin",
-        "type": "rail",
-        "vehicle": {
-            "company": "NS",
-            "model": "Train",
-            "maxPassengers": 700
-        },
-        "custom": "foo:bar"
+      "from": "Amsterdam",
+      "to": "Berlin",
+      "type": "rail",
+      "vehicle": {
+        "company": "NS",
+        "model": "Train",
+        "maxPassengers": 700
+      },
+      "custom": "foo:bar"
     }
-JSON;
+    JSON;
 
-    /** @var Serializer */
-    private $serializer;
+    private Serializer $serializer;
 
     protected function setUp(): void
     {

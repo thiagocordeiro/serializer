@@ -11,10 +11,10 @@ use Serializer\Encoder;
 class DateTimeImmutableEncoder extends Encoder
 {
     /**
+     * @inheritdoc
      * @param DateTimeImmutable $object
-     * @return mixed
      */
-    public function encode(object $object)
+    public function encode(object $object): array|string|int|float|bool|null
     {
         return $object->format(DateTimeInterface::ISO8601);
     }

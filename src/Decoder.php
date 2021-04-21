@@ -9,14 +9,12 @@ namespace Serializer;
  */
 abstract class Decoder
 {
-    /** @var Serializer */
-    private $serializer;
+    private Serializer $serializer;
 
     /**
-     * @param string|mixed|object $data
      * @return T
      */
-    abstract public function decode($data, ?string $propertyName = null): object;
+    abstract public function decode(mixed $data, ?string $propertyName = null): object;
 
     public function __construct(Serializer $serializer)
     {

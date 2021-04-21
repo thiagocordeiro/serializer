@@ -20,6 +20,9 @@ class MissingOrInvalidPropertyTest extends TestCase
         $this->assertEquals($expected, $exception->getMessage());
     }
 
+    /**
+     * @return array<string, array<int, string>>
+     */
     public function typeErrorMessagesDataProvider(): array
     {
         $message = implode(', ', [

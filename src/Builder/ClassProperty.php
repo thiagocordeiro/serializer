@@ -8,23 +8,12 @@ use Serializer\Exception\PropertyHasNoGetter;
 
 class ClassProperty
 {
-    /** @var string */
-    private $class;
-
-    /** @var string */
-    private $name;
-
-    /** @var string */
-    private $type;
-
-    /** @var string|null */
-    private $defaultValue;
-
-    /** @var string */
-    private $getter;
-
-    /** @var bool */
-    private $isArgument;
+    private string $class;
+    private string $name;
+    private string $type;
+    private ?string $defaultValue;
+    private string $getter;
+    private bool $isArgument;
 
     public function __construct(
         string $class,
@@ -85,7 +74,7 @@ class ClassProperty
 
     public function isScalar(): bool
     {
-        return in_array($this->type, ['int', 'float', 'string', 'bool']);
+        return in_array($this->type, ['int', 'float', 'string', 'bool'], true);
     }
 
     public function isArray(): bool

@@ -25,7 +25,7 @@ class JsonSerializerTest extends TestCase
       "height": 1.69,
       "address": null
     }
-JSON;
+    JSON;
 
     private const USER_2 = <<<JSON
     {
@@ -42,14 +42,14 @@ JSON;
         }
       }
     }
-JSON;
+    JSON;
 
     private const USER_3 = <<<JSON
     {
       "name": "Tony Stark",
       "age": 42
     }
-JSON;
+    JSON;
 
     private const USER_4 = <<<JSON
     {
@@ -58,7 +58,7 @@ JSON;
       "height": 1.73,
       "address": null
     }
-JSON;
+    JSON;
 
     private const USER_5 = <<<JSON
     {
@@ -71,10 +71,9 @@ JSON;
         "company": false
       }
     }
-JSON;
+    JSON;
 
-    /** @var JsonSerializer */
-    private $serializer;
+    private JsonSerializer $serializer;
 
     protected function setUp(): void
     {

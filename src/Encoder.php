@@ -9,13 +9,12 @@ namespace Serializer;
  */
 abstract class Encoder
 {
-    /** @var Serializer */
-    private $serializer;
+    private Serializer $serializer;
 
     /**
-     * @return mixed
+     * @return array<mixed>
      */
-    abstract public function encode(object $object);
+    abstract public function encode(object $object): array|string|int|float|bool|null;
 
     public function __construct(Serializer $serializer)
     {
