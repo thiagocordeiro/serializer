@@ -7,6 +7,7 @@ namespace Serializer;
 use ReflectionException;
 use Serializer\Exception\ClassMustHaveAConstructor;
 use Serializer\Exception\MissingOrInvalidProperty;
+use Serializer\Exception\SerializerException;
 use Serializer\Exception\UnableToLoadOrCreateCacheClass;
 use Traversable;
 
@@ -27,12 +28,14 @@ abstract class Serializer
      * @param mixed $data
      * @return T|array<T>|null
      * @throws MissingOrInvalidProperty
+     * @throws SerializerException
      */
     abstract public function deserialize($data, string $class);
 
     /**
      * @param mixed[]|object|null $data
      * @return mixed
+     * @throws SerializerException
      */
     abstract public function serialize($data);
 
