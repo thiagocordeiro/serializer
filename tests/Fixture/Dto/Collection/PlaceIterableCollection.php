@@ -10,8 +10,8 @@ use Test\Serializer\Fixture\Dto\Place;
 
 class PlaceIterableCollection implements IteratorAggregate
 {
-    /** @var Place[] */
-    private $places;
+    /** @var iterable<Place> */
+    private iterable $places;
 
     public function __construct(Place ...$places)
     {
@@ -19,7 +19,7 @@ class PlaceIterableCollection implements IteratorAggregate
     }
 
     /**
-     * @return Place[]
+     * @return iterable<Place>
      */
     public function getIterator(): iterable
     {

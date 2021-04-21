@@ -9,7 +9,7 @@ use Test\Serializer\Fixture\Dto\User;
 class UserCollection
 {
     /** @var User[] */
-    private $users;
+    private array $users;
 
     /**
      * @param User[] $users
@@ -19,6 +19,9 @@ class UserCollection
         $this->users = $users;
     }
 
+    /**
+     * @return User[]
+     */
     public function getUsers(): array
     {
         return $this->users;

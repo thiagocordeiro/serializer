@@ -11,20 +11,11 @@ use Test\Serializer\Fixture\Vo\IpAddress;
 
 class CreateUser
 {
-    /** @var string */
-    private $name;
-
-    /** @var IpAddress */
-    private $ipAddress;
-
-    /** @var Email */
-    private $email;
-
-    /** @var Age */
-    private $age;
-
-    /** @var Height */
-    private $height;
+    private string $name;
+    private IpAddress $ipAddress;
+    private Email $email;
+    private Age $age;
+    private Height $height;
 
     public function __construct(string $name, IpAddress $ipAddress, Email $email, Age $age, Height $height)
     {

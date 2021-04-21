@@ -22,7 +22,7 @@ class [cacheClassName] extends Decoder
     /**
      * @return \[className]
      */
-    public function decode(\$data, ?string \$propertyName = null): object
+    public function decode(mixed \$data, ?string \$propertyName = null): object
     {
         try {
             \$object = new \[className](
@@ -42,11 +42,8 @@ class [cacheClassName] extends Decoder
 }
 STIRNG;
 
-    /** @var ClassDefinition */
-    private $definition;
-
-    /** @var string */
-    private $factoryName;
+    private ClassDefinition $definition;
+    private string $factoryName;
 
     public function __construct(ClassDefinition $definition, string $factoryName)
     {

@@ -6,17 +6,10 @@ namespace Test\Serializer\Fixture\Dto;
 
 class Address
 {
-    /** @var string */
-    private $street;
-
-    /** @var int */
-    private $number;
-
-    /** @var bool */
-    private $company;
-
-    /** @var Place */
-    private $place;
+    private string $street;
+    private int $number;
+    private bool $company;
+    private Place $place;
 
     public function __construct(string $street, int $number, bool $company, Place $place)
     {

@@ -16,7 +16,7 @@ class DateTimeDecoder extends Decoder
      * @inheritDoc
      * @throws Exception
      */
-    public function decode($data, ?string $propertyName = null): object
+    public function decode(mixed $data, ?string $propertyName = null): object
     {
         try {
             return new DateTime((string) $data);

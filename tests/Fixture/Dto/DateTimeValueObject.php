@@ -9,11 +9,8 @@ use DateTimeImmutable;
 
 class DateTimeValueObject
 {
-    /** @var DateTime */
-    private $expiresAt;
-
-    /** @var DateTimeImmutable */
-    private $createdAt;
+    private DateTime $expiresAt;
+    private ?DateTimeImmutable $createdAt;
 
     public function __construct(DateTime $expiresAt, ?DateTimeImmutable $createdAt)
     {

@@ -13,16 +13,13 @@ use Traversable;
 abstract class Serializer
 {
     /** @var Encoder[] */
-    private $encoders = [];
+    private array $encoders;
 
     /** @var Decoder[] */
-    private $decoders = [];
+    private array $decoders;
 
-    /** @var EncoderFactory */
-    private $encoderFactory;
-
-    /** @var DecoderFactory */
-    private $decoderFactory;
+    private EncoderFactory $encoderFactory;
+    private DecoderFactory $decoderFactory;
 
     /**
      * @template T of object
@@ -41,6 +38,9 @@ abstract class Serializer
 
     public function __construct(EncoderFactory $encoderFactory, DecoderFactory $decoderFactory)
     {
+        $this->encoders = [];
+        $this->decoders = [];
+
         $this->encoderFactory = $encoderFactory;
         $this->decoderFactory = $decoderFactory;
     }
@@ -49,13 +49,12 @@ abstract class Serializer
      * @param mixed[]|object|null $data
      * @template T of object
      * @param class-string<T> $class
-     * @return T|array<T>|mixed|null
+     * @return T|array<T>|null
      * @throws ClassMustHaveAConstructor
      * @throws ReflectionException
      * @throws UnableToLoadOrCreateCacheClass
-     * @throws MissingOrInvalidProperty
      */
-    public function decode($data, string $class, ?string $propertyName = null)
+    public function decode($data, string $class, ?string $propertyName = null): object|array|null
     {
         if (null === $data) {
             return null;
@@ -68,9 +67,7 @@ abstract class Serializer
         }
 
         if (true === is_array($data)) {
-            return array_map(function (object $item) use ($class) {
-                return $this->decode($item, $class);
-            }, $data);
+            return array_map(fn (object $item) => $decoder->decode($item, $propertyName), $data);
         }
 
         return $decoder->decode($data, $propertyName);
@@ -83,7 +80,7 @@ abstract class Serializer
      * @throws ReflectionException
      * @throws UnableToLoadOrCreateCacheClass
      */
-    public function encode($data)
+    public function encode($data): array|string|int|float|bool|null
     {
         if (null === $data) {
             return null;
@@ -99,6 +96,10 @@ abstract class Serializer
             }, $data);
         }
 
+        /**
+         * if it's not an array (check above) and it's an object
+         * then it's a scalar value, so we just return it
+         */
         if (false === is_object($data)) {
             return $data;
         }

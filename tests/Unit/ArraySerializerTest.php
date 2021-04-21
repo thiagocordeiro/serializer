@@ -63,8 +63,7 @@ class ArraySerializerTest extends TestCase
         ],
     ];
 
-    /** @var ArraySerializer */
-    private $serializer;
+    private ArraySerializer $serializer;
 
     protected function setUp(): void
     {

@@ -6,17 +6,10 @@ namespace Test\Serializer\Fixture\Dto\Custom;
 
 class Trip
 {
-    /** @var string */
-    private $from;
-
-    /** @var string */
-    private $to;
-
-    /** @var string */
-    private $type;
-
-    /** @var Vehicle */
-    private $vehicle;
+    private string $from;
+    private string $to;
+    private string $type;
+    private Vehicle $vehicle;
 
     public function __construct(string $from, string $to, string $type, Vehicle $vehicle)
     {

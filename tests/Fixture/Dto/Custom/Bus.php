@@ -6,14 +6,9 @@ namespace Test\Serializer\Fixture\Dto\Custom;
 
 class Bus implements Vehicle
 {
-    /** @var string */
-    private $company;
-
-    /** @var string */
-    private $model;
-
-    /** @var int */
-    private $maxPassengers;
+    private string $company;
+    private string $model;
+    private int $maxPassengers;
 
     public function __construct(string $company, string $model, int $maxPassengers)
     {

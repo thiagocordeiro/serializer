@@ -31,10 +31,9 @@ class IterableCollectionTest extends TestCase
         "city": "São Paulo"
       }
     ]
-JSON;
+    JSON;
 
-    /** @var Serializer */
-    private $serializer;
+    private Serializer $serializer;
 
     protected function setUp(): void
     {

@@ -7,10 +7,9 @@ namespace Test\Serializer\Fixture\Dto;
 class ArgumentsValueObject
 {
     /** @var Place[] */
-    private $places;
+    private array $places;
 
-    /** @var User */
-    private $user;
+    private User $user;
 
     public function __construct(User $user, Place ...$places)
     {
@@ -18,6 +17,9 @@ class ArgumentsValueObject
         $this->user = $user;
     }
 
+    /**
+     * @return Place[]
+     */
     public function getPlaces(): array
     {
         return $this->places;
