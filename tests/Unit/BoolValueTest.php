@@ -20,10 +20,9 @@ class BoolValueTest extends TestCase
       "blocked": false,
       "restrictions": false
     }
-JSON;
+    JSON;
 
-    /** @var JsonSerializer */
-    private $serializer;
+    private JsonSerializer $serializer;
 
     protected function setUp(): void
     {

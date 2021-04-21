@@ -6,14 +6,9 @@ namespace Test\Serializer\Fixture\Dto;
 
 class AnyBool
 {
-    /** @var bool */
-    private $active;
-
-    /** @var bool */
-    private $blocked;
-
-    /** @var bool */
-    private $restrictions;
+    private bool $active;
+    private bool $blocked;
+    private bool $restrictions;
 
     public function __construct(bool $active, bool $blocked, bool $restrictions)
     {
