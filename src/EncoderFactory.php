@@ -19,14 +19,23 @@ class EncoderFactory
     /** @var array<string, string> */
     private array $customEncoders;
 
+    /** @var array<string, SerializerFactory> */
+    private array $factories;
+
     /**
      * @param array<string, string> $customEncoders
+     * @param array<string, SerializerFactory> $factories
      */
-    public function __construct(string $cacheDir, bool $checkTimestamp = false, array $customEncoders = [])
-    {
+    public function __construct(
+        string $cacheDir,
+        bool $checkTimestamp = false,
+        array $customEncoders = [],
+        array $factories = [],
+    ) {
         $this->cacheDir = sprintf('%s/serializer', rtrim($cacheDir, '/'));
         $this->checkTimestamp = $checkTimestamp;
         $this->customEncoders = $customEncoders;
+        $this->factories = $factories;
     }
 
     /**
@@ -42,17 +51,25 @@ class EncoderFactory
             return new $customClass($serializer);
         }
 
-        $factoryClass = sprintf('Serializer\Encoder\%sEncoder', str_replace('\\', '', $class));
+        $factory = $this->factories[$class] ?? null;
 
-        if (false === class_exists($factoryClass)) {
+        if (null !== $factory) {
+            assert($factory instanceof SerializerFactory);
+
+            return $factory->createEncoder($serializer);
+        }
+
+        $encoder = sprintf('Serializer\Encoder\%sEncoder', str_replace('\\', '', $class));
+
+        if (false === class_exists($encoder)) {
             $this->require($class);
         }
 
-        if (false === class_exists($factoryClass)) {
-            throw new UnableToLoadOrCreateCacheClass($factoryClass);
+        if (false === class_exists($encoder)) {
+            throw new UnableToLoadOrCreateCacheClass($encoder);
         }
 
-        return new $factoryClass($serializer);
+        return new $encoder($serializer);
     }
 
     /**
