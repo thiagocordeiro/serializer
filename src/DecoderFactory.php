@@ -15,6 +15,8 @@ class DecoderFactory
 {
     private string $cacheDir;
     private bool $checkTimestamp;
+    private ?string $fileUser;
+    private ?string $fileGroup;
 
     /** @var array<string, string> */
     private array $customDecoders;
@@ -30,12 +32,16 @@ class DecoderFactory
         string $cacheDir,
         bool $checkTimestamp = false,
         array $customDecoders = [],
-        array $factories = []
+        array $factories = [],
+        ?string $fileUser = null,
+        ?string $fileGroup = null,
     ) {
         $this->cacheDir = sprintf('%s/serializer', rtrim($cacheDir, '/'));
         $this->checkTimestamp = $checkTimestamp;
         $this->customDecoders = $customDecoders;
         $this->factories = $factories;
+        $this->fileUser = $fileUser;
+        $this->fileGroup = $fileGroup;
     }
 
     /**
@@ -98,8 +104,13 @@ class DecoderFactory
         $template = new DecoderTemplate($definition, $factoryName);
         $dirname = dirname($filePath);
 
-        is_dir($dirname) ?: mkdir($dirname, 0777, true);
+        if (false === is_dir($dirname)) {
+            mkdir($dirname, 0777, true);
+            $this->fixPermission($dirname);
+        }
+
         file_put_contents($filePath, (string) $template);
+        $this->fixPermission($filePath);
     }
 
     /**
@@ -118,5 +129,29 @@ class DecoderFactory
         $cacheTime = filemtime($cacheFilename);
 
         return $classTime > $cacheTime;
+    }
+
+    private function fixPermission(string $path): void
+    {
+        $this->fixUserPermission($path);
+        $this->fixGroupPermission($path);
+    }
+
+    private function fixUserPermission(string $path): void
+    {
+        if (null === $this->fileUser) {
+            return;
+        }
+
+        chown($path, $this->fileUser);
+    }
+
+    private function fixGroupPermission(string $path): void
+    {
+        if (null === $this->fileGroup) {
+            return;
+        }
+
+        chgrp($path, $this->fileGroup);
     }
 }
