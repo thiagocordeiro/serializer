@@ -100,6 +100,7 @@ class DecoderFactory
      */
     private function createClassFile(string $class, string $filePath, string $factoryName): void
     {
+        umask(0002);
         $definition = (new ClassAnalyzer($class))->analyze();
         $template = new DecoderTemplate($definition, $factoryName);
         $dirname = dirname($filePath);
