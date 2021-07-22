@@ -7,8 +7,10 @@ namespace Test\Serializer\Unit;
 use DateTime;
 use DateTimeImmutable;
 use PHPUnit\Framework\TestCase;
-use Serializer\DecoderFactory;
-use Serializer\EncoderFactory;
+use Serializer\Builder\Decoder\DecoderFactory;
+use Serializer\Builder\Decoder\FileLoader\PipelineDecoderFileLoader;
+use Serializer\Builder\Encoder\EncoderFactory;
+use Serializer\Builder\Encoder\FileLoader\PipelineEncoderFileLoader;
 use Serializer\Exception\InvalidDateTimeProperty;
 use Serializer\JsonSerializer;
 use Serializer\Serializer;
@@ -50,8 +52,8 @@ class DateTimeSerializerTest extends TestCase
 
     protected function setUp(): void
     {
-        $encoder = new EncoderFactory(self::CACHE_DIR, true);
-        $decoder = new DecoderFactory(self::CACHE_DIR, true);
+        $encoder = new EncoderFactory(PipelineEncoderFileLoader::full(self::CACHE_DIR));
+        $decoder = new DecoderFactory(PipelineDecoderFileLoader::full(self::CACHE_DIR));
 
         $this->serializer = new JsonSerializer($encoder, $decoder);
     }

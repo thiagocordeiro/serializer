@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Test\Serializer\Unit;
 
 use PHPUnit\Framework\TestCase;
-use Serializer\DecoderFactory;
-use Serializer\EncoderFactory;
+use Serializer\Builder\Decoder\DecoderFactory;
+use Serializer\Builder\Decoder\FileLoader\PipelineDecoderFileLoader;
+use Serializer\Builder\Encoder\EncoderFactory;
+use Serializer\Builder\Encoder\FileLoader\PipelineEncoderFileLoader;
 use Serializer\JsonSerializer;
 use Serializer\Serializer;
 use Test\Serializer\Fixture\Custom\CustomTripDecoder;
@@ -15,7 +17,7 @@ use Test\Serializer\Fixture\Dto\Custom\Airplane;
 use Test\Serializer\Fixture\Dto\Custom\Bus;
 use Test\Serializer\Fixture\Dto\Custom\Trip;
 
-class CustomFactoriesTest extends TestCase
+class CustomEncodersTest extends TestCase
 {
     private const CACHE_DIR = __DIR__ . '/../../var/cache';
 
@@ -66,8 +68,12 @@ class CustomFactoriesTest extends TestCase
 
     protected function setUp(): void
     {
-        $encoder = new EncoderFactory(self::CACHE_DIR, true, [Trip::class => CustomTripEncoder::class]);
-        $decoder = new DecoderFactory(self::CACHE_DIR, true, [Trip::class => CustomTripDecoder::class]);
+        $encoder = new EncoderFactory(
+            PipelineEncoderFileLoader::full(self::CACHE_DIR, [Trip::class => CustomTripEncoder::class]),
+        );
+        $decoder = new DecoderFactory(
+            PipelineDecoderFileLoader::full(self::CACHE_DIR, [Trip::class => CustomTripDecoder::class]),
+        );
 
         $this->serializer = new JsonSerializer($encoder, $decoder);
     }
