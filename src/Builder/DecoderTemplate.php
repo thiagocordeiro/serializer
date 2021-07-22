@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Serializer\Builder;
 
-class DecoderTemplate
+class DecoderTemplate implements FileTemplate
 {
     private const TEMPLATE = <<<STIRNG
 <?php

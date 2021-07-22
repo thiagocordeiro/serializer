@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Serializer;
 
 use ReflectionException;
+use Serializer\Builder\Decoder\DecoderFactory;
+use Serializer\Builder\Encoder\EncoderFactory;
 use Serializer\Exception\ClassMustHaveAConstructor;
 use Serializer\Exception\MissingOrInvalidProperty;
 use Serializer\Exception\SerializerException;

@@ -45,10 +45,17 @@ class User
 ```
 
 Once you have your class, you can convert json string to it, ex.
+
 ```php
-$encoder = new \Serializer\EncoderFactory('path/to/cache');
-$decoder = new \Serializer\DecoderFactory('path/to/cache');
-$serializer = new \Serializer\JsonSerializer($encoder, $decoder);
+use Serializer\Builder\Encoder\EncoderFactory;
+use Serializer\Builder\Encoder\FileLoader\PipelineEncoderFileLoader;
+use Serializer\Builder\Decoder\DecoderFactory;
+use Serializer\Builder\Decoder\FileLoader\PipelineDecoderFileLoader;
+use Serializer\JsonSerializer;
+
+$encoder = new EncoderFactory(PipelineEncoderFileLoader::full('path/to/cache'));
+$decoder = new DecoderFactory(PipelineDecoderFileLoader::full('path/to/cache'));
+$serializer = new JsonSerializer($encoder, $decoder);
 
 $json = '{"name":"Arthur Dent","email":"arthur.dent@galaxy.org"}';
 $serializer->deserialize($json, \App\ValueObject\User::class);
@@ -65,10 +72,17 @@ $serializer->deserialize($json, \App\ValueObject\User::class);
 
 ```
 The opposite way, ex.
+
 ```php
-$encoder = new \Serializer\EncoderFactory('path/to/cache');
-$decoder = new \Serializer\DecoderFactory('path/to/cache');
-$serializer = new \Serializer\JsonSerializer($encoder, $decoder);
+use Serializer\Builder\Encoder\EncoderFactory;
+use Serializer\Builder\Encoder\FileLoader\PipelineEncoderFileLoader;
+use Serializer\Builder\Decoder\DecoderFactory;
+use Serializer\Builder\Decoder\FileLoader\PipelineDecoderFileLoader;
+use Serializer\JsonSerializer;
+
+$encoder = new EncoderFactory(PipelineEncoderFileLoader::full('path/to/cache'));
+$decoder = new DecoderFactory(PipelineDecoderFileLoader::full('path/to/cache'));
+$serializer = new JsonSerializer($encoder, $decoder);
 
 $user = new \App\ValueObject\User('Arthur Dent', 'arthur.dent@galaxy.org');
 

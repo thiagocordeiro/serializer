@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Serializer\Builder;
 
-class EncoderTemplate
+class EncoderTemplate implements FileTemplate
 {
     private const TEMPLATE = <<<STIRNG
 <?php
