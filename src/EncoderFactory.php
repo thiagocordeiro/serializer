@@ -65,7 +65,7 @@ class EncoderFactory
             return $factory->createEncoder($serializer);
         }
 
-        $encoder = sprintf('Serializer\Encoder\%sEncoder', str_replace('\\', '', $class));
+        $encoder = sprintf('Serializer\Encoder\%sEncoder', str_replace('\\', '_', $class));
 
         if (false === class_exists($encoder)) {
             $this->require($class);
@@ -84,7 +84,7 @@ class EncoderFactory
      */
     private function require(string $class): void
     {
-        $factoryName = str_replace('\\', '', $class) . 'Encoder';
+        $factoryName = str_replace('\\', '_', $class) . 'Encoder';
         $filePath = sprintf('%s/Encoder/%s.php', $this->cacheDir, $factoryName);
 
         if (false === is_file($filePath) || $this->isOutdated($class, $filePath)) {
