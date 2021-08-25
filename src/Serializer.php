@@ -72,7 +72,7 @@ abstract class Serializer
         }
 
         if (true === is_array($data)) {
-            return array_map(fn (object $item) => $decoder->decode($item, $propertyName), $data);
+            return array_map(fn (mixed $item) => $decoder->decode($item, $propertyName), $data);
         }
 
         return $decoder->decode($data, $propertyName);
