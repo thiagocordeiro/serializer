@@ -65,9 +65,9 @@ class ArgumentsSerializerTest extends TestCase
                     new Place('New York', 'United States'),
                     new Place('Amsterdam', 'Netherlands'),
                     new Place('Munich', 'Germany'),
-                ]
+                ],
             ),
-            $parsed
+            $parsed,
         );
     }
 }

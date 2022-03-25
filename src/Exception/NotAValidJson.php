@@ -9,7 +9,7 @@ class NotAValidJson extends SerializerException
     public function __construct(string $data)
     {
         parent::__construct(
-            sprintf('Given data has an invalid json: %s', $data)
+            sprintf('Given data has an invalid json: %s', $data),
         );
     }
 }

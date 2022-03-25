@@ -94,9 +94,9 @@ class ValueObjectTest extends TestCase
                 new IpAddress('127.0.0.1'),
                 new Email('serializer@test.com'),
                 new Age(20),
-                new Height(1.75)
+                new Height(1.75),
             ),
-            $parsed
+            $parsed,
         );
     }
 
@@ -107,10 +107,10 @@ class ValueObjectTest extends TestCase
             new IpAddress('127.0.0.1'),
             new Email('serializer@test.com'),
             new Age(20),
-            new Height(1.75)
+            new Height(1.75),
         );
 
-        $parsed = $this->serializer->serialize($dto, CreateUser::class);
+        $parsed = $this->serializer->serialize($dto);
 
         $this->assertJsonStringEqualsJsonString(self::VALUE_OBJECT_BODY, $parsed);
     }

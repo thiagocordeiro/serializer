@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Test\Serializer\Unit;
 
-use PHPStan\Testing\TestCase;
+use PHPUnit\Framework\TestCase;
 use Serializer\Builder\Decoder\DecoderFactory;
 use Serializer\Builder\Decoder\FileLoader\PipelineDecoderFileLoader;
 use Serializer\Builder\Encoder\EncoderFactory;

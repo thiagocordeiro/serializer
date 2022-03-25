@@ -21,7 +21,7 @@ class ClassProperty
         string $type,
         ?string $defaultValue,
         bool $isArgument,
-        string $getter
+        string $getter,
     ) {
         $this->class = $class;
         $this->name = $name;
@@ -56,6 +56,13 @@ class ClassProperty
         }
 
         return $this->defaultValue;
+    }
+
+    public function isEnum(): bool
+    {
+        return EnumAnalyzer::isEnum(
+            str_replace('[]', '', $this->type),
+        );
     }
 
     public function isArgument(): bool

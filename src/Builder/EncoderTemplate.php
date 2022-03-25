@@ -61,7 +61,16 @@ STIRNG;
                 "%s'%s' => \$object->%s()",
                 str_repeat(' ', 12),
                 $property->getName(),
-                $property->getGetter()
+                $property->getGetter(),
+            );
+        }
+
+        if ($property->isEnum()) {
+            return sprintf(
+                "%s'%s' => \$object->%s()->value",
+                str_repeat(' ', 12),
+                $property->getName(),
+                $property->getGetter(),
             );
         }
 
@@ -69,7 +78,7 @@ STIRNG;
             "%s'%s' => \$this->serializer()->encode(\$object->%s())",
             str_repeat(' ', 12),
             $property->getName(),
-            $property->getGetter()
+            $property->getGetter(),
         );
     }
 

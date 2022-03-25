@@ -109,7 +109,7 @@ abstract class Serializer
             return $data;
         }
 
-        $class = get_class($data);
+        $class = $data::class;
         $encoder = $this->loadOrCreateEncoder($class);
 
         return $encoder->encode($data);

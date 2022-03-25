@@ -55,9 +55,9 @@ class IterableCollectionTest extends TestCase
             new PlaceIterableCollection(
                 new Place('New York', 'United States'),
                 new Place('Amsterdam', 'Netherlands'),
-                new Place('São Paulo', 'Brazil')
+                new Place('São Paulo', 'Brazil'),
             ),
-            $parsed
+            $parsed,
         );
     }
 
@@ -66,7 +66,7 @@ class IterableCollectionTest extends TestCase
         $json = new PlaceIterableCollection(
             new Place('New York', 'United States'),
             new Place('Amsterdam', 'Netherlands'),
-            new Place('São Paulo', 'Brazil')
+            new Place('São Paulo', 'Brazil'),
         );
 
         $parsed = $this->serializer->serialize($json, PlaceIterableCollection::class);

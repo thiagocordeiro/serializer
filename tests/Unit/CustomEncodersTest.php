@@ -89,9 +89,9 @@ class CustomEncodersTest extends TestCase
                 'Amsterdam',
                 'New York',
                 'flight',
-                new Airplane('KLM Royal Dutch Airlines', 'Boeing 777-306ER', 'PH-BVF', 408)
+                new Airplane('KLM Royal Dutch Airlines', 'Boeing 777-306ER', 'PH-BVF', 408),
             ),
-            $parsed
+            $parsed,
         );
     }
 
@@ -106,9 +106,9 @@ class CustomEncodersTest extends TestCase
                 'Amsterdam',
                 'Berlin',
                 'road',
-                new Bus('Flixbus', 'AEC Routemaster', 64)
+                new Bus('Flixbus', 'AEC Routemaster', 64),
             ),
-            $parsed
+            $parsed,
         );
     }
 
@@ -127,7 +127,7 @@ class CustomEncodersTest extends TestCase
             'Amsterdam',
             'New York',
             'flight',
-            new Airplane('KLM Royal Dutch Airlines', 'Boeing 777-306ER', 'PH-BVF', 408)
+            new Airplane('KLM Royal Dutch Airlines', 'Boeing 777-306ER', 'PH-BVF', 408),
         );
 
         $parsed = $this->serializer->serialize($trip);
@@ -141,7 +141,7 @@ class CustomEncodersTest extends TestCase
             'Amsterdam',
             'Berlin',
             'road',
-            new Bus('Flixbus', 'AEC Routemaster', 64)
+            new Bus('Flixbus', 'AEC Routemaster', 64),
         );
 
         $parsed = $this->serializer->serialize($trip);

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Serializer\Builder;
 
 use IteratorAggregate;
+use ReflectionClass;
 use ReflectionException;
 use ReflectionMethod;
 use ReflectionNamedType;
@@ -16,6 +17,7 @@ use Serializer\Exception\IterableMustHaveOneParameterOnly;
 use Serializer\Exception\PropertyHasNoGetter;
 use Serializer\Exception\PropertyMustHaveAType;
 use Serializer\Exception\ValueObjectMustHaveScalarValue;
+use Throwable;
 
 class ClassAnalyzer
 {
@@ -27,30 +29,43 @@ class ClassAnalyzer
      * @throws ClassMustHaveAConstructor
      * @throws ReflectionException
      */
-    public function __construct(string $className)
+    private function __construct(string $name)
     {
-        $class = new ReflectionClass($className);
+        $class = new ReflectionClass($name);
         $constructor = $class->getConstructor();
 
         if (!$constructor instanceof ReflectionMethod) {
-            throw new ClassMustHaveAConstructor($className);
+            throw new ClassMustHaveAConstructor($name);
         }
 
-        $this->className = $className;
+        $this->className = $name;
         $this->class = $class;
         $this->constructor = $constructor;
     }
 
-    public function analyze(): ClassDefinition
+    /**
+     * @throws ClassMustHaveAConstructor
+     * @throws Throwable
+     */
+    public static function analyze(string $class): ClassDefinition
     {
-        $isCollection = $this->class->implementsInterface(IteratorAggregate::class);
-        $isValueObject = $this->class->hasMethod('__toString') && $this->constructor->getNumberOfParameters() === 1;
+        $self = new self($class);
+        $isCollection = $self->class->implementsInterface(IteratorAggregate::class);
+        $isValueObject = $self->class->hasMethod('__toString') && $self->constructor->getNumberOfParameters() === 1;
 
-        $properties = array_map(function (ReflectionParameter $param) use ($isCollection, $isValueObject) {
-            return $this->createProperty($param, $isCollection, $isValueObject);
-        }, $this->constructor->getParameters());
+        $properties = [];
 
-        return new ClassDefinition($this->className, $isCollection, $isValueObject, ...$properties);
+        foreach ($self->constructor->getParameters() as $param) {
+            $properties[] = $self->createProperty($param, $isCollection, $isValueObject);
+        }
+
+        return new ClassDefinition(
+            name: $self->className,
+            isCollection: $isCollection,
+            isValueObject: $isValueObject,
+            isEnum: false,
+            properties: $properties,
+        );
     }
 
     /**
@@ -60,7 +75,6 @@ class ClassAnalyzer
      * @throws PropertyHasNoGetter
      * @throws IterableMustHaveOneParameterOnly
      * @throws ValueObjectMustHaveScalarValue
-     * @throws ReflectionException
      */
     private function createProperty(ReflectionParameter $param, bool $isCollection, bool $isValueObject): ClassProperty
     {
@@ -70,7 +84,14 @@ class ClassAnalyzer
         $getter = $isValueObject ? '__toString' : $this->searchParamGetter($param, $type, $isCollection);
         $isArgument = $param->isVariadic();
 
-        $property = new ClassProperty($this->className, $name, $type, $defaultValue, $isArgument, $getter);
+        $property = new ClassProperty(
+            class: $this->className,
+            name: $name,
+            type: $type,
+            defaultValue: $defaultValue,
+            isArgument: $isArgument,
+            getter: $getter,
+        );
 
         if ($isValueObject && false === $property->isScalar()) {
             throw new ValueObjectMustHaveScalarValue($property, $this->class);
@@ -94,25 +115,11 @@ class ClassAnalyzer
             throw new PropertyMustHaveAType($param, $this->class);
         }
 
-        if (true === $this->isScalar($type)) {
-            return $type;
-        }
-
-        if (true === $this->isArray($type)) {
+        if ($type === 'array') {
             return $this->searchArrayType($param);
         }
 
         return $type;
-    }
-
-    private function isScalar(string $type): bool
-    {
-        return in_array($type, ['int', 'float', 'string', 'bool'], true);
-    }
-
-    private function isArray(string $type): bool
-    {
-        return $type === 'array';
     }
 
     /**

@@ -67,9 +67,9 @@ class DateTimeSerializerTest extends TestCase
         $this->assertEquals(
             new DateTimeValueObject(
                 new DateTime('2019-01-01 18:30:15'),
-                new DateTimeImmutable('2019-01-01 12:12:01')
+                new DateTimeImmutable('2019-01-01 12:12:01'),
             ),
-            $parsed
+            $parsed,
         );
     }
 
@@ -82,9 +82,9 @@ class DateTimeSerializerTest extends TestCase
         $this->assertEquals(
             new DateTimeValueObject(
                 new DateTime('2019-01-01 18:30:15'),
-                null
+                null,
             ),
-            $parsed
+            $parsed,
         );
     }
 
@@ -108,7 +108,7 @@ class DateTimeSerializerTest extends TestCase
     {
         $data = new DateTimeValueObject(
             new DateTime('2019-01-01 18:30:15'),
-            new DateTimeImmutable('2019-01-01 12:12:01')
+            new DateTimeImmutable('2019-01-01 12:12:01'),
         );
 
         $json = $this->serializer->serialize($data);

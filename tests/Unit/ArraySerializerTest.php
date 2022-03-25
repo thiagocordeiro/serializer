@@ -95,9 +95,9 @@ class ArraySerializerTest extends TestCase
                 'Chuck Norris',
                 109,
                 1.75,
-                new Address('Times Square', 500, false, new Place('New York', 'United States'))
+                new Address('Times Square', 500, false, new Place('New York', 'United States')),
             ),
-            $parsed
+            $parsed,
         );
     }
 
@@ -161,7 +161,7 @@ class ArraySerializerTest extends TestCase
             'Chuck Norris',
             109,
             1.75,
-            new Address('Times Square', 500, false, new Place('New York', 'United States'))
+            new Address('Times Square', 500, false, new Place('New York', 'United States')),
         );
 
         $serialized = $this->serializer->serialize($object);

@@ -27,7 +27,7 @@ class CustomTripDecoder extends Decoder
                 $data->from ?? '',
                 $data->to ?? '',
                 $data->type ?? '',
-                $this->parseVehicle($data->type, $data)
+                $this->parseVehicle($data->type, $data),
             );
         } catch (TypeError $e) {
             throw new MissingOrInvalidProperty($e, ['from', 'to', 'type', 'vehicle']);

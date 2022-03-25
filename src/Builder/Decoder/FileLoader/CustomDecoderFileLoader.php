@@ -10,7 +10,7 @@ use Serializer\Serializer;
 
 class CustomDecoderFileLoader implements DecoderFileLoader
 {
-    /** @var string[] */
+    /** @var array<string, string> */
     private array $customDecoders;
 
     /**

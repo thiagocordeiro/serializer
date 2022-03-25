@@ -105,9 +105,9 @@ class JsonSerializerTest extends TestCase
                 'Chuck Norris',
                 109,
                 1.75,
-                new Address('Times Square', 500, false, new Place('New York', 'United States'))
+                new Address('Times Square', 500, false, new Place('New York', 'United States')),
             ),
-            $parsed
+            $parsed,
         );
     }
 
@@ -171,7 +171,7 @@ class JsonSerializerTest extends TestCase
             'Chuck Norris',
             109,
             1.75,
-            new Address('Times Square', 500, false, new Place('New York', 'United States'))
+            new Address('Times Square', 500, false, new Place('New York', 'United States')),
         );
 
         $serialized = $this->serializer->serialize($object);
@@ -202,7 +202,7 @@ class JsonSerializerTest extends TestCase
 
         $this->assertJsonStringEqualsJsonString(
             sprintf('{"users": [%s,%s]}', self::USER_1, self::USER_4),
-            $serialized
+            $serialized,
         );
     }
 }

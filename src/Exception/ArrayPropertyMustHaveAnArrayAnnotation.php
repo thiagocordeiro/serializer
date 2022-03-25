@@ -16,8 +16,8 @@ class ArrayPropertyMustHaveAnArrayAnnotation extends SerializerException
                 'Array property %s::%s must have an array annotation, use %s[] instead',
                 $class->getName(),
                 $param->getName(),
-                $type
-            )
+                $type,
+            ),
         );
     }
 }

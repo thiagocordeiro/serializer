@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Serializer\Builder\Encoder\FileLoader;
 
-use Serializer\Builder\ClassAnalyzer;
+use Serializer\Builder\Analyzer;
 use Serializer\Builder\Encoder\EncoderFileLoader;
 use Serializer\Builder\EncoderTemplate;
 use Serializer\Encoder;
@@ -34,7 +34,7 @@ class CreateEncoderFileLoader implements EncoderFileLoader
         $factoryName = str_replace('\\', '_', $class) . 'Encoder';
         $filePath = sprintf('%s/Encoder/%s.php', $this->cacheDir, $factoryName);
 
-        $definition = (new ClassAnalyzer($class))->analyze();
+        $definition = Analyzer::analyze($class);
         $template = new EncoderTemplate($definition, $factoryName);
         $dirname = dirname($filePath);
 

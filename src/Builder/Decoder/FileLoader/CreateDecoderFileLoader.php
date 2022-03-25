@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Serializer\Builder\Decoder\FileLoader;
 
-use Serializer\Builder\ClassAnalyzer;
+use Serializer\Builder\Analyzer;
 use Serializer\Builder\Decoder\DecoderFileLoader;
 use Serializer\Builder\DecoderTemplate;
 use Serializer\Decoder;
@@ -34,7 +34,7 @@ class CreateDecoderFileLoader implements DecoderFileLoader
         $factoryName = str_replace('\\', '_', $class) . 'Decoder';
         $filePath = sprintf('%s/Decoder/%s.php', $this->cacheDir, $factoryName);
 
-        $definition = (new ClassAnalyzer($class))->analyze();
+        $definition = Analyzer::analyze($class);
         $template = new DecoderTemplate($definition, $factoryName);
         $dirname = dirname($filePath);
 

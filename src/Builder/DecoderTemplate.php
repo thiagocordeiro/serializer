@@ -69,7 +69,7 @@ STIRNG;
                 "%s\$data->%s ?? %s",
                 str_repeat(' ', 16),
                 $property->getName(),
-                $property->getDefaultValue()
+                $property->getDefaultValue(),
             );
         }
 
@@ -77,7 +77,16 @@ STIRNG;
             return sprintf(
                 "%s...\$this->serializer()->decode(\$data ?? [], \%s::class)",
                 str_repeat(' ', 16),
-                $property->getType()
+                $property->getType(),
+            );
+        }
+
+        if ($property->isEnum()) {
+            return sprintf(
+                "%s\%s::from(\$data->%s)",
+                str_repeat(' ', 16),
+                $property->getType(),
+                $property->getName(),
             );
         }
 
@@ -88,7 +97,7 @@ STIRNG;
             $property->getName(),
             $property->getDefaultValue(),
             $property->getType(),
-            $property->getName()
+            $property->getName(),
         );
     }
 

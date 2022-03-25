@@ -15,8 +15,8 @@ class ValueObjectMustHaveScalarValue extends SerializerException
             sprintf(
                 'Value object %s must have a scalar property, %s given',
                 $class->getName(),
-                $param->getType()
-            )
+                $param->getType(),
+            ),
         );
     }
 }
