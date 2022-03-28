@@ -7,7 +7,6 @@ namespace Serializer\Builder;
 use BackedEnum;
 use Exception;
 use ReflectionClass;
-use ReflectionException;
 use Throwable;
 use UnitEnum;
 
@@ -38,10 +37,13 @@ class EnumAnalyzer
 
     /**
      * @param class-string $class
-     * @throws ReflectionException
      */
     public static function isEnum(string $class): bool
     {
+        if (false === class_exists($class)) {
+            return false;
+        }
+
         $ref = new ReflectionClass($class);
 
         return $ref->implementsInterface(BackedEnum::class) || $ref->implementsInterface(UnitEnum::class);

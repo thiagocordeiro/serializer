@@ -25,18 +25,6 @@ class BackedEnumTest extends TestCase
     }
     JSON;
 
-    private const ENUM_ARRAY = <<<JSON
-    {
-      "types": [
-        "checking",
-        "saving",
-        "saving",
-        "checking",
-        "saving"
-      ]
-    }
-    JSON;
-
     private Serializer $serializer;
 
     protected function setUp(): void
