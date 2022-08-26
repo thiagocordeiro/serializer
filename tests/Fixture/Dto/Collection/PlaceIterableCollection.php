@@ -7,6 +7,7 @@ namespace Test\Serializer\Fixture\Dto\Collection;
 use ArrayIterator;
 use IteratorAggregate;
 use Test\Serializer\Fixture\Dto\Place;
+use Traversable;
 
 class PlaceIterableCollection implements IteratorAggregate
 {
@@ -19,9 +20,9 @@ class PlaceIterableCollection implements IteratorAggregate
     }
 
     /**
-     * @return iterable<Place>
+     * @return Traversable<Place>
      */
-    public function getIterator(): iterable
+    public function getIterator(): Traversable
     {
         return $this->places;
     }

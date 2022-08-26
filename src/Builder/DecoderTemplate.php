@@ -66,8 +66,10 @@ STIRNG;
     {
         if ($property->isScalar()) {
             return sprintf(
-                "%s\$data->%s ?? %s",
+                "%sisset(\$data->%s) ? (%s) \$data->%s : %s",
                 str_repeat(' ', 16),
+                $property->getName(),
+                $property->getType(),
                 $property->getName(),
                 $property->getDefaultValue(),
             );
@@ -91,13 +93,14 @@ STIRNG;
         }
 
         return sprintf(
-            "%s%s\$this->serializer()->decode(\$data->%s ?? %s, \%s::class, '%s')",
+            "%s%sisset(\$data->%s) ? \$this->serializer()->decode(\$data->%s, \%s::class, '%s') : %s",
             str_repeat(' ', 16),
             $property->isArgument() ? '...' : '',
             $property->getName(),
-            $property->getDefaultValue(),
+            $property->getName(),
             $property->getType(),
             $property->getName(),
+            $property->getDefaultValue(),
         );
     }
 
