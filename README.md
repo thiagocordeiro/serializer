@@ -242,3 +242,8 @@ class User
 
 ## Contributing
 Feel free to open issues or submit PRs
+
+### Supporting
+If you feel like supporting changes then you can send donations to the address below.
+
+Bitcoin Address: bc1qfyudlcxqnvqzxxgpvsfmadwudg4znk2z3asj9h
