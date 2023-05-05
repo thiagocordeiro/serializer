@@ -5,23 +5,15 @@ declare(strict_types=1);
 namespace Test\Serializer\Unit;
 
 use InvalidArgumentException;
-use PHPUnit\Framework\TestCase;
-use Serializer\Builder\Decoder\DecoderFactory;
-use Serializer\Builder\Decoder\FileLoader\PipelineDecoderFileLoader;
-use Serializer\Builder\Encoder\EncoderFactory;
-use Serializer\Builder\Encoder\FileLoader\PipelineEncoderFileLoader;
-use Serializer\JsonSerializer;
-use Serializer\Serializer;
 use Test\Serializer\Fixture\Dto\CreateUser;
 use Test\Serializer\Fixture\Vo\Age;
 use Test\Serializer\Fixture\Vo\Email;
 use Test\Serializer\Fixture\Vo\Height;
 use Test\Serializer\Fixture\Vo\IpAddress;
+use Test\Serializer\JsonSerializerTestCase;
 
-class ValueObjectTest extends TestCase
+class ValueObjectTest extends JsonSerializerTestCase
 {
-    private const CACHE_DIR = __DIR__ . '/../../var/cache';
-
     private const VALUE_OBJECT_BODY = <<<JSON
     {
       "name": "Arthur Dent",
@@ -71,16 +63,6 @@ class ValueObjectTest extends TestCase
       "height": 0.01
     }
     JSON;
-
-    private Serializer $serializer;
-
-    protected function setUp(): void
-    {
-        $encoder = new EncoderFactory(PipelineEncoderFileLoader::full(self::CACHE_DIR));
-        $decoder = new DecoderFactory(PipelineDecoderFileLoader::full(self::CACHE_DIR));
-
-        $this->serializer = new JsonSerializer($encoder, $decoder);
-    }
 
     public function testWhenBodyContainsValueObjectPropertyThenParseIt(): void
     {

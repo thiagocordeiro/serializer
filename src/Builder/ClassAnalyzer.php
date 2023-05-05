@@ -129,6 +129,11 @@ class ClassAnalyzer
     private function searchArrayType(ReflectionParameter $param): string
     {
         $type = $this->searchTypeOnDocComment($param);
+
+        if ($this->isScalar($type)) {
+            return sprintf('%s[]', $type);
+        }
+
         $namespace = $this->searchNamespace($type);
 
         return sprintf('%s%s[]', $namespace, $type);
@@ -150,7 +155,7 @@ class ClassAnalyzer
             throw new ArrayPropertyMustHaveATypeAnnotation($param, $this->class);
         }
 
-        if (false === strpos($type, '[]')) {
+        if (!str_contains($type, '[]')) {
             throw new ArrayPropertyMustHaveAnArrayAnnotation($param, $this->class, $type);
         }
 
@@ -266,5 +271,10 @@ class ClassAnalyzer
         }
 
         return 'getIterator()';
+    }
+
+    public function isScalar(string $type): bool
+    {
+        return in_array($type, ['int', 'float', 'string', 'bool'], true);
     }
 }

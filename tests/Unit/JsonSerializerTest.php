@@ -4,22 +4,15 @@ declare(strict_types=1);
 
 namespace Test\Serializer\Unit;
 
-use PHPUnit\Framework\TestCase;
-use Serializer\Builder\Decoder\DecoderFactory;
-use Serializer\Builder\Decoder\FileLoader\PipelineDecoderFileLoader;
-use Serializer\Builder\Encoder\EncoderFactory;
-use Serializer\Builder\Encoder\FileLoader\PipelineEncoderFileLoader;
 use Serializer\Exception\MissingOrInvalidProperty;
-use Serializer\JsonSerializer;
 use Test\Serializer\Fixture\Dto\Address;
 use Test\Serializer\Fixture\Dto\Collection\UserCollection;
 use Test\Serializer\Fixture\Dto\Place;
 use Test\Serializer\Fixture\Dto\User;
+use Test\Serializer\JsonSerializerTestCase;
 
-class JsonSerializerTest extends TestCase
+class JsonSerializerTest extends JsonSerializerTestCase
 {
-    private const CACHE_DIR = __DIR__ . '/../../var/cache';
-
     private const USER_1 = <<<JSON
     {
       "name": "Arthur Dent",
@@ -74,16 +67,6 @@ class JsonSerializerTest extends TestCase
       }
     }
     JSON;
-
-    private JsonSerializer $serializer;
-
-    protected function setUp(): void
-    {
-        $encoder = new EncoderFactory(PipelineEncoderFileLoader::full(self::CACHE_DIR));
-        $decoder = new DecoderFactory(PipelineDecoderFileLoader::full(self::CACHE_DIR));
-
-        $this->serializer = new JsonSerializer($encoder, $decoder);
-    }
 
     public function testWhenGivenJsonThenParseIntoObject(): void
     {

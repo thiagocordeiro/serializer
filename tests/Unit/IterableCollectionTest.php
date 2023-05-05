@@ -4,20 +4,12 @@ declare(strict_types=1);
 
 namespace Test\Serializer\Unit;
 
-use PHPUnit\Framework\TestCase;
-use Serializer\Builder\Decoder\DecoderFactory;
-use Serializer\Builder\Decoder\FileLoader\PipelineDecoderFileLoader;
-use Serializer\Builder\Encoder\EncoderFactory;
-use Serializer\Builder\Encoder\FileLoader\PipelineEncoderFileLoader;
-use Serializer\JsonSerializer;
-use Serializer\Serializer;
 use Test\Serializer\Fixture\Dto\Collection\PlaceIterableCollection;
 use Test\Serializer\Fixture\Dto\Place;
+use Test\Serializer\JsonSerializerTestCase;
 
-class IterableCollectionTest extends TestCase
+class IterableCollectionTest extends JsonSerializerTestCase
 {
-    private const CACHE_DIR = __DIR__ . '/../../var/cache';
-
     private const COLLECTION = <<<JSON
     [
       {
@@ -34,16 +26,6 @@ class IterableCollectionTest extends TestCase
       }
     ]
     JSON;
-
-    private Serializer $serializer;
-
-    protected function setUp(): void
-    {
-        $encoder = new EncoderFactory(PipelineEncoderFileLoader::full(self::CACHE_DIR));
-        $decoder = new DecoderFactory(PipelineDecoderFileLoader::full(self::CACHE_DIR));
-
-        $this->serializer = new JsonSerializer($encoder, $decoder);
-    }
 
     public function testWhenGivenJsonThenParseIntoObject(): void
     {

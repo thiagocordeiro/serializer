@@ -6,20 +6,12 @@ namespace Test\Serializer\Unit;
 
 use DateTime;
 use DateTimeImmutable;
-use PHPUnit\Framework\TestCase;
-use Serializer\Builder\Decoder\DecoderFactory;
-use Serializer\Builder\Decoder\FileLoader\PipelineDecoderFileLoader;
-use Serializer\Builder\Encoder\EncoderFactory;
-use Serializer\Builder\Encoder\FileLoader\PipelineEncoderFileLoader;
 use Serializer\Exception\InvalidDateTimeProperty;
-use Serializer\JsonSerializer;
-use Serializer\Serializer;
 use Test\Serializer\Fixture\Dto\DateTimeValueObject;
+use Test\Serializer\JsonSerializerTestCase;
 
-class DateTimeSerializerTest extends TestCase
+class DateTimeSerializerTest extends JsonSerializerTestCase
 {
-    private const CACHE_DIR = __DIR__ . '/../../var/cache';
-
     private const DATETIME = <<<JSON
     {
       "expiresAt": "2019-01-01T18:30:15+0000",
@@ -47,16 +39,6 @@ class DateTimeSerializerTest extends TestCase
       "createdAt": "invalid-datetime"
     }
     JSON;
-
-    private Serializer $serializer;
-
-    protected function setUp(): void
-    {
-        $encoder = new EncoderFactory(PipelineEncoderFileLoader::full(self::CACHE_DIR));
-        $decoder = new DecoderFactory(PipelineDecoderFileLoader::full(self::CACHE_DIR));
-
-        $this->serializer = new JsonSerializer($encoder, $decoder);
-    }
 
     public function testWhenGivenJsonThenParseIntoObject(): void
     {

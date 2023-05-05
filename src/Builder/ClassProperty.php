@@ -38,6 +38,10 @@ class ClassProperty
 
     public function getType(): string
     {
+        if ($this->isScalar() && $this->isArray()) {
+            return 'array';
+        }
+
         if ($this->isArray()) {
             return str_replace('[]', '', $this->type);
         }
@@ -81,12 +85,14 @@ class ClassProperty
 
     public function isScalar(): bool
     {
-        return in_array($this->type, ['int', 'float', 'string', 'bool'], true);
+        $type = str_replace('[]', '', $this->type);
+
+        return in_array($type, ['int', 'float', 'string', 'bool'], true);
     }
 
     public function isArray(): bool
     {
-        return strpos($this->type, '[]') !== false;
+        return str_contains($this->type, '[]');
     }
 
     public function isString(): bool

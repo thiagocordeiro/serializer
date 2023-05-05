@@ -4,21 +4,14 @@ declare(strict_types=1);
 
 namespace Test\Serializer\Unit\ReadOnly;
 
-use PHPUnit\Framework\TestCase;
-use Serializer\Builder\Decoder\DecoderFactory;
-use Serializer\Builder\Decoder\FileLoader\PipelineDecoderFileLoader;
-use Serializer\Builder\Encoder\EncoderFactory;
-use Serializer\Builder\Encoder\FileLoader\PipelineEncoderFileLoader;
-use Serializer\JsonSerializer;
 use Test\Serializer\Fixture\Dto\ReadOnly\Address;
 use Test\Serializer\Fixture\Dto\ReadOnly\Place;
 use Test\Serializer\Fixture\Dto\ReadOnly\User;
+use Test\Serializer\JsonSerializerTestCase;
 use Throwable;
 
-class DataClassSerializerTest extends TestCase
+class DataClassSerializerTest extends JsonSerializerTestCase
 {
-    private const CACHE_DIR = __DIR__ . '/../../var/cache';
-
     private const USER = <<<JSON
     {
       "name": "Chuck Norris",
@@ -35,14 +28,6 @@ class DataClassSerializerTest extends TestCase
       }
     }
     JSON;
-
-    protected function setUp(): void
-    {
-        $encoder = new EncoderFactory(PipelineEncoderFileLoader::full(self::CACHE_DIR));
-        $decoder = new DecoderFactory(PipelineDecoderFileLoader::full(self::CACHE_DIR));
-
-        $this->serializer = new JsonSerializer($encoder, $decoder);
-    }
 
     /**
      * @throws Throwable
