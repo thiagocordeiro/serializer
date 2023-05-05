@@ -80,7 +80,7 @@ class ClassAnalyzer
     {
         $name = $param->getName();
         $type = $this->searchParamType($param);
-        $defaultValue = ($param->isDefaultValueAvailable() ? (string) $param->getDefaultValue() : null) ?: null;
+        $defaultValue = ($param->isDefaultValueAvailable() ? (string)$param->getDefaultValue() : null) ?: null;
         $getter = $isValueObject ? '__toString' : $this->searchParamGetter($param, $type, $isCollection);
         $isArgument = $param->isVariadic();
 
@@ -167,7 +167,7 @@ class ClassAnalyzer
         }
 
         $file = file($this->class->getFileName() ?: '') ?: [];
-        $lines = array_slice($file, 0, (int) $this->class->getStartLine());
+        $lines = array_slice($file, 0, (int)$this->class->getStartLine());
 
         $pattern = sprintf('/use(.*)%s;/', $subNs);
         preg_match($pattern, implode(PHP_EOL, $lines), $matches);
@@ -185,11 +185,16 @@ class ClassAnalyzer
     /**
      * @throws PropertyHasNoGetter
      * @throws IterableMustHaveOneParameterOnly
+     * @throws ReflectionException
      */
     private function searchParamGetter(ReflectionParameter $param, string $type, bool $isCollection): string
     {
         if ($isCollection) {
             return $this->getIteratorGetter();
+        }
+
+        if ($this->isPublicReadOnlyProperty($param)) {
+            return $param->name;
         }
 
         if ($type === 'bool') {
@@ -202,7 +207,23 @@ class ClassAnalyzer
             return '';
         }
 
-        return $getter;
+        return "$getter()";
+    }
+
+    /**
+     * @throws ReflectionException
+     */
+    private function isPublicReadOnlyProperty(ReflectionParameter $param): bool
+    {
+        $name = $param->name;
+
+        if (false === $this->class->hasProperty($name)) {
+            return false;
+        }
+
+        $prop = $this->class->getProperty($name);
+
+        return $prop->isPublic() && $prop->isReadOnly();
     }
 
     /**
@@ -215,19 +236,19 @@ class ClassAnalyzer
         $isPrefix = sprintf('is%s', ucfirst($name));
 
         if (true === $this->class->hasMethod($isPrefix)) {
-            return $isPrefix;
+            return "$isPrefix()";
         }
 
         $hasPrefix = sprintf('has%s', ucfirst($name));
 
         if (true === $this->class->hasMethod($hasPrefix)) {
-            return $hasPrefix;
+            return "$hasPrefix()";
         }
 
         $wasPrefix = sprintf('was%s', ucfirst($name));
 
         if (true === $this->class->hasMethod($wasPrefix)) {
-            return $wasPrefix;
+            return "$wasPrefix()";
         }
 
         throw new PropertyHasNoGetter($this->className, $name, true);
@@ -244,6 +265,6 @@ class ClassAnalyzer
             throw new IterableMustHaveOneParameterOnly($this->class->getName(), count($params));
         }
 
-        return 'getIterator';
+        return 'getIterator()';
     }
 }

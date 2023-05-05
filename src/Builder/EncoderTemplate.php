@@ -58,7 +58,7 @@ STIRNG;
     {
         if ($property->isScalar()) {
             return sprintf(
-                "%s'%s' => \$object->%s()",
+                "%s'%s' => \$object->%s",
                 str_repeat(' ', 12),
                 $property->getName(),
                 $property->getGetter(),
@@ -67,7 +67,7 @@ STIRNG;
 
         if ($property->isEnum()) {
             return sprintf(
-                "%s'%s' => \$object->%s()->value",
+                "%s'%s' => \$object->%s->value",
                 str_repeat(' ', 12),
                 $property->getName(),
                 $property->getGetter(),
@@ -75,7 +75,7 @@ STIRNG;
         }
 
         return sprintf(
-            "%s'%s' => \$this->serializer()->encode(\$object->%s())",
+            "%s'%s' => \$this->serializer()->encode(\$object->%s)",
             str_repeat(' ', 12),
             $property->getName(),
             $property->getGetter(),

@@ -3,14 +3,18 @@
 This package allows you to parse json objects into php classes without the overhead of annotations, it checks for php object constructor and creates cache classes to convert json into a given class.
 
 ## How to use
-For Symfony projects a bundle is available at [`serializer-bundle`](https://github.com/thiagocordeiro/serializer-bundle), otherwise the package is available on composer:
+For Symfony projects a bundle is available at [`serializer-bundle`](https://github.com/thiagocordeiro/serializer-bundle)
+
+For Laravel projects a package is available at [`laravel-serializer`](https://github.com/thiagocordeiro/laravel-serializer) 
+
+otherwise the package is available on composer:
 ```
 composer require thiagocordeiro/serializer
 ```
 
 PHP Serializer does not use setters, so your class must have a constructor with all properties coming from the json.
 
-#### Basic example
+#### Basic example (Using getters)
 ```php
 <?php
 
@@ -20,11 +24,8 @@ namespace App\ValueObject;
 
 class User
 {
-    /** @var string */
-    private $name;
-  
-    /** @var string */
-    private $email;
+    private string $name;
+    private string $email;
 
     public function __construct(string $name, string $email)
     {
@@ -40,6 +41,22 @@ class User
     public function getEmail(): string
     {
         return $this->email;
+    }
+}
+
+```
+
+#### Basic example (Using readonly properties)
+```php
+class User
+{
+    public readonly string $name;
+    public readonly string $email;
+
+    public function __construct(string $name, string $email)
+    {
+        $this->name = $name;
+        $this->email = $email;
     }
 }
 ```
