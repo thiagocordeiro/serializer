@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Test\Serializer\Unit\ReadOnly;
 
 use PHPUnit\Framework\TestCase;

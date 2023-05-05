@@ -58,6 +58,8 @@
         <exclude name="SlevomatCodingStandard.Functions.DisallowNamedArguments.DisallowedNamedArgument"/>
         <exclude name="SlevomatCodingStandard.Functions.DisallowTrailingCommaInDeclaration.DisallowedTrailingComma"/>
 
+        <exclude name="SlevomatCodingStandard.Classes.ForbiddenPublicProperty.ForbiddenPublicProperty"/>
+
         <!-- PHP8 conflicts -->
         <exclude name="Generic.WhiteSpace.ScopeIndent.Incorrect"/>
         <exclude name="Generic.WhiteSpace.ScopeIndent.IncorrectExact"/>
