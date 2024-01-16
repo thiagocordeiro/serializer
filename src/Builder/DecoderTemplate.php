@@ -7,15 +7,16 @@ namespace Serializer\Builder;
 class DecoderTemplate implements FileTemplate
 {
     private const TEMPLATE = <<<STIRNG
-<?php
+<?php /** @noinspection ALL */
 
 declare(strict_types=1);
 
 namespace Serializer\Decoder;
 
-use Serializer\Exception\MissingOrInvalidProperty;
 use Serializer\Decoder;
+use Serializer\Exception\MissingOrInvalidProperty;
 use TypeError;
+use ValueError;
 
 class [cacheClassName] extends Decoder
 {
@@ -28,7 +29,7 @@ class [cacheClassName] extends Decoder
             \$object = new \[className](
                 [arguments]
             );
-        } catch (TypeError \$e) {
+        } catch (TypeError|ValueError \$e) {
             throw new MissingOrInvalidProperty(\$e, [[properties]]);
         }
 

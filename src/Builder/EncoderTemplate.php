@@ -7,15 +7,13 @@ namespace Serializer\Builder;
 class EncoderTemplate implements FileTemplate
 {
     private const TEMPLATE = <<<STIRNG
-<?php
+<?php /** @noinspection ALL */
 
 declare(strict_types=1);
 
 namespace Serializer\Encoder;
 
-use Serializer\Exception\MissingOrInvalidProperty;
 use Serializer\Encoder;
-use TypeError;
 
 class [cacheClassName] extends Encoder
 {

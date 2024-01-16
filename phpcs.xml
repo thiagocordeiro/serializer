@@ -61,6 +61,9 @@
         <exclude name="SlevomatCodingStandard.Classes.ForbiddenPublicProperty.ForbiddenPublicProperty"/>
         <exclude name="SlevomatCodingStandard.Classes.DisallowConstructorPropertyPromotion.DisallowedConstructorPropertyPromotion"/>
 
+        <exclude name="SlevomatCodingStandard.Classes.RequireAbstractOrFinal.ClassNeitherAbstractNorFinal"/>
+
+
         <!-- PHP8 conflicts -->
         <exclude name="Generic.WhiteSpace.ScopeIndent.Incorrect"/>
         <exclude name="Generic.WhiteSpace.ScopeIndent.IncorrectExact"/>

@@ -7,6 +7,7 @@ namespace Test\Serializer\Unit\Exception;
 use PHPUnit\Framework\TestCase;
 use Serializer\Exception\MissingOrInvalidProperty;
 use TypeError;
+use ValueError;
 
 class MissingOrInvalidPropertyTest extends TestCase
 {
@@ -16,6 +17,18 @@ class MissingOrInvalidPropertyTest extends TestCase
     public function testGivenErrorMessageThenCreateMissingRequiredParamMessage(string $error, string $expected): void
     {
         $exception = new MissingOrInvalidProperty(new TypeError($error), ['name', 'street', 'city']);
+
+        $this->assertEquals($expected, $exception->getMessage());
+    }
+
+    /**
+     * @dataProvider enumErrorMessagesDataProvider
+     */
+    public function testInvalidBackedEnumMessage(string $error): void
+    {
+        $expected = 'Value "other" is not valid for AccountType(checking, saving)';
+
+        $exception = new MissingOrInvalidProperty(new ValueError($error), ['name', 'street', 'city']);
 
         $this->assertEquals($expected, $exception->getMessage());
     }
@@ -55,6 +68,21 @@ class MissingOrInvalidPropertyTest extends TestCase
             '3rd Argument invalid' => [
                 sprintf($message, 3, 'App\User\CreateUser', 'array'),
                 sprintf('Parameter "%s" is invalid', 'city'),
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, array<int, string>>
+     */
+    public function enumErrorMessagesDataProvider(): array
+    {
+        return [
+            'without quotation' => [
+                '"other" is not a valid backing value for enum Test\Serializer\Fixture\Dto\AccountType',
+            ],
+            'with quotation' => [
+                '"other" is not a valid backing value for enum "Test\Serializer\Fixture\Dto\AccountType"',
             ],
         ];
     }

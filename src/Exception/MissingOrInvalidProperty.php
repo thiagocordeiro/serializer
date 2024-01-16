@@ -4,14 +4,16 @@ declare(strict_types=1);
 
 namespace Serializer\Exception;
 
+use BackedEnum;
 use TypeError;
+use ValueError;
 
 class MissingOrInvalidProperty extends SerializerException
 {
     /**
      * @param string[] $properties
      */
-    public function __construct(TypeError $error, array $properties)
+    public function __construct(TypeError|ValueError $error, array $properties)
     {
         $message = $this->buildMessage($error->getMessage(), $properties);
 
@@ -23,6 +25,10 @@ class MissingOrInvalidProperty extends SerializerException
      */
     private function buildMessage(string $errorMessage, array $properties): string
     {
+        if (str_contains($errorMessage, 'is not a valid backing value for enum')) {
+            return $this::invalidEnumMessage($errorMessage);
+        }
+
         $property = $this->getArgument($errorMessage, $properties);
 
         if ($property === null) {
@@ -62,13 +68,30 @@ class MissingOrInvalidProperty extends SerializerException
             return null;
         }
 
-        return $properties[$argument - 1] ?? null;
+        $position = (int)$argument;
+
+        return $properties[$position - 1] ?? null;
     }
 
-    private function getGivenType(string $errorMessage): ?string
+    private function getGivenType(string $errorMessage): string
     {
         preg_match('/must be (.*), (.*) given/', $errorMessage, $matches);
 
         return $matches[2] ?? 'null';
+    }
+
+    private function invalidEnumMessage(string $message): string
+    {
+        /** @var string $value */
+        /** @var class-string<BackedEnum> $class */
+        [$value, $class] = array_map(
+            fn(string $piece) => trim($piece, " \""),
+            explode('is not a valid backing value for enum', $message),
+        );
+
+        $type = substr($class, (int)strrpos($class, '\\') + 1);
+        $cases = join(', ', array_map(fn(BackedEnum $enum) => $enum->value, $class::cases()));
+
+        return sprintf('Value "%s" is not valid for %s(%s)', $value, $type, $cases);
     }
 }
