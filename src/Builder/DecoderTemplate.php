@@ -86,7 +86,7 @@ STIRNG;
 
         if ($property->isEnum()) {
             return sprintf(
-                "%s\%s::from(\$data->%s)",
+                "%s\$this->enum(\%s::class, \$data->%s)",
                 str_repeat(' ', 16),
                 $property->getType(),
                 $property->getName(),
