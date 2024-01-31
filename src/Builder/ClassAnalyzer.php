@@ -22,8 +22,10 @@ use Throwable;
 class ClassAnalyzer
 {
     private string $className;
+
     private ReflectionClass $class;
-    private ReflectionMethod $constructor;
+
+    private ?ReflectionMethod $constructor;
 
     /**
      * @throws ClassMustHaveAConstructor
@@ -32,15 +34,10 @@ class ClassAnalyzer
     private function __construct(string $name)
     {
         $class = new ReflectionClass($name);
-        $constructor = $class->getConstructor();
-
-        if (!$constructor instanceof ReflectionMethod) {
-            throw new ClassMustHaveAConstructor($name);
-        }
 
         $this->className = $name;
         $this->class = $class;
-        $this->constructor = $constructor;
+        $this->constructor = $class->getConstructor();
     }
 
     /**
@@ -51,11 +48,12 @@ class ClassAnalyzer
     {
         $self = new self($class);
         $isCollection = $self->class->implementsInterface(IteratorAggregate::class);
-        $isValueObject = $self->class->hasMethod('__toString') && $self->constructor->getNumberOfParameters() === 1;
+        $isValueObject = $self->class->hasMethod('__toString') && $self->constructor?->getNumberOfParameters() === 1;
 
         $properties = [];
+        $params = $self->constructor?->getParameters() ?? [];
 
-        foreach ($self->constructor->getParameters() as $param) {
+        foreach ($params as $param) {
             $properties[] = $self->createProperty($param, $isCollection, $isValueObject);
         }
 
@@ -80,7 +78,7 @@ class ClassAnalyzer
     {
         $name = $param->getName();
         $type = $this->searchParamType($param);
-        $defaultValue = ($param->isDefaultValueAvailable() ? (string)$param->getDefaultValue() : null) ?: null;
+        $defaultValue = ($param->isDefaultValueAvailable() ? (string) $param->getDefaultValue() : null) ?: null;
         $getter = $isValueObject ? '__toString' : $this->searchParamGetter($param, $type, $isCollection);
         $isArgument = $param->isVariadic();
 
@@ -145,7 +143,7 @@ class ClassAnalyzer
      */
     private function searchTypeOnDocComment(ReflectionParameter $param): string
     {
-        $docComment = $this->constructor->getDocComment() ?: '';
+        $docComment = $this->constructor?->getDocComment() ?: '';
         $pattern = sprintf('/\@param(.*)\$%s/', $param->getName());
 
         preg_match($pattern, $docComment, $matches);
@@ -172,7 +170,7 @@ class ClassAnalyzer
         }
 
         $file = file($this->class->getFileName() ?: '') ?: [];
-        $lines = array_slice($file, 0, (int)$this->class->getStartLine());
+        $lines = array_slice($file, 0, (int) $this->class->getStartLine());
 
         $pattern = sprintf('/use(.*)%s;/', $subNs);
         preg_match($pattern, implode(PHP_EOL, $lines), $matches);
@@ -264,7 +262,7 @@ class ClassAnalyzer
      */
     private function getIteratorGetter(): string
     {
-        $params = $this->constructor->getParameters();
+        $params = $this->constructor?->getParameters() ?? [];
 
         if (count($params) !== 1) {
             throw new IterableMustHaveOneParameterOnly($this->class->getName(), count($params));
