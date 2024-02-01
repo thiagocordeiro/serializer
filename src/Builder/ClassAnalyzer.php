@@ -196,7 +196,7 @@ class ClassAnalyzer
             return $this->getIteratorGetter();
         }
 
-        if ($this->isPublicReadOnlyProperty($param)) {
+        if ($this->isPublicProperty($param)) {
             return $param->name;
         }
 
@@ -220,7 +220,7 @@ class ClassAnalyzer
     /**
      * @throws ReflectionException
      */
-    private function isPublicReadOnlyProperty(ReflectionParameter $param): bool
+    private function isPublicProperty(ReflectionParameter $param): bool
     {
         $name = $param->name;
 
@@ -230,7 +230,7 @@ class ClassAnalyzer
 
         $prop = $this->class->getProperty($name);
 
-        return $prop->isPublic() && $prop->isReadOnly();
+        return $prop->isPublic();
     }
 
     /**
