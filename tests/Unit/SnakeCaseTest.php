@@ -13,7 +13,7 @@ final class SnakeCaseTest extends JsonSerializerTestCase
     private const JSON = <<<JSON
     {
       "user_name": "Arthur Dent",
-      "started_at": "2024-02-16T17:05:05+0000"
+      "started_at": "2024-02-16T17:05:05+00:00"
     }
     JSON;
 

@@ -14,14 +14,14 @@ class DateTimeSerializerTest extends JsonSerializerTestCase
 {
     private const DATETIME = <<<JSON
     {
-      "expiresAt": "2019-01-01T18:30:15+0000",
-      "createdAt": "2019-01-01T12:12:01+0000"
+      "expiresAt": "2019-01-01T18:30:15+00:00",
+      "createdAt": "2019-01-01T12:12:01+00:00"
     }
     JSON;
 
     private const DATETIME_NULLABLE = <<<JSON
     {
-      "expiresAt": "2019-01-01T18:30:15+0000",
+      "expiresAt": "2019-01-01T18:30:15+00:00",
       "createdAt": null
     }
     JSON;
@@ -35,7 +35,7 @@ class DateTimeSerializerTest extends JsonSerializerTestCase
 
     private const DATETIME_INVALID_2 = <<<JSON
     {
-      "expiresAt": "2019-01-01T18:30:15+0000",
+      "expiresAt": "2019-01-01T18:30:15+00:00",
       "createdAt": "invalid-datetime"
     }
     JSON;
