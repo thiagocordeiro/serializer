@@ -206,11 +206,15 @@ class ClassAnalyzer
 
         $getter = sprintf('get%s', ucfirst($param->getName()));
 
-        if (false === $this->class->hasMethod($getter)) {
-            return '';
+        if ($this->class->hasMethod($getter)) {
+            return "$getter()";
         }
 
-        return "$getter()";
+        if ($this->class->hasMethod($param->getName())) {
+            return "{$param->getName()}()";
+        }
+
+        return '';
     }
 
     /**
