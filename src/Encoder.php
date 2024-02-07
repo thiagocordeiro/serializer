@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Serializer;
 
+use BackedEnum;
+
 /**
  * @template T of object
  */
@@ -29,5 +31,18 @@ abstract class Encoder
     public function isCollection(): bool
     {
         return false;
+    }
+
+    /**
+     * @param BackedEnum|array<BackedEnum> $enum
+     * @return string|int|array<int|string>
+     */
+    public function enum(BackedEnum|array $enum): string|int|array
+    {
+        if (is_array($enum)) {
+            return array_map(fn($e) => $e->value, $enum);
+        }
+
+        return $enum->value;
     }
 }

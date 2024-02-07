@@ -35,10 +35,15 @@ abstract class Decoder
 
     /**
      * @param class-string<BackedEnum> $enum
-     * @return BackedEnum
+     * @param int|string|array<int|string> $value
+     * @return BackedEnum|array<int|string|mixed>
      */
-    protected function enum(string $enum, int|string $value): object
+    protected function enum(string $enum, int|string|array $value): object|array
     {
+        if (is_array($value)) {
+            return array_map(fn($v) => $this->enum($enum, $v), $value);
+        }
+
         $filtered = array_filter(
             array: $enum::cases(),
             callback: fn($case) => strtolower("$case->value") === strtolower("$value"),

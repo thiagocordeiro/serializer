@@ -65,7 +65,7 @@ STIRNG;
 
         if ($property->isEnum()) {
             return sprintf(
-                "%s'%s' => \$object->%s->value",
+                "%s'%s' => \$this->enum(\$object->%s)",
                 str_repeat(' ', 12),
                 $property->getName(),
                 $property->getGetter(),
