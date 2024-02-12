@@ -24,10 +24,10 @@ class CustomTripDecoder extends Decoder
     {
         try {
             $object = new Trip(
-                $data->from ?? '',
-                $data->to ?? '',
-                $data->type ?? '',
-                $this->parseVehicle($data->type, $data),
+                $data['from'] ?? '',
+                $data['to'] ?? '',
+                $data['type'] ?? '',
+                $this->parseVehicle($data['type'], $data),
             );
         } catch (TypeError $e) {
             throw new MissingOrInvalidProperty($e, ['from', 'to', 'type', 'vehicle']);
@@ -36,16 +36,15 @@ class CustomTripDecoder extends Decoder
         return $object;
     }
 
-    private function parseVehicle(string $type, object $data): Vehicle
+    /**
+     * @param array<string, mixed> $data
+     */
+    private function parseVehicle(string $type, array $data): Vehicle
     {
-        if ($type === 'flight') {
-            return $this->serializer()->decode($data->vehicle ?? null, Airplane::class, 'vehicle');
-        }
-
-        if ($type === 'road') {
-            return $this->serializer()->decode($data->vehicle ?? null, Bus::class, 'vehicle');
-        }
-
-        throw new Exception('Parameter "vehicle" invalid');
+        return match ($type) {
+            'flight' => $this->serializer()->decode($data['vehicle'] ?? null, Airplane::class, 'vehicle'),
+            'road' => $this->serializer()->decode($data['vehicle'] ?? null, Bus::class, 'vehicle'),
+            default => throw new Exception('Parameter "vehicle" invalid'),
+        };
     }
 }

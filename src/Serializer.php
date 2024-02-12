@@ -22,6 +22,7 @@ abstract class Serializer
     private array $decoders;
 
     private EncoderFactory $encoderFactory;
+
     private DecoderFactory $decoderFactory;
 
     /**
@@ -71,8 +72,8 @@ abstract class Serializer
             return $decoder->decode($data, $propertyName);
         }
 
-        if (true === is_array($data) && $data !== []) {
-            return array_map(fn (mixed $item) => $decoder->decode($item, $propertyName), $data);
+        if (is_array($data) && $data !== [] && array_is_list($data)) {
+            return array_map(fn(mixed $item) => $decoder->decode($item, $propertyName), $data);
         }
 
         return $decoder->decode($data, $propertyName);
@@ -101,18 +102,17 @@ abstract class Serializer
             }, $data);
         }
 
-        /**
-         * if it's not an array (check above) and it's an object
-         * then it's a scalar value, so we just return it
-         */
-        if (false === is_object($data)) {
-            return $data;
+        if (is_object($data)) {
+            $class = $data::class;
+            $encoder = $this->loadOrCreateEncoder($class);
+
+            return $encoder->encode($data);
         }
 
-        $class = $data::class;
-        $encoder = $this->loadOrCreateEncoder($class);
-
-        return $encoder->encode($data);
+        /**
+         * if it's not an array nor an object then it's a scalar value, so we just return it
+         */
+        return $data;
     }
 
     /**

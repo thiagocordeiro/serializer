@@ -67,7 +67,7 @@ STIRNG;
     {
         if ($property->isScalar()) {
             return sprintf(
-                "%sisset(\$data->%s) ? (%s) \$data->%s : %s",
+                '%sisset($data[\'%s\']) ? (%s) $data[\'%s\'] : %s',
                 str_repeat(' ', 16),
                 $property->getName(),
                 $property->getType(),
@@ -78,7 +78,7 @@ STIRNG;
 
         if ($definition->isCollection()) {
             return sprintf(
-                "%s...\$this->serializer()->decode(\$data ?? [], \%s::class)",
+                '%s...$this->serializer()->decode($data ?? [], \%s::class)',
                 str_repeat(' ', 16),
                 $property->getType(),
             );
@@ -86,7 +86,7 @@ STIRNG;
 
         if ($property->isEnum()) {
             return sprintf(
-                "%s\$this->enum(\%s::class, \$data->%s)",
+                '%s$this->enum(\%s::class, $data[\'%s\'])',
                 str_repeat(' ', 16),
                 $property->getType(),
                 $property->getName(),
@@ -94,7 +94,7 @@ STIRNG;
         }
 
         return sprintf(
-            "%s%sisset(\$data->%s) ? \$this->serializer()->decode(\$data->%s, \%s::class, '%s') : %s",
+            '%s%sisset($data[\'%s\']) ? $this->serializer()->decode($data[\'%s\'], \%s::class, \'%s\') : %s',
             str_repeat(' ', 16),
             $property->isArgument() ? '...' : '',
             $property->getName(),
@@ -110,7 +110,7 @@ STIRNG;
         $property = $this->definition->getProperties()[0];
         $type = $property->getType();
         $name = $property->getName();
-        $accessValue = sprintf('(%s) ($data->value ?? $data->%s ?? $data)', $type, $name);
+        $accessValue = sprintf('(%s) ($data->value ?? $data[\'%s\'] ?? $data)', $type, $name);
 
         $string = str_replace('[cacheClassName]', $this->factoryName, $string);
         $string = str_replace('[className]', $this->definition->getName(), $string);

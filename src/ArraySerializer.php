@@ -21,13 +21,7 @@ class ArraySerializer extends Serializer
      */
     public function deserialize($data, string $class)
     {
-        /**
-         * convert a key-value array to std object
-         */
-        $json = json_encode($data, JSON_THROW_ON_ERROR);
-        $object = json_decode($json, false, JSON_THROW_ON_ERROR);
-
-        return $this->decode($object, $class);
+        return $this->decode($data, $class);
     }
 
     /**

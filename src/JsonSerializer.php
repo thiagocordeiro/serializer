@@ -21,7 +21,7 @@ class JsonSerializer extends Serializer
      */
     public function deserialize($data, string $class)
     {
-        $json = json_decode($data, false);
+        $json = json_decode($data, true);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
             throw new NotAValidJson($data);
