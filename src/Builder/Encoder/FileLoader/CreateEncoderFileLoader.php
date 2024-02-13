@@ -8,6 +8,7 @@ use Serializer\Builder\Analyzer;
 use Serializer\Builder\Encoder\EncoderFileLoader;
 use Serializer\Builder\EncoderTemplate;
 use Serializer\Encoder;
+use Serializer\Exception\UnableToLoadOrCreateCacheClass;
 use Serializer\Serializer;
 
 class CreateEncoderFileLoader implements EncoderFileLoader
@@ -33,8 +34,12 @@ class CreateEncoderFileLoader implements EncoderFileLoader
         umask(0002);
         $factoryName = str_replace('\\', '_', $class) . 'Encoder';
         $filePath = sprintf('%s/Encoder/%s.php', $this->cacheDir, $factoryName);
-
         $definition = Analyzer::analyze($class);
+
+        if ($definition->getProperties() === []) {
+            throw new UnableToLoadOrCreateCacheClass($class);
+        }
+
         $template = new EncoderTemplate($definition, $factoryName);
         $dirname = dirname($filePath);
 
