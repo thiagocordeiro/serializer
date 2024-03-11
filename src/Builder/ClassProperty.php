@@ -11,7 +11,7 @@ class ClassProperty
     private string $class;
     private string $name;
     private string $type;
-    private ?string $defaultValue;
+    private mixed $defaultValue;
     private string $getter;
     private bool $isArgument;
 
@@ -19,7 +19,7 @@ class ClassProperty
         string $class,
         string $name,
         string $type,
-        ?string $defaultValue,
+        mixed $defaultValue,
         bool $isArgument,
         string $getter,
     ) {
@@ -55,11 +55,15 @@ class ClassProperty
             return 'null';
         }
 
-        if ($this->isString()) {
+        if ($this->isString() && is_string($this->defaultValue)) {
             return sprintf("'%s'", $this->defaultValue);
         }
 
-        return $this->defaultValue;
+        if ($this->defaultValue === []) {
+            return '[]';
+        }
+
+        return (string) $this->defaultValue;
     }
 
     public function isEnum(): bool

@@ -78,7 +78,7 @@ class ClassAnalyzer
     {
         $name = $param->getName();
         $type = $this->searchParamType($param);
-        $defaultValue = ($param->isDefaultValueAvailable() ? (string) $param->getDefaultValue() : null) ?: null;
+        $defaultValue = ($param->isDefaultValueAvailable() ? $param->getDefaultValue() : null) ?: null;
         $getter = $isValueObject ? '__toString' : $this->searchParamGetter($param, $type, $isCollection);
         $isArgument = $param->isVariadic();
 
