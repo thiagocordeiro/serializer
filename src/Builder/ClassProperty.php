@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Serializer\Builder;
 
+use BackedEnum;
 use Serializer\Exception\PropertyHasNoGetter;
 
 class ClassProperty
@@ -55,12 +56,16 @@ class ClassProperty
             return 'null';
         }
 
+        if ([] === $this->defaultValue) {
+            return '[]';
+        }
+
         if ($this->isString() && is_string($this->defaultValue)) {
             return sprintf("'%s'", $this->defaultValue);
         }
 
-        if ($this->defaultValue === []) {
-            return '[]';
+        if ($this->defaultValue instanceof BackedEnum) {
+            return sprintf("'%s'", $this->defaultValue->value);
         }
 
         return (string) $this->defaultValue;

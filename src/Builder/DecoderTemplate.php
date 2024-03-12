@@ -86,10 +86,11 @@ STIRNG;
 
         if ($property->isEnum()) {
             return sprintf(
-                '%s$this->enum(\%s::class, $data[\'%s\'] ?? null)',
+                '%s$this->enum(\%s::class, $data[\'%s\'] ?? %s)',
                 str_repeat(' ', 16),
                 $property->getType(),
                 $property->getName(),
+                $property->getDefaultValue(),
             );
         }
 

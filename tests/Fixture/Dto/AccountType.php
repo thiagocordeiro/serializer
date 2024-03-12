@@ -6,6 +6,6 @@ namespace Test\Serializer\Fixture\Dto;
 
 enum AccountType: string
 {
-    case checking = 'checking';
-    case saving = 'saving';
+    case CHECKING = 'checking';
+    case SAVING = 'saving';
 }

@@ -25,12 +25,12 @@ class EnumListTest extends JsonSerializerTestCase
 
         $list = $this->serializer->deserialize($json, AccountTypeList::class);
 
-        $this->assertEquals(new AccountTypeList(types: [AccountType::checking, AccountType::saving]), $list);
+        $this->assertEquals(new AccountTypeList(types: [AccountType::CHECKING, AccountType::SAVING]), $list);
     }
 
     public function testGivenTheListOfEnumsThenParseIntoObject(): void
     {
-        $object = new AccountTypeList(types: [AccountType::checking, AccountType::saving]);
+        $object = new AccountTypeList(types: [AccountType::CHECKING, AccountType::SAVING]);
 
         $json = $this->serializer->serialize($object);
 

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Test\Serializer\Fixture\Dto;
 
-class Place
+readonly class Place
 {
     private string $city;
     private string $country;

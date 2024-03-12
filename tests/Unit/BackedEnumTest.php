@@ -24,12 +24,12 @@ class BackedEnumTest extends JsonSerializerTestCase
 
         $parsed = $this->serializer->deserialize($json, BankAccount::class);
 
-        $this->assertEquals(new BankAccount('12345-6', AccountType::checking), $parsed);
+        $this->assertEquals(new BankAccount('12345-6', AccountType::CHECKING), $parsed);
     }
 
     public function testSerializeBackedEnum(): void
     {
-        $object = new BankAccount('12345-6', AccountType::checking);
+        $object = new BankAccount('12345-6', AccountType::CHECKING);
 
         $parsed = $this->serializer->serialize($object);
 
