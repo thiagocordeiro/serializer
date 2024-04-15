@@ -153,11 +153,28 @@ class ClassAnalyzer
             throw new ArrayPropertyMustHaveATypeAnnotation($param, $this->class);
         }
 
-        if (!str_contains($type, '[]')) {
+        $arrayType = $this->getTypeFromArray($type);
+
+        if ($arrayType === null) {
             throw new ArrayPropertyMustHaveAnArrayAnnotation($param, $this->class, $type);
         }
 
-        return str_replace('[]', '', $type);
+        return $arrayType;
+    }
+
+    private function getTypeFromArray(string $type): ?string
+    {
+        if (str_contains($type, '[]')) {
+            return str_replace('[]', '', $type);
+        }
+
+        if (!preg_match('/array<(.*?)>/', $type, $match)) {
+            return null;
+        }
+
+        $types = explode(',', str_replace(' ', '', $match[1]));
+
+        return $types[1] ?? $types[0] ?? null;
     }
 
     private function searchNamespace(string $type): string
