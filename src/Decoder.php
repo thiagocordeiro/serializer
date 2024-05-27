@@ -40,6 +40,10 @@ abstract class Decoder
      */
     protected function enum(string $enum, int|string|array|null $value): object|array|null
     {
+        if (is_null($value)) {
+            return null;
+        }
+
         if (is_array($value)) {
             return array_map(fn($v) => $this->enum($enum, $v), $value);
         }
@@ -49,6 +53,6 @@ abstract class Decoder
             callback: fn($case) => strtolower("$case->value") === strtolower("$value"),
         );
 
-        return reset($filtered) ?: $enum::from($value ?? '');
+        return reset($filtered) ?: $enum::from($value);
     }
 }

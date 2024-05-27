@@ -35,10 +35,14 @@ abstract class Encoder
 
     /**
      * @param BackedEnum|array<BackedEnum> $enum
-     * @return string|int|array<int|string>
+     * @return string|int|array<int|string>|null
      */
-    public function enum(BackedEnum|array $enum): string|int|array
+    public function enum(BackedEnum|array|null $enum): string|int|array|null
     {
+        if (is_null($enum)) {
+            return null;
+        }
+
         if (is_array($enum)) {
             return array_map(fn($e) => $e->value, $enum);
         }
