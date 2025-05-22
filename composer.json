@@ -10,8 +10,8 @@
   "require-dev": {
     "symfony/var-dumper": "^6.0",
     "slevomat/coding-standard": "^7.0",
-    "phpstan/phpstan": "^1.4",
-    "phpunit/phpunit": "^9.5"
+    "phpstan/phpstan": "^1.12",
+    "phpunit/phpunit": "^12.1"
   },
   "autoload": {
     "psr-4": {

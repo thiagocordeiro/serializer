@@ -4,16 +4,14 @@ declare(strict_types=1);
 
 namespace Test\Serializer\Unit;
 
+use PHPUnit\Framework\Attributes\Test;
 use Test\Serializer\Fixture\Dto\AccountType;
 use Test\Serializer\Fixture\Dto\DefaultValues;
 use Test\Serializer\JsonSerializerTestCase;
 
 class DefaultValuesTest extends JsonSerializerTestCase
 {
-    /**
-     * @test
-     */
-    public function givenThePayloadWhenClassIsReadOnlyThenParseValues(): void
+    #[Test] public function givenThePayloadWhenClassIsReadOnlyThenParseValues(): void
     {
         $json = <<<JSON
         {
@@ -34,10 +32,7 @@ class DefaultValuesTest extends JsonSerializerTestCase
         );
     }
 
-    /**
-     * @test
-     */
-    public function givenTheObjectThenParseIntoPayload(): void
+    #[Test] public function givenTheObjectThenParseIntoPayload(): void
     {
         $object = new DefaultValues(
             int: 20,

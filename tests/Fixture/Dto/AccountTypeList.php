@@ -7,7 +7,7 @@ namespace Test\Serializer\Fixture\Dto;
 readonly class AccountTypeList
 {
     /**
-     * @param AccountType[] $types
+     * @param list<AccountType> $types
      */
     public function __construct(public array $types)
     {

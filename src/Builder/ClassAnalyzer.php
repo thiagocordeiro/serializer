@@ -168,11 +168,12 @@ class ClassAnalyzer
             return str_replace('[]', '', $type);
         }
 
-        if (!preg_match('/array<(.*?)>/', $type, $match)) {
+        if (!preg_match('/array<(.*?)>|list<(.*?)>/', $type, $match)) {
             return null;
         }
 
-        $types = explode(',', str_replace(' ', '', $match[1]));
+        $matched = $match[1] ?: $match[2] ?? '';
+        $types = explode(',', str_replace(' ', '', $matched));
 
         return $types[1] ?? $types[0] ?? null;
     }

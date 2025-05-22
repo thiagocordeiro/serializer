@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Test\Serializer\Unit\Exception;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Serializer\Exception\MissingOrInvalidProperty;
 use TypeError;
@@ -11,9 +12,7 @@ use ValueError;
 
 class MissingOrInvalidPropertyTest extends TestCase
 {
-    /**
-     * @dataProvider typeErrorMessagesDataProvider
-     */
+    #[DataProvider('typeErrorMessagesDataProvider')]
     public function testGivenErrorMessageThenCreateMissingRequiredParamMessage(string $error, string $expected): void
     {
         $exception = new MissingOrInvalidProperty(new TypeError($error), ['name', 'street', 'city']);
@@ -21,9 +20,7 @@ class MissingOrInvalidPropertyTest extends TestCase
         $this->assertEquals($expected, $exception->getMessage());
     }
 
-    /**
-     * @dataProvider enumErrorMessagesDataProvider
-     */
+    #[DataProvider('enumErrorMessagesDataProvider')]
     public function testInvalidBackedEnumMessage(string $error): void
     {
         $expected = 'Value "other" is not valid for AccountType(checking, saving)';
@@ -36,7 +33,7 @@ class MissingOrInvalidPropertyTest extends TestCase
     /**
      * @return array<string, array<int, string>>
      */
-    public function typeErrorMessagesDataProvider(): array
+    public static function typeErrorMessagesDataProvider(): array
     {
         $message = implode(', ', [
             'Argument %s passed to %s::__construct() must be of the type string, %s given',
@@ -75,7 +72,7 @@ class MissingOrInvalidPropertyTest extends TestCase
     /**
      * @return array<string, array<int, string>>
      */
-    public function enumErrorMessagesDataProvider(): array
+    public static function enumErrorMessagesDataProvider(): array
     {
         return [
             'without quotation' => [

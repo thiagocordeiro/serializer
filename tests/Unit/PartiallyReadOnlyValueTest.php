@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Test\Serializer\Unit;
 
+use PHPUnit\Framework\Attributes\Test;
 use Test\Serializer\Fixture\Dto\PartiallyReadOnlyValue;
 use Test\Serializer\JsonSerializerTestCase;
 
@@ -17,20 +18,14 @@ class PartiallyReadOnlyValueTest extends JsonSerializerTestCase
     }
     JSON;
 
-    /**
-     * @test
-     */
-    public function givenThePayloadWhenClassIsReadOnlyThenParseValues(): void
+    #[Test] public function givenThePayloadWhenClassIsReadOnlyThenParseValues(): void
     {
         $object = $this->serializer->deserialize(self::VALUE_OBJECT_BODY, PartiallyReadOnlyValue::class);
 
         $this->assertEquals(new PartiallyReadOnlyValue(123, 'FOO', 'BAR'), $object);
     }
 
-    /**
-     * @test
-     */
-    public function givenTheObjectThenParseIntoPayload(): void
+    #[Test] public function givenTheObjectThenParseIntoPayload(): void
     {
         $object = new PartiallyReadOnlyValue(123, 'FOO', 'BAR');
 

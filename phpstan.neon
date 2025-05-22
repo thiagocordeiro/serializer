@@ -1,9 +1,9 @@
 parameters:
-    checkGenericClassInNonGenericObjectType: false
     ignoreErrors:
         - '#Parameter (.*) expects class-string(.*) string given\.#'
         - '#Cannot cast mixed to string\.#'
         - '#Method (.*) should return (.*)(Encoder|Decoder)\|null but returns object\.#'
+        - '#(.*) generic class (.*) does not specify its types(.*)#'
     excludePaths:
         - src/ArraySerializer.php
         - src/JsonSerializer.php

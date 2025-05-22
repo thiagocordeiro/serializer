@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Test\Serializer\Unit;
 
 use InvalidArgumentException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Test\Serializer\Fixture\Dto\CreateUser;
 use Test\Serializer\Fixture\Vo\Age;
 use Test\Serializer\Fixture\Vo\Email;
@@ -97,9 +98,7 @@ class ValueObjectTest extends JsonSerializerTestCase
         $this->assertJsonStringEqualsJsonString(self::VALUE_OBJECT_BODY, $parsed);
     }
 
-    /**
-     * @dataProvider invalidValueDataProvider
-     */
+    #[DataProvider('invalidValueDataProvider')]
     public function testInvalidValueOnBody(string $body, string $message): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -111,7 +110,7 @@ class ValueObjectTest extends JsonSerializerTestCase
     /**
      * @return array<string, array<string, string>>
      */
-    public function invalidValueDataProvider(): array
+    public static function invalidValueDataProvider(): array
     {
         return [
             'Invalid ip address' => ['body' => self::INVALID_IP, 'message' => 'Invalid ip address'],
