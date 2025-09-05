@@ -1,0 +1,69 @@
+<?php
+
+namespace Serializer\Reader;
+
+use Override;
+use Serializer\Exception\UnableToParseValue;
+use Serializer\ObjectMapper;
+use Serializer\Param\ParamSpecificationRepository;
+use Serializer\Param\ParamSpecification;
+use Serializer\Param\RuntimeParamSpecificationRepository;
+use TypeError;
+
+/**
+ * @template T
+ */
+readonly class RuntimeReader implements Reader
+{
+    public function __construct(
+        private ParamSpecificationRepository $params = new RuntimeParamSpecificationRepository(),
+    ) {
+    }
+
+    #[Override] public function __invoke(mixed $data, ObjectMapper $mapper, string $type, array $trace)
+    {
+        $specifications = $this->params->of($type);
+        $normalized = [];
+
+        if (is_scalar($data) && count($specifications) === 1) {
+            $param = $specifications[0];
+
+            $data = [$param->name => $data];
+        }
+
+        foreach ($specifications as $specification) {
+            $prop = $specification->name;
+            $value = $data[$specification->name] ?? null;
+            $innerTrace = [...$trace, $prop];
+
+            try {
+                $normalized[$prop] = $this->paramMapper($mapper, $specification, $value, $innerTrace);
+            } catch (TypeError) {
+                throw new UnableToParseValue($innerTrace, $specification->definition(), $value);
+            }
+        }
+
+        return new $type(...$normalized);
+    }
+
+    /**
+     * @param list<string> $trace
+     */
+    private function paramMapper(ObjectMapper $mapper, ParamSpecification $spec, mixed $data, array $trace): mixed
+    {
+        $type = $spec->type;
+
+        return match (true) {
+            $spec->isBoolean => filter_var($data, FILTER_VALIDATE_BOOL),
+            $spec->isList => array_map(fn($v) => $this->paramMapper(
+                mapper: $mapper,
+                spec: $spec->copyWith(isList: false),
+                data: $v,
+                trace: $trace,
+            ), $data),
+            $spec->isEnum => $spec->enumFrom($data),
+            $spec->isClass => $mapper->readValue($type, $data, $trace),
+            default => $data,
+        };
+    }
+}
