@@ -1,6 +1,6 @@
 <?php
 
-namespace Serializer\Param;
+namespace Tcds\Io\Serializer\Param;
 
 /**
  * @phpstan-type ParamName string

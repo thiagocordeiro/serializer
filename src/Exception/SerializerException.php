@@ -2,10 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Serializer\Exception;
+namespace Tcds\Io\Serializer\Exception;
 
 use Exception;
+use Throwable;
 
-abstract class SerializerException extends Exception
+class SerializerException extends Exception
 {
+    public function __construct(string $message = '', ?Throwable $previous = null)
+    {
+        parent::__construct($message, 0, $previous);
+    }
 }

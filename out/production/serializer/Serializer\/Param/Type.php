@@ -6,14 +6,26 @@ use ReflectionParameter;
 use Serializer\Exception\ArrayPropertyMustHaveAnArrayAnnotation;
 use Serializer\Exception\ArrayPropertyMustHaveATypeAnnotation;
 
-class ArrayType
+readonly class Type
 {
+    public function __construct(
+        public string $type,
+        public ?string $generic = null,
+    ) {
+    }
+
     /**
      * @throws ArrayPropertyMustHaveATypeAnnotation
      * @throws ArrayPropertyMustHaveAnArrayAnnotation
      */
-    public static function from(ReflectionParameter $param): string
+    public static function of(ReflectionParameter $param): Type
     {
+        $type = $param->getType()?->getName();
+
+        if ($type && $type !== 'array') {
+            return new Type($type);
+        }
+
         $docblock = $param->getDeclaringFunction()->getDocComment() ?: '';
         $pattern = sprintf('/\@param(.*)\$%s/', $param->getName());
 
@@ -24,17 +36,17 @@ class ArrayType
             throw new ArrayPropertyMustHaveATypeAnnotation($param, $param->getDeclaringClass());
         }
 
-        $arrayType = self::getTypeFromArray($type);
+        $genericType = self::getTypeFromArray($type);
 
-        if (self::isScalar($arrayType)) {
-            return $arrayType;
+        if (self::isScalar($genericType)) {
+            return new Type('list', $genericType);
         }
 
-        if ($arrayType === null) {
+        if ($genericType === null) {
             throw new ArrayPropertyMustHaveAnArrayAnnotation($param, $param->getDeclaringClass(), $type);
         }
 
-        return self::withFqn($param, $arrayType);
+        return new Type('list', self::withFqn($param, $genericType));
     }
 
     private static function getTypeFromArray(string $type): ?string
@@ -68,6 +80,6 @@ class ArrayType
 
     public static function isScalar(string $type): bool
     {
-        return in_array($type, ['int', 'float', 'string', 'bool'], true);
+        return in_array($type, ['int', 'float', 'string', 'bool', 'mixed'], true);
     }
 }

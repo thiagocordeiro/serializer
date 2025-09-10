@@ -4,7 +4,6 @@ namespace Test\Serializer\Fixture\Dto\ReadOnly\Trip;
 
 use Test\Serializer\Fixture\Dto\ReadOnly\Place;
 use Test\Serializer\Fixture\Dto\ReadOnly\User;
-use Test\Serializer\Fixture\Dto\TripStatus;
 
 readonly class Trip
 {

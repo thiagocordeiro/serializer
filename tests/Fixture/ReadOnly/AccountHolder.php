@@ -2,10 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Test\Serializer\Fixture\Dto\ReadOnly;
+namespace Tcds\Io\Serializer\Fixture\ReadOnly;
 
-use Test\Serializer\Fixture\Dto\AccountStatus;
-use Test\Serializer\Fixture\Dto\AccountType;
+use Tcds\Io\Serializer\Fixture\AccountStatus;
 
 readonly class AccountHolder
 {
@@ -24,23 +23,8 @@ readonly class AccountHolder
     {
         return new self(
             name: 'Thiago Cordeiro',
-            account: new BankAccount(
-                number: '12345-X',
-                type: AccountType::CHECKING,
-            ),
-            address: new Address(
-                street: 'street street',
-                number: 100,
-                main: false,
-                place: new Place(
-                    city: 'São Paulo',
-                    country: 'Brazil',
-                    position: new LatLng(
-                        lat: -26.9013,
-                        lng: -48.6655,
-                    ),
-                ),
-            ),
+            account: BankAccount::checking(),
+            address: Address::saoPaulo(),
             status: [
                 AccountStatus::ACTIVE,
                 AccountStatus::FINALISED,
@@ -48,32 +32,17 @@ readonly class AccountHolder
         );
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public static function data(): array
     {
         return [
             'name' => 'Thiago Cordeiro',
-            'account' => [
-                'number' => '12345-X',
-                'type' => 'checking',
-            ],
             'active' => 'true',
-            'address' => [
-                'street' => 'street street',
-                'number' => '100',
-                'main' => 'false',
-                'place' => [
-                    'city' => 'São Paulo',
-                    'country' => 'Brazil',
-                    'position' => [
-                        'lat' => '-26.9013',
-                        'lng' => '-48.6655',
-                    ],
-                ],
-            ],
-            'status' => [
-                'Active',
-                'Finalized',
-            ],
+            'account' => BankAccount::data(),
+            'address' => Address::data(),
+            'status' => ['Active', 'Finalized'],
         ];
     }
 

@@ -1,10 +1,10 @@
 <?php
 
-namespace Test\Serializer\Unit\Exception;
+namespace Tcds\Io\Serializer\Unit\Exception;
 
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
-use Serializer\Exception\UnableToParseValue;
+use Tcds\Io\Serializer\Exception\UnableToParseValue;
 
 class UnableToParseValueTest extends TestCase
 {

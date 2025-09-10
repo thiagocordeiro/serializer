@@ -1,6 +1,6 @@
 <?php
 
-namespace Test\Serializer\Fixture\Dto;
+namespace Tcds\Io\Serializer\Fixture\ReadOnly\Trip;
 
 enum TripStatus: string
 {

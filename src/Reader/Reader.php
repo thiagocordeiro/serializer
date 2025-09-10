@@ -1,8 +1,8 @@
 <?php
 
-namespace Serializer\Reader;
+namespace Tcds\Io\Serializer\Reader;
 
-use Serializer\ObjectMapper;
+use Tcds\Io\Serializer\ObjectMapper;
 
 /**
  * @template T

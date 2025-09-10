@@ -1,13 +1,13 @@
 <?php
 
-namespace Serializer\Reader;
+namespace Tcds\Io\Serializer\Reader;
 
 use Override;
-use Serializer\Exception\UnableToParseValue;
-use Serializer\ObjectMapper;
-use Serializer\Param\ParamSpecificationRepository;
-use Serializer\Param\ParamSpecification;
-use Serializer\Param\RuntimeParamSpecificationRepository;
+use Tcds\Io\Serializer\Exception\UnableToParseValue;
+use Tcds\Io\Serializer\ObjectMapper;
+use Tcds\Io\Serializer\Param\ParamSpecification;
+use Tcds\Io\Serializer\Param\ParamSpecificationRepository;
+use Tcds\Io\Serializer\Param\RuntimeParamSpecificationRepository;
 use TypeError;
 
 /**
@@ -51,18 +51,16 @@ readonly class RuntimeReader implements Reader
      */
     private function paramMapper(ObjectMapper $mapper, ParamSpecification $spec, mixed $data, array $trace): mixed
     {
-        $type = $spec->type;
-
         return match (true) {
             $spec->isBoolean => filter_var($data, FILTER_VALIDATE_BOOL),
             $spec->isList => array_map(fn($v) => $this->paramMapper(
                 mapper: $mapper,
-                spec: $spec->copyWith(isList: false),
+                spec: $spec->listType(),
                 data: $v,
                 trace: $trace,
             ), $data),
             $spec->isEnum => $spec->enumFrom($data),
-            $spec->isClass => $mapper->readValue($type, $data, $trace),
+            $spec->isClass => $mapper->readValue($spec->type->resolved, $data, $trace),
             default => $data,
         };
     }

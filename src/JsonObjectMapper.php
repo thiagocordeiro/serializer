@@ -1,6 +1,6 @@
 <?php
 
-namespace Serializer;
+namespace Tcds\Io\Serializer;
 
 readonly class JsonObjectMapper extends ObjectMapper
 {

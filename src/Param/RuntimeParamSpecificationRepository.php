@@ -1,11 +1,12 @@
 <?php
 
-namespace Serializer\Param;
+namespace Tcds\Io\Serializer\Param;
 
 use Override;
 use ReflectionClass;
 use ReflectionParameter;
 use Tcds\Io\Generic\ArrayList;
+use Tcds\Io\Serializer\Metadata\Generic;
 
 /**
  * @phpstan-import-type ParamName from ParamSpecificationRepository
@@ -27,16 +28,11 @@ class RuntimeParamSpecificationRepository implements ParamSpecificationRepositor
 
     private function specification(ReflectionParameter $param): ParamSpecification
     {
-        $declaredType = $param->getType()?->getName();
-        $resolvedType = match ($declaredType) {
-            'array' => ArrayType::from($param),
-            default => $declaredType
-        };
+        $type = Generic::from($param);
 
         return new RuntimeParamSpecification(
             name: $param->name,
-            type: $resolvedType,
-            isList: $declaredType === 'array' && $resolvedType !== 'array',
+            type: $type,
             default: $param->isDefaultValueAvailable() ? $param->getDefaultValue() : null,
         );
     }

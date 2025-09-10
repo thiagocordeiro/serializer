@@ -1,8 +1,8 @@
 <?php
 
-namespace Serializer;
+namespace Tcds\Io\Serializer;
 
-use Serializer\Reader\Reader;
+use Tcds\Io\Serializer\Reader\Reader;
 
 /**
  * @phpstan-type MapperType string|class-string<mixed>
@@ -17,7 +17,7 @@ readonly class ObjectMapper
      * }> $typeMappers
      */
     public function __construct(
-        private Reader $defaultTypeMapper,
+        private Reader $defaultTypeReader,
         private array $typeMappers = [],
     ) {
     }
@@ -28,7 +28,7 @@ readonly class ObjectMapper
      */
     final public function readValue(string $type, mixed $data, array $trace = [])
     {
-        $mapper = $this->typeMappers[$type]['reader'] ?? $this->defaultTypeMapper;
+        $mapper = $this->typeMappers[$type]['reader'] ?? $this->defaultTypeReader;
 
         return $mapper($data, $this, $type, $trace);
     }

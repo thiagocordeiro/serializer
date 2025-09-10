@@ -1,24 +1,27 @@
 <?php
 
-namespace Test\Serializer\Unit;
+namespace Tcds\Io\Serializer\Unit;
 
 use PHPUnit\Framework\Attributes\Test;
-use Serializer\JsonObjectMapper;
-use Serializer\Reader\Reader;
-use Serializer\Reader\RuntimeReader;
-use Test\Serializer\Fixture\Dto\ReadOnly\AccountHolder;
-use Test\Serializer\SerializerTestCase;
+use Tcds\Io\Serializer\Fixture\ReadOnly\AccountHolder;
+use Tcds\Io\Serializer\JsonObjectMapper;
+use Tcds\Io\Serializer\Reader\Reader;
+use Tcds\Io\Serializer\Reader\RuntimeReader;
+use Tcds\Io\Serializer\SerializerTestCase;
 
 class JsonObjectMapperTest extends SerializerTestCase
 {
     private object $object;
+    private string $json;
+    private string $partialJson;
+
     private Reader $reader;
 
     protected function setUp(): void
     {
         $this->object = AccountHolder::thiagoCordeiro();
         $this->json = AccountHolder::json();
-        $this->partialJason = AccountHolder::partialJsonValue();
+        $this->partialJson = AccountHolder::partialJsonValue();
 
         $this->reader = new RuntimeReader();
     }
@@ -36,7 +39,7 @@ class JsonObjectMapperTest extends SerializerTestCase
     {
         $mapper = new JsonObjectMapper($this->reader, []);
 
-        $accountHolder = $mapper->readJsonValue(AccountHolder::class, $this->partialJason, [
+        $accountHolder = $mapper->readJsonValue(AccountHolder::class, $this->partialJson, [
             'name' => 'Thiago Cordeiro',
             'account' => [
                 'number' => '12345-X',

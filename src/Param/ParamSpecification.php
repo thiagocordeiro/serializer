@@ -1,8 +1,9 @@
 <?php
 
-namespace Serializer\Param;
+namespace Tcds\Io\Serializer\Param;
 
 use BackedEnum;
+use Tcds\Io\Serializer\Metadata\Generic;
 
 /**
  * @phpstan-type Definition string|array<string, Definition>
@@ -10,19 +11,14 @@ use BackedEnum;
 interface ParamSpecification
 {
     public string $name { get; }
-    public string $type { get; }
+    public Generic $type { get; }
     public bool $isList { get; }
     public mixed $default { get; }
     public bool $isClass { get; }
     public bool $isEnum { get; }
-    public bool $isBoolean  { get; }
+    public bool $isBoolean { get; }
 
-    public function copyWith(
-        ?string $name = null,
-        ?string $type = null,
-        ?bool $isList = null,
-        mixed $default = null,
-    ): self;
+    public function listType(): self;
 
     /**
      * @template E of BackedEnum

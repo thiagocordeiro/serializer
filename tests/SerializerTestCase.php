@@ -1,6 +1,6 @@
 <?php
 
-namespace Test\Serializer;
+namespace Tcds\Io\Serializer;
 
 use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\TestCase;

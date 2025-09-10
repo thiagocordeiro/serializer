@@ -1,42 +1,42 @@
 <?php
 
-namespace Test\Serializer\Unit;
+declare(strict_types=0);
+
+namespace Tcds\Io\Serializer\Unit;
 
 use PHPUnit\Framework\Attributes\Test;
-use Serializer\Exception\UnableToParseValue;
-use Serializer\Reader\Reader;
-use Serializer\Reader\RuntimeReader;
-use Serializer\ObjectMapper;
-use Test\Serializer\Fixture\Dto\ReadOnly\AccountHolder;
-use Test\Serializer\Fixture\Dto\ReadOnly\LatLng;
+use Tcds\Io\Serializer\Exception\UnableToParseValue;
+use Tcds\Io\Serializer\ObjectMapper;
+use Tcds\Io\Serializer\Reader\Reader;
+use Tcds\Io\Serializer\Reader\RuntimeReader;
+use Test\Serializer\Fixture\ReadOnly\AccountHolder;
+use Test\Serializer\Fixture\ReadOnly\LatLng;
+use Test\Serializer\Fixture\ReadOnly\Response;
 use Test\Serializer\SerializerTestCase;
 
 class ObjectMapperTest extends SerializerTestCase
 {
-    private array $data;
-    private object $object;
-    private Reader $mapper;
+    private Reader $reader;
 
     protected function setUp(): void
     {
-        $this->data = AccountHolder::data();
-        $this->object = AccountHolder::thiagoCordeiro();
-        $this->mapper = new RuntimeReader();
+        $this->reader = new RuntimeReader();
     }
 
     #[Test] public function given_a_data_then_parse_into_the_object(): void
     {
-        $mapper = new ObjectMapper($this->mapper, []);
+        $data = AccountHolder::data();
+        $mapper = new ObjectMapper($this->reader, []);
 
-        $accountHolder = $mapper->readValue(AccountHolder::class, $this->data);
+        $accountHolder = $mapper->readValue(AccountHolder::class, $data);
 
-        $this->assertEquals($this->object, $accountHolder);
+        $this->assertEquals(AccountHolder::thiagoCordeiro(), $accountHolder);
     }
 
     #[Test] public function given_a_invalid_value_then_throw_unable_to_parse(): void
     {
-        $mapper = new ObjectMapper($this->mapper, []);
-        $data = $this->data;
+        $data = AccountHolder::data();
+        $mapper = new ObjectMapper($this->reader, []);
         $data['address']['place']['position'] = '-26.9013, -48.6655';
 
         $exception = $this->expectThrows(fn() => $mapper->readValue(AccountHolder::class, $data));
@@ -56,11 +56,11 @@ class ObjectMapperTest extends SerializerTestCase
 
     #[Test] public function given_custom_reader_then_parse_into_the_object(): void
     {
-        $data = $this->data;
+        $data = AccountHolder::data();
         $data['address']['place']['position'] = '-26.9013, -48.6655';
 
         $mapper = new ObjectMapper(
-            defaultTypeMapper: $this->mapper,
+            defaultTypeReader: $this->reader,
             typeMappers: [
                 LatLng::class => [
                     'reader' => fn(string $value) => new LatLng(...explode(',', $value)),
@@ -70,6 +70,16 @@ class ObjectMapperTest extends SerializerTestCase
 
         $accountHolder = $mapper->readValue(AccountHolder::class, $data);
 
-        $this->assertEquals($this->object, $accountHolder);
+        $this->assertEquals(AccountHolder::thiagoCordeiro(), $accountHolder);
+    }
+
+    #[Test] public function given__when__then(): void
+    {
+        $mapper = new ObjectMapper($this->reader, []);
+        $data = Response::data();
+
+        $response = $mapper->readValue(Response::class, $data);
+
+        $this->assertEquals(Response::firstPage(), $response);
     }
 }

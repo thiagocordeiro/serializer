@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Serializer\Exception;
+namespace Tcds\Io\Serializer\Exception;
 
 use ReflectionClass;
 use ReflectionParameter;

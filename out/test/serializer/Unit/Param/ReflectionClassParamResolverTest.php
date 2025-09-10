@@ -8,8 +8,8 @@ use Serializer\Param\RuntimeParamSpecification;
 use Serializer\Param\RuntimeParamSpecificationRepository;
 use Test\Serializer\Fixture\Dto\ReadOnly\Place;
 use Test\Serializer\Fixture\Dto\ReadOnly\Trip\Trip;
+use Test\Serializer\Fixture\Dto\ReadOnly\Trip\TripStatus;
 use Test\Serializer\Fixture\Dto\ReadOnly\User;
-use Test\Serializer\Fixture\Dto\TripStatus;
 
 class ReflectionClassParamResolverTest extends TestCase
 {
@@ -24,31 +24,31 @@ class ReflectionClassParamResolverTest extends TestCase
                 'driver' => new RuntimeParamSpecification(
                     name: 'driver',
                     type: User::class,
-                    isList: false,
+                    genericType: null,
                     default: null,
                 ),
                 'stops' => new RuntimeParamSpecification(
                     name: 'stops',
-                    type: Place::class,
-                    isList: true,
+                    type: 'list',
+                    genericType: Place::class,
                     default: null,
                 ),
                 'status' => new RuntimeParamSpecification(
                     name: 'status',
-                    type: TripStatus::class,
-                    isList: true,
+                    type: 'list',
+                    genericType: TripStatus::class,
                     default: null,
                 ),
                 'remarks' => new RuntimeParamSpecification(
                     name: 'remarks',
-                    type: 'string',
-                    isList: true,
+                    type: 'list',
+                    genericType: 'string',
                     default: [],
                 ),
                 'description' => new RuntimeParamSpecification(
                     name: 'description',
                     type: 'string',
-                    isList: false,
+                    genericType: null,
                     default: '',
                 ),
             ],

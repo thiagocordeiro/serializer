@@ -1,5 +1,5 @@
 {
-  "name": "thiagocordeiro/serializer",
+  "name": "tcds-io/serializer",
   "description": "",
   "type": "library",
   "license": "MIT",
@@ -17,12 +17,12 @@
   },
   "autoload": {
     "psr-4": {
-      "Serializer\\": "src/"
+      "Tcds\\Io\\Serializer\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "Test\\Serializer\\": "tests/"
+      "Tcds\\Io\\Serializer\\": "tests/"
     }
   },
   "scripts": {

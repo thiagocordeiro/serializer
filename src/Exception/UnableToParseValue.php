@@ -1,6 +1,6 @@
 <?php
 
-namespace Serializer\Exception;
+namespace Tcds\Io\Serializer\Exception;
 
 class UnableToParseValue extends SerializerException
 {
