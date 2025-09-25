@@ -52,7 +52,7 @@ final class TypeNode
                 [$type, $params] = Annotation::shaped($type);
 
                 return new TypeNode(
-                    type: $type,
+                    type: shape($type, $params),
                     params: array_map(fn(string $param) => ParamNode::from($param), $params),
                 );
             }),
@@ -134,6 +134,12 @@ final class TypeNode
     public function isArrayMap(): bool
     {
         return str_starts_with($this->type, 'map<');
+    }
+
+    public function isShapeValue(): bool
+    {
+        return str_starts_with($this->type, 'array{')
+            || str_starts_with($this->type, 'object{');
     }
 
     public function specification(): array|string

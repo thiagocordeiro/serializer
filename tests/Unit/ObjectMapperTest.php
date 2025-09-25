@@ -5,7 +5,9 @@ declare(strict_types=0);
 namespace Tcds\Io\Serializer\Unit;
 
 use PHPUnit\Framework\Attributes\Test;
+use stdClass;
 use Tcds\Io\Serializer\Exception\UnableToParseValue;
+use Tcds\Io\Serializer\Fixture\AccountType;
 use Tcds\Io\Serializer\Fixture\ReadOnly\AccountHolder;
 use Tcds\Io\Serializer\Fixture\ReadOnly\Address;
 use Tcds\Io\Serializer\Fixture\ReadOnly\LatLng;
@@ -101,5 +103,50 @@ class ObjectMapperTest extends SerializerTestCase
             ],
             $response,
         );
+    }
+
+    #[Test] public function read_array_shape(): void
+    {
+        $mapper = new ObjectMapper($this->reader, []);
+        $type = shape('array', ['type' => AccountType::class, 'position' => LatLng::class]);
+
+        $response = $mapper->readValue($type, [
+            'type' => 'checking',
+            'position' => [
+                'lat' => '-26.9013',
+                'lng' => '-48.6655',
+            ],
+        ]);
+
+        $this->assertEquals(
+            [
+                'type' => AccountType::CHECKING,
+                'position' => new LatLng(
+                    lat: -26.9013,
+                    lng: -48.6655,
+                ),
+            ],
+            $response,
+        );
+    }
+
+    #[Test] public function read_object_shape(): void
+    {
+        $mapper = new ObjectMapper($this->reader, []);
+        $type = shape('object', ['type' => AccountType::class, 'position' => LatLng::class]);
+
+        $response = $mapper->readValue($type, [
+            'type' => 'checking',
+            'position' => [
+                'lat' => '-26.9013',
+                'lng' => '-48.6655',
+            ],
+        ]);
+
+        $object = new stdClass();
+        $object->type = AccountType::CHECKING;
+        $object->position = new LatLng(lat: -26.9013, lng: -48.6655);
+
+        $this->assertEquals($object, $response);
     }
 }

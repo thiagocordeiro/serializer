@@ -33,6 +33,7 @@ readonly class RuntimeReader implements Reader
             $node->isEnum() => $this->readEnum($node->type, $data),
             $node->isClass() => $this->readClass($mapper, $node, $data, $trace),
             $node->isArrayMap() => $this->readArrayMap($mapper, $node, $data, $trace),
+            $node->isShapeValue() => $this->readShape($mapper, $node, $data, $trace),
             default => throw new SerializerException(sprintf('Unable to handle value of type <%s>', $node->type)),
         };
     }
@@ -61,24 +62,6 @@ readonly class RuntimeReader implements Reader
         return $enum::from($value);
     }
 
-    private function readValues(ObjectMapper $mapper, TypeNode $node, mixed $data, array $trace): array
-    {
-        $values = [];
-
-        foreach ($node->params as $name => $param) {
-            $value = $data[$name] ?? null;
-            $innerTrace = [...$trace, $name];
-
-            try {
-                $values[$name] = $mapper->readValue($param->type->type, $value, $innerTrace);
-            } catch (TypeError) {
-                throw new UnableToParseValue($innerTrace, $param->type->specification(), $value);
-            }
-        }
-
-        return $values;
-    }
-
     /**
      * @template C
      * @return C
@@ -103,5 +86,32 @@ readonly class RuntimeReader implements Reader
             ),
             array: $data,
         );
+    }
+
+    private function readShape(ObjectMapper $mapper, TypeNode $node, mixed $data, array $trace)
+    {
+        $values = $this->readValues($mapper, $node, $data, $trace);
+
+        return str_starts_with($node->type, 'array')
+            ? $values
+            : (object) $values;
+    }
+
+    private function readValues(ObjectMapper $mapper, TypeNode $node, mixed $data, array $trace): array
+    {
+        $values = [];
+
+        foreach ($node->params as $name => $param) {
+            $value = $data[$name] ?? null;
+            $innerTrace = [...$trace, $name];
+
+            try {
+                $values[$name] = $mapper->readValue($param->type->type, $value, $innerTrace);
+            } catch (TypeError) {
+                throw new UnableToParseValue($innerTrace, $param->type->specification(), $value);
+            }
+        }
+
+        return $values;
     }
 }
