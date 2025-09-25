@@ -3,68 +3,116 @@
 namespace Tcds\Io\Serializer\Metadata;
 
 use ReflectionClass;
-use ReflectionParameter;
-use Tcds\Io\Generic\ArrayList;
 use Tcds\Io\Serializer\Exception\SerializerException;
+use Tcds\Io\Serializer\Metadata\Parser\Annotation;
+use Tcds\Io\Serializer\Metadata\Parser\ClassAnnotation;
+use Tcds\Io\Serializer\Metadata\Parser\ClassParams;
+use Tcds\Io\Serializer\Metadata\Parser\ParamType;
 
-class TypeNode
+/**
+ * @phpstan-type ParamName string|int
+ * @phpstan-type TemplateName string
+ */
+final class TypeNode
 {
-    /** @var array<string, TypeNode> */
-    public static array $nodes = [];
-
     /**
-     * @param list<ParamNode> $params
+     * @param string $type
+     * @param array<ParamName, ParamNode> $params
      */
     public function __construct(
-        public readonly string $type,
-        public readonly array $params = [],
+        public string $type,
+        public array $params = [],
     ) {
     }
 
     /**
-     * @param ArrayList<TypeNode> $templates
+     * @param list<string> $generics
      */
-    public static function from(string $type, ArrayList $templates = new ArrayList([])): self
+    public static function from(string $type, array $generics = []): self
     {
-        if (self::isResolvedType($type)) {
-            return new TypeNode($type);
+        if (empty($generics)) {
+            [$type, $generics] = Annotation::extractGenerics($type);
         }
 
-        if (!class_exists($type)) {
-            throw new SerializerException("Type <$type> is not scalar nor an existing class");
-        }
+        return match (true) {
+            ParamType::isScalar($type),
+            ParamType::isEnum($type) => run(function () use ($type): TypeNode {
+                return new TypeNode($type);
+            }),
+            ParamType::isList($type, $generics) => run(function () use ($type, $generics): TypeNode {
+                return new self(
+                    type: $type,
+                    params: [
+                        'value' => new ParamNode(type: TypeNode::from($generics[0])),
+                    ],
+                );
+            }),
+            ParamType::isShapeType($type) => run(function () use ($type) {
+                [$type, $params] = Annotation::shaped($type);
 
-        if (array_key_exists($type, self::$nodes)) {
-            return self::$nodes[$type];
-        }
+                return new TypeNode(
+                    type: $type,
+                    params: array_map(fn(string $param) => ParamNode::from($param), $params),
+                );
+            }),
+            ParamType::isArray($type) => run(function () use ($type, $generics): TypeNode {
+                return new TypeNode(
+                    type: 'array',
+                    params: array_map(
+                        callback: fn(string $generic) => ParamNode::from($generic),
+                        array: [
+                            'key' => $generics[0] ?? 'mixed',
+                            'value' => $generics[1] ?? 'mixed',
+                        ],
+                    ),
+                );
+            }),
+            ParamType::isClass($type) => run(function () use ($type, $generics): TypeNode {
+                return self::fromClass($type, $generics);
+            }),
+            default => run(function () use ($type) {
+                throw new SerializerException("Cannot handle type <$type>");
+            }),
+        };
+    }
 
-        // initialize node to avoid inner process to try
-        self::$nodes[$type] = new TypeNode(type: $type);
-
+    /**
+     * @param array<ParamName, string> $generics
+     */
+    private static function fromClass(string $type, array $generics = []): self
+    {
         $reflection = new ReflectionClass($type);
-        $params = new ArrayList($reflection
-            ->getConstructor()
-            ->getParameters())
-            ->map(fn(ReflectionParameter $param) => ParamNode::from($param, $templates))
-            ->items();
+        $params = ClassParams::of(reflection: $reflection);
+        $templates = ClassAnnotation::templates(reflection: $reflection);
 
-        return new TypeNode(
+        foreach (array_keys($templates) as $position => $template) {
+            $templates[$template] = $generics[$position] ?? throw new SerializerException("No generic defined for template <$template>");
+        }
+
+        return new self(
             type: $type,
-            params: $params,
+            params: array_map(function ($paramType) use ($templates) {
+                $paramType = $templates[$paramType] ?? $paramType;
+                [$paramType, $paramGenerics] = Annotation::extractGenerics($paramType);
+
+                foreach ($paramGenerics as $index => $paramGeneric) {
+                    $paramGenerics[$index] = $templates[$index] ?? $templates[$paramGeneric] ?? $paramGeneric;
+                }
+
+                return ParamNode::from($paramType, $paramGenerics);
+            }, $params),
         );
     }
 
-    public static function isResolvedType(string $type): bool
+    public function fingerprint(): string
     {
-        $simpleNodeTypes = ['int', 'float', 'string', 'bool', 'boolean', 'object', 'mixed', 'list', 'map'];
-        $types = explode('|', str_replace('&', '|', $type));
+        $params = array_map(
+            callback: fn(ParamNode $param) => $param->type->fingerprint(),
+            array: $this->params,
+        );
 
-        $notScalar = array_filter($types, fn($t) => !in_array($t, $simpleNodeTypes, true));
-
-        if (count($types) > 1 && !empty($notScalar)) {
-            throw new SerializerException('Non-scalar union types are not allowed');
-        }
-
-        return empty($notScalar);
+        return empty($this->params)
+            ? $this->type
+            : sprintf('%s[%s]', $this->type, join(', ', $params));
     }
 }

@@ -2,17 +2,17 @@
 
 declare(strict_types=0);
 
-namespace Test\Serializer\Unit;
+namespace Tcds\Io\Serializer\Unit;
 
 use PHPUnit\Framework\Attributes\Test;
-use Serializer\Exception\UnableToParseValue;
-use Serializer\ObjectMapper;
-use Serializer\Reader\Reader;
-use Serializer\Reader\RuntimeReader;
-use Test\Serializer\Fixture\Dto\ReadOnly\AccountHolder;
-use Test\Serializer\Fixture\Dto\ReadOnly\LatLng;
-use Test\Serializer\Fixture\Dto\ReadOnly\Response;
-use Test\Serializer\SerializerTestCase;
+use Tcds\Io\Serializer\Exception\UnableToParseValue;
+use Tcds\Io\Serializer\Fixture\ReadOnly\AccountHolder;
+use Tcds\Io\Serializer\Fixture\ReadOnly\LatLng;
+use Tcds\Io\Serializer\Fixture\ReadOnly\Response;
+use Tcds\Io\Serializer\ObjectMapper;
+use Tcds\Io\Serializer\Reader\Reader;
+use Tcds\Io\Serializer\Reader\RuntimeReader;
+use Tcds\Io\Serializer\SerializerTestCase;
 
 class ObjectMapperTest extends SerializerTestCase
 {

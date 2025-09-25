@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Tcds\Io\Serializer\Fixture\ReadOnly;
 
+use Tcds\Io\Serializer\Metadata\ParamNode;
+use Tcds\Io\Serializer\Metadata\TypeNode;
+
 readonly class Address
 {
     public function __construct(
@@ -49,5 +52,23 @@ readonly class Address
                 ],
             ],
         ];
+    }
+
+    public static function node(): TypeNode
+    {
+        return new TypeNode(
+            type: Address::class,
+            params: [
+                'street' => new ParamNode(new TypeNode(type: 'string')),
+                'number' => new ParamNode(new TypeNode(type: 'int')),
+                'main' => new ParamNode(new TypeNode(type: 'bool')),
+                'place' => new ParamNode(Place::node()),
+            ],
+        );
+    }
+
+    public static function fingerprint(): string
+    {
+        return sprintf('%s[%s, %s, %s, %s]', self::class, 'string', 'int', 'bool', Place::fingerprint());
     }
 }
