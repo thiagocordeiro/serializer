@@ -2,7 +2,7 @@
 
 namespace Tcds\Io\Serializer;
 
-use Tcds\Io\Serializer\Reader\Reader;
+use Tcds\Io\Serializer\Mapper\Reader;
 
 /**
  * @phpstan-type MapperType string|class-string<mixed>
@@ -28,8 +28,8 @@ readonly class ObjectMapper
      */
     final public function readValue(string $type, mixed $data, array $trace = [])
     {
-        $mapper = $this->typeMappers[$type]['reader'] ?? $this->defaultTypeReader;
+        $reader = $this->typeMappers[$type]['reader'] ?? $this->defaultTypeReader;
 
-        return $mapper($data, $this, $type, $trace);
+        return $reader($data, $this, $type, $trace);
     }
 }

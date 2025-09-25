@@ -29,4 +29,9 @@ readonly class User
             ],
         );
     }
+
+    public static function fingerprint(): string
+    {
+        return sprintf('%s[%s, %s, %s, %s]', self::class, 'string', 'int', 'float', Address::fingerprint());
+    }
 }

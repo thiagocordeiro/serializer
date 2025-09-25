@@ -25,4 +25,9 @@ readonly class LatLng
             ],
         );
     }
+
+    public static function fingerprint(): string
+    {
+        return sprintf('%s[%s, %s]', self::class, 'float', 'float');
+    }
 }

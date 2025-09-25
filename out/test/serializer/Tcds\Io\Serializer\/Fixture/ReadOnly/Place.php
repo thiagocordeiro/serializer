@@ -27,4 +27,9 @@ readonly class Place
             ],
         );
     }
+
+    public static function fingerprint(): string
+    {
+        return sprintf('%s[%s, %s, %s]', self::class, 'string', 'string', LatLng::fingerprint());
+    }
 }

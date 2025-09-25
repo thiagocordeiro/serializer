@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Tcds\Io\Serializer\Fixture\ReadOnly;
 
 use Tcds\Io\Serializer\Fixture\AccountType;
-use Tcds\Io\Serializer\Metadata\XParamNode;
-use Tcds\Io\Serializer\Metadata\XTypeNode;
+use Tcds\Io\Serializer\Metadata\ParamNode;
+use Tcds\Io\Serializer\Metadata\TypeNode;
 
 readonly class BankAccount
 {
@@ -35,14 +35,19 @@ readonly class BankAccount
         ];
     }
 
-    public static function node(): XTypeNode
+    public static function node(): TypeNode
     {
-        return new XTypeNode(
+        return new TypeNode(
             type: BankAccount::class,
             params: [
-                new XParamNode('number', new XTypeNode('string')),
-                new XParamNode('type', new XTypeNode(AccountType::class)),
+                'number' => new ParamNode(new TypeNode('string')),
+                'type' => new ParamNode(new TypeNode(AccountType::class)),
             ],
         );
+    }
+
+    public static function fingerprint(): string
+    {
+        return sprintf('%s[%s, %s]', self::class, 'string', AccountType::class);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Tcds\Io\Serializer\Metadata\Parser;
 
+use BackedEnum;
 use ReflectionParameter;
 use Tcds\Io\Serializer\Exception\SerializerException;
 use Traversable;
@@ -79,9 +80,13 @@ class ParamType
 
     public static function isArray(string $type): bool
     {
-        return $type === 'array';
+        return $type === 'array'
+            || $type === 'map';
     }
 
+    /**
+     * @phpstan-assert-if-true class-string<BackedEnum> $type
+     */
     public static function isEnum(string $type): bool
     {
         return enum_exists($type);

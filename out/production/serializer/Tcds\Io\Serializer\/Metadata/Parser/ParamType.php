@@ -2,6 +2,7 @@
 
 namespace Tcds\Io\Serializer\Metadata\Parser;
 
+use BackedEnum;
 use ReflectionParameter;
 use Tcds\Io\Serializer\Exception\SerializerException;
 use Traversable;
@@ -28,7 +29,9 @@ class ParamType
         }
 
         if (self::isShapeType($type)) {
-            return Annotation::shaped($class, $type);
+            [$type, $params] = Annotation::shapedFqn($class, $type);
+
+            return sprintf('%s{ %s }', $type, join(', ', $params));
         }
 
         if (array_key_exists($type, $runtimeTypes)) {
@@ -69,16 +72,21 @@ class ParamType
      */
     public static function isList(string $type, array $generics): bool
     {
-        return $type === 'list'
-            || $type === 'iterable'
-            || $type === Traversable::class;
+        return ($type === 'list')
+            || ($type === 'iterable')
+            || ($type === Traversable::class)
+            || ($type === 'array' && count($generics) === 1);
     }
 
     public static function isArray(string $type): bool
     {
-        return $type === 'array';
+        return $type === 'array'
+            || $type === 'map';
     }
 
+    /**
+     * @phpstan-assert-if-true class-string<BackedEnum> $type
+     */
     public static function isEnum(string $type): bool
     {
         return enum_exists($type);

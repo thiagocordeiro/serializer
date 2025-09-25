@@ -23,6 +23,10 @@ class Annotation
      */
     public static function extractGenerics(string $type): ?array
     {
+        if (str_ends_with($type, '[]')) {
+            $type = sprintf('list<%s>', str_replace('[]', '', $type));
+        }
+
         // check generics
         $pattern = '~^(.*?)<(.*?)>\s*$~';
 
@@ -46,12 +50,11 @@ class Annotation
             return $main;
         }
 
-        return sprintf(
-            '%s<%s>',
-            $main,
-            new ArrayList($generics)
+        return generic(
+            type: $main,
+            generics: new ArrayList($generics)
                 ->map(fn(string $generic) => self::fqnOf($reflection, $generic))
-                ->join(', '),
+                ->items(),
         );
     }
 
@@ -63,7 +66,7 @@ class Annotation
         $docblock = join(PHP_EOL, array_map(fn(string $line) => "@$line", explode('@', $docblock)));
         preg_match($pattern, $docblock, $matches);
 
-        return $matches[1] ?: null;
+        return $matches[1] ?? null;
     }
 
     /**

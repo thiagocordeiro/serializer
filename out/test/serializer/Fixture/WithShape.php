@@ -22,4 +22,14 @@ readonly class WithShape
     public function __construct(public array $data, public object $payload)
     {
     }
+
+    public static function fingerprint(): string
+    {
+        return sprintf(
+            '%s[%s, %s]',
+            WithShape::class,
+            sprintf('%s[%s, %s, %s]', 'array', User::fingerprint(), Address::fingerprint(), 'string'),
+            sprintf('%s[%s, %s, %s]', 'object', User::fingerprint(), Address::fingerprint(), 'string'),
+        );
+    }
 }

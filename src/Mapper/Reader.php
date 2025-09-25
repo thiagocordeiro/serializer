@@ -1,16 +1,13 @@
 <?php
 
-namespace Tcds\Io\Serializer\Reader;
+namespace Tcds\Io\Serializer\Mapper;
 
 use Tcds\Io\Serializer\ObjectMapper;
 
-/**
- * @template T
- */
 interface Reader
 {
     /**
-     * @param mixed $data
+     * @template T
      * @param list<string> $trace
      * @return T
      */

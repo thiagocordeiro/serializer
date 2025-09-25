@@ -4,9 +4,8 @@ namespace Tcds\Io\Serializer\Metadata;
 
 readonly class ParamNode
 {
-    public function __construct(
-        public TypeNode $type,
-    ) {
+    public function __construct(public TypeNode $type)
+    {
     }
 
     public function __toString(): string

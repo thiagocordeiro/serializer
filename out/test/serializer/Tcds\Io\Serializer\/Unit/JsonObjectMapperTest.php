@@ -5,8 +5,8 @@ namespace Tcds\Io\Serializer\Unit;
 use PHPUnit\Framework\Attributes\Test;
 use Tcds\Io\Serializer\Fixture\ReadOnly\AccountHolder;
 use Tcds\Io\Serializer\JsonObjectMapper;
-use Tcds\Io\Serializer\Reader\Reader;
-use Tcds\Io\Serializer\Reader\RuntimeReader;
+use Tcds\Io\Serializer\Mapper\Reader;
+use Tcds\Io\Serializer\Runtime\RuntimeReader;
 use Tcds\Io\Serializer\SerializerTestCase;
 
 class JsonObjectMapperTest extends SerializerTestCase

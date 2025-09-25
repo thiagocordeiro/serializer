@@ -13,6 +13,7 @@ use Tcds\Io\Serializer\Fixture\ReadOnly\Address;
 use Tcds\Io\Serializer\Fixture\ReadOnly\BankAccount;
 use Tcds\Io\Serializer\Fixture\ReadOnly\LatLng;
 use Tcds\Io\Serializer\Fixture\ReadOnly\Place;
+use Tcds\Io\Serializer\Fixture\ReadOnly\Response;
 use Tcds\Io\Serializer\Fixture\ReadOnly\User;
 use Tcds\Io\Serializer\Fixture\WithShape;
 use Tcds\Io\Serializer\Metadata\ParamNode;
@@ -33,10 +34,10 @@ class TypeNodeTest extends SerializerTestCase
     #[Test] public function when_generics_are_missing_for_templates_then_throw_exception(): void
     {
         $missingKeyGeneric = $this->expectThrows(fn() => TypeNode::from(Pair::class));
-        $this->assertEquals(new SerializerException('No generic defined for template <K>'), $missingKeyGeneric);
+        $this->assertEquals(new SerializerException('No generic defined for template `K`'), $missingKeyGeneric);
 
         $missingKeyGeneric = $this->expectThrows(fn() => TypeNode::from(Pair::class, ['string']));
-        $this->assertEquals(new SerializerException('No generic defined for template <V>'), $missingKeyGeneric);
+        $this->assertEquals(new SerializerException('No generic defined for template `V`'), $missingKeyGeneric);
     }
 
     #[Test] public function parse_type(): void
@@ -57,22 +58,21 @@ class TypeNodeTest extends SerializerTestCase
             ),
             $node,
         );
-        $this->assertEquals(Address::fingerprint(), $node->fingerprint());
     }
 
     #[Test] public function given_an_annotated_type_then_get_node(): void
     {
-        $type = sprintf('%s<%s>', ArrayList::class, Address::class);
+        $type = generic(ArrayList::class, [Address::class]);
 
         $node = TypeNode::from($type);
 
         $this->assertEquals(
             new TypeNode(
-                type: ArrayList::class,
+                type: $type,
                 params: [
                     'items' => new ParamNode(
                         type: new TypeNode(
-                            type: 'list',
+                            type: generic('list', [Address::class]),
                             params: [
                                 'value' => new ParamNode(type: Address::node()),
                             ],
@@ -96,11 +96,11 @@ class TypeNodeTest extends SerializerTestCase
                 params: [
                     'addresses' => new ParamNode(
                         new TypeNode(
-                            type: ArrayList::class,
+                            type: generic(ArrayList::class, [Address::class]),
                             params: [
                                 'items' => new ParamNode(
                                     type: new TypeNode(
-                                        type: 'list',
+                                        type: generic('list', [Address::class]),
                                         params: [
                                             'value' => new ParamNode(type: Address::node()),
                                         ],
@@ -111,7 +111,7 @@ class TypeNodeTest extends SerializerTestCase
                     ),
                     'users' => new ParamNode(
                         new TypeNode(
-                            type: Traversable::class,
+                            type: generic(Traversable::class, [User::class]),
                             params: [
                                 'value' => new ParamNode(type: User::node()),
                             ],
@@ -119,11 +119,11 @@ class TypeNodeTest extends SerializerTestCase
                     ),
                     'positions' => new ParamNode(
                         type: new TypeNode(
-                            type: Map::class,
+                            type: generic(Map::class, ['string', LatLng::class]),
                             params: [
                                 'entries' => new ParamNode(
                                     type: new TypeNode(
-                                        type: 'array',
+                                        type: generic('map', ['string', LatLng::class]),
                                         params: [
                                             'key' => new ParamNode(type: new TypeNode('string')),
                                             'value' => new ParamNode(type: LatLng::node()),
@@ -135,7 +135,7 @@ class TypeNodeTest extends SerializerTestCase
                     ),
                     'accounts' => new ParamNode(
                         type: new TypeNode(
-                            type: Pair::class,
+                            type: generic(Pair::class, [AccountType::class, BankAccount::class]),
                             params: [
                                 'key' => new ParamNode(type: new TypeNode(type: AccountType::class)),
                                 'value' => new ParamNode(type: BankAccount::node()),
@@ -146,7 +146,6 @@ class TypeNodeTest extends SerializerTestCase
             ),
             $node,
         );
-        $this->assertEquals(GenericStubs::fingerprint(), $node->fingerprint());
     }
 
     #[Test] public function parse_with_inner_generics(): void
@@ -157,11 +156,11 @@ class TypeNodeTest extends SerializerTestCase
 
         $this->assertEquals(
             new TypeNode(
-                type: ArrayList::class,
+                type: generic(ArrayList::class, ['string']),
                 params: [
                     'items' => new ParamNode(
                         type: new TypeNode(
-                            type: 'list',
+                            type: 'list<string>',
                             params: [
                                 'value' => new ParamNode(new TypeNode('string')),
                             ],
@@ -171,7 +170,6 @@ class TypeNodeTest extends SerializerTestCase
             ),
             $node,
         );
-        $this->assertEquals(sprintf('%s[%s[%s]]', ArrayList::class, 'list', 'string'), $node->fingerprint());
     }
 
     #[Test] public function parse_type_with_generics(): void
@@ -183,7 +181,7 @@ class TypeNodeTest extends SerializerTestCase
 
         $this->assertEquals(
             new TypeNode(
-                type: Pair::class,
+                type: generic(Pair::class, ['string', Address::class]),
                 params: [
                     'key' => new ParamNode(new TypeNode(type: 'string')),
                     'value' => new ParamNode(Address::node()),
@@ -191,7 +189,6 @@ class TypeNodeTest extends SerializerTestCase
             ),
             $node,
         );
-        $this->assertEquals(sprintf('%s[%s, %s]', Pair::class, 'string', Address::fingerprint()), $node->fingerprint());
     }
 
     #[Test] public function parse_type_with_shapes(): void
@@ -228,6 +225,30 @@ class TypeNodeTest extends SerializerTestCase
             ),
             $node,
         );
-        $this->assertEquals(WithShape::fingerprint(), $node->fingerprint());
+    }
+
+    #[Test] public function array_map(): void
+    {
+        $type = Response::class;
+
+        $node = TypeNode::from($type);
+
+        $this->assertEquals(
+            new TypeNode(
+                type: Response::class,
+                params: [
+                    '_meta' => new ParamNode(
+                        type: new TypeNode(
+                            type: 'map<string, mixed>',
+                            params: [
+                                'key' => new ParamNode(new TypeNode('string')),
+                                'value' => new ParamNode(new TypeNode('mixed')),
+                            ],
+                        ),
+                    ),
+                ],
+            ),
+            $node,
+        );
     }
 }

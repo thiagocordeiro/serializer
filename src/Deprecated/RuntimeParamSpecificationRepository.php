@@ -1,17 +1,18 @@
 <?php
 
-namespace Tcds\Io\Serializer\Param;
+namespace Tcds\Io\Serializer\Deprecated;
 
 use Override;
 use ReflectionClass;
 use ReflectionParameter;
 use Tcds\Io\Generic\ArrayList;
-use Tcds\Io\Serializer\Metadata\Generic;
+use Tcds\Io\Serializer\Param\ParamSpecification;
+use Tcds\Io\Serializer\Param\ParamSpecificationRepository;
 
 /**
  * @phpstan-import-type ParamName from ParamSpecificationRepository
  */
-class RuntimeParamSpecificationRepository implements ParamSpecificationRepository
+readonly class RuntimeParamSpecificationRepository implements ParamSpecificationRepository
 {
     /**
      * @template T

@@ -1,11 +1,15 @@
 <?php
 
-namespace Tcds\Io\Serializer\Param;
+namespace Tcds\Io\Serializer\Deprecated;
 
 use BackedEnum;
 use Override;
-use Tcds\Io\Serializer\Metadata\Generic;
+use Tcds\Io\Serializer\Param\ParamSpecification;
+use Tcds\Io\Serializer\Param\ParamSpecificationRepository;
 
+/**
+ * @deprecated
+ */
 class RuntimeParamSpecification implements ParamSpecification
 {
     public function __construct(

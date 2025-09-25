@@ -7,11 +7,12 @@ namespace Tcds\Io\Serializer\Unit;
 use PHPUnit\Framework\Attributes\Test;
 use Tcds\Io\Serializer\Exception\UnableToParseValue;
 use Tcds\Io\Serializer\Fixture\ReadOnly\AccountHolder;
+use Tcds\Io\Serializer\Fixture\ReadOnly\Address;
 use Tcds\Io\Serializer\Fixture\ReadOnly\LatLng;
 use Tcds\Io\Serializer\Fixture\ReadOnly\Response;
+use Tcds\Io\Serializer\Mapper\Reader;
 use Tcds\Io\Serializer\ObjectMapper;
-use Tcds\Io\Serializer\Reader\Reader;
-use Tcds\Io\Serializer\Reader\RuntimeReader;
+use Tcds\Io\Serializer\Runtime\RuntimeReader;
 use Tcds\Io\Serializer\SerializerTestCase;
 
 class ObjectMapperTest extends SerializerTestCase
@@ -73,7 +74,7 @@ class ObjectMapperTest extends SerializerTestCase
         $this->assertEquals(AccountHolder::thiagoCordeiro(), $accountHolder);
     }
 
-    #[Test] public function given__when__then(): void
+    #[Test] public function given_an_object_with_map_param_then_handle_value(): void
     {
         $mapper = new ObjectMapper($this->reader, []);
         $data = Response::data();
@@ -81,5 +82,24 @@ class ObjectMapperTest extends SerializerTestCase
         $response = $mapper->readValue(Response::class, $data);
 
         $this->assertEquals(Response::firstPage(), $response);
+    }
+
+    #[Test] public function given_a_map_array_then_handle_value(): void
+    {
+        $mapper = new ObjectMapper($this->reader, []);
+        $type = generic('map', ['string', Address::class]);
+
+        $response = $mapper->readValue($type, [
+            'main' => Address::mainAddressData(),
+            'other' => Address::otherAddressData(),
+        ]);
+
+        $this->assertEquals(
+            [
+                'main' => Address::mainAddress(),
+                'other' => Address::otherAddress(),
+            ],
+            $response,
+        );
     }
 }

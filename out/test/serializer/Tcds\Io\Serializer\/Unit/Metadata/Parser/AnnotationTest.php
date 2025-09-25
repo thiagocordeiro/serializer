@@ -6,13 +6,9 @@ use Exception;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
-use Tcds\Io\Generic\ArrayList;
-use Tcds\Io\Serializer\Fixture\GenericStubs;
 use Tcds\Io\Serializer\Fixture\Pair;
 use Tcds\Io\Serializer\Fixture\ReadOnly\Address;
-use Tcds\Io\Serializer\Metadata\ParamNode;
 use Tcds\Io\Serializer\Metadata\Parser\Annotation;
-use Tcds\Io\Serializer\Metadata\TypeNode;
 
 class AnnotationTest extends TestCase
 {
@@ -37,54 +33,5 @@ class AnnotationTest extends TestCase
         $this->assertEquals(null, $foo);
         $this->assertEquals('K', $key);
         $this->assertEquals('V', $value);
-    }
-
-    #[Test] public function when_class_has_list_then_get_its_type_node(): void
-    {
-        $reflection = new ReflectionClass(ArrayList::class);
-
-        $this->assertEquals(
-            new TypeNode(
-                type: 'list',
-                params: [
-                    'items' => new ParamNode(new TypeNode('string')),
-                ],
-            ),
-            Annotation::generic($reflection, 'list<GenericItem>'),
-        );
-    }
-
-    #[Test] public function when_class_has_generics_then_get_its_type_node(): void
-    {
-        $genericStubs = new ReflectionClass(GenericStubs::class);
-//        $address = new ReflectionClass(Address::class);
-
-        $this->assertEquals(
-            new TypeNode(
-                type: ArrayList::class,
-                params: [
-                    'items' => new ParamNode(new TypeNode('string')),
-                ],
-            ),
-            Annotation::generic($genericStubs, 'ArrayList<string>'),
-        );
-//        $this->assertEquals(
-//            new TypeNode(
-//                type: Map::class,
-//                params: [
-//                    new TypeNode('string'),
-//                    new TypeNode(Address::class),
-//                ],
-//            ),
-//            Annotation::typeNodeOf($genericStubs, 'Map<string, Address>'),
-//        );
-//        $this->assertEquals(
-//            new TypeNode(Place::class),
-//            Annotation::typeNodeOf($address, 'Place'),
-//        );
-//        $this->assertEquals(
-//            new TypeNode(Place::class),
-//            Annotation::typeNodeOf($address, Place::class),
-//        );
     }
 }

@@ -23,6 +23,10 @@ class Annotation
      */
     public static function extractGenerics(string $type): ?array
     {
+        if (str_ends_with($type, '[]')) {
+            $type = sprintf('list<%s>', str_replace('[]', '', $type));
+        }
+
         // check generics
         $pattern = '~^(.*?)<(.*?)>\s*$~';
 
@@ -46,12 +50,11 @@ class Annotation
             return $main;
         }
 
-        return sprintf(
-            '%s<%s>',
-            $main,
-            new ArrayList($generics)
+        return generic(
+            type: $main,
+            generics: new ArrayList($generics)
                 ->map(fn(string $generic) => self::fqnOf($reflection, $generic))
-                ->join(', '),
+                ->items(),
         );
     }
 
@@ -63,10 +66,13 @@ class Annotation
         $docblock = join(PHP_EOL, array_map(fn(string $line) => "@$line", explode('@', $docblock)));
         preg_match($pattern, $docblock, $matches);
 
-        return $matches[1] ?: null;
+        return $matches[1] ?? null;
     }
 
-    public static function shaped(ReflectionClass $class, string $shape): string
+    /**
+     * @return array{0, string, 1: array<string, string>}
+     */
+    public static function shaped(string $shape): array
     {
         preg_match_all('/(\w+)\s*:\s*([^,\s}]+)/', $shape, $pairs, PREG_SET_ORDER);
 
@@ -74,9 +80,7 @@ class Annotation
 
         foreach ($pairs as $pair) {
             $name = $pair[1];
-            $type = Annotation::fqnOf($class, $pair[2]);
-
-            $params[] = "$name: $type";
+            $params[$name] = $pair[2];
         }
 
         $type = match (true) {
@@ -84,7 +88,25 @@ class Annotation
             default => 'array',
         };
 
-        return sprintf('%s{ %s }', $type, join(', ', $params));
+        return [$type, $params];
+    }
+
+    /**
+     * @return array{0, string, 1: list<string>}
+     */
+    public static function shapedFqn(ReflectionClass $class, string $shape): array
+    {
+        [$type, $namedParams] = self::shaped($shape);
+
+        $params = [];
+
+        foreach ($namedParams as $name => $paramType) {
+            $paramType = Annotation::fqnOf($class, $paramType);
+
+            $params[] = "$name: $paramType";
+        }
+
+        return [$type, $params];
     }
 
     private static function fqnOf(ReflectionClass $class, string $name): string

@@ -16,7 +16,6 @@ use Tcds\Io\Serializer\Fixture\ReadOnly\Place;
 use Tcds\Io\Serializer\Fixture\ReadOnly\User;
 use Tcds\Io\Serializer\Fixture\WithShape;
 use Tcds\Io\Serializer\Metadata\Parser\ClassParams;
-use Tcds\Io\Serializer\Metadata\TypeNode;
 use Traversable;
 
 class ClassParamsTest extends TestCase
@@ -29,8 +28,8 @@ class ClassParamsTest extends TestCase
 
         $this->assertEquals(
             expected: [
-                'key' => new TypeNode('K'),
-                'value' => new TypeNode('V'),
+                'key' => 'K',
+                'value' => 'V',
             ],
             actual: $params,
         );
@@ -44,7 +43,7 @@ class ClassParamsTest extends TestCase
 
         $this->assertEquals(
             expected: [
-                'items' => new TypeNode('list', [new TypeNode('GenericItem')]),
+                'items' => 'list<GenericItem>',
             ],
             actual: $params,
         );
@@ -58,10 +57,10 @@ class ClassParamsTest extends TestCase
 
         $this->assertEquals(
             expected: [
-                'street' => new TypeNode('string'),
-                'number' => new TypeNode('int'),
-                'main' => new TypeNode('bool'),
-                'place' => new TypeNode(Place::class),
+                'street' => 'string',
+                'number' => 'int',
+                'main' => 'bool',
+                'place' => Place::class,
             ],
             actual: $params,
         );
@@ -75,10 +74,10 @@ class ClassParamsTest extends TestCase
 
         $this->assertEquals(
             expected: [
-                'addresses' => new TypeNode(ArrayList::class, [new TypeNode(Address::class)]),
-                'users' => new TypeNode(Traversable::class, [new TypeNode(User::class)]),
-                'positions' => new TypeNode(Map::class, [new TypeNode('string'), new TypeNode(LatLng::class)]),
-                'accounts' => new TypeNode(Pair::class, [new TypeNode(AccountType::class), new TypeNode(BankAccount::class)]),
+                'addresses' => sprintf('%s<%s>', ArrayList::class, Address::class),
+                'users' => sprintf('%s<%s>', Traversable::class, User::class),
+                'positions' => sprintf('%s<%s, %s>', Map::class, 'string', LatLng::class),
+                'accounts' => sprintf('%s<%s, %s>', Pair::class, AccountType::class, BankAccount::class),
             ],
             actual: $params,
         );
@@ -92,23 +91,17 @@ class ClassParamsTest extends TestCase
 
         $this->assertEquals(
             expected: [
-                'data' => new TypeNode(
-                    sprintf(
-                        'array{ user: %s, address: %s, description: %s }',
-                        User::class,
-                        Address::class,
-                        'string',
-                    ),
-                    params: [],
+                'data' => sprintf(
+                    'array{ user: %s, address: %s, description: %s }',
+                    User::class,
+                    Address::class,
+                    'string',
                 ),
-                'payload' => new TypeNode(
-                    type: sprintf(
-                        'object{ user: %s, address: %s, description: %s }',
-                        User::class,
-                        Address::class,
-                        'string',
-                    ),
-                    params: [],
+                'payload' => sprintf(
+                    'object{ user: %s, address: %s, description: %s }',
+                    User::class,
+                    Address::class,
+                    'string',
                 ),
             ],
             actual: $params,

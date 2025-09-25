@@ -1,6 +1,6 @@
 <?php
 
-namespace Tcds\Io\Serializer\Metadata;
+namespace Tcds\Io\Serializer\Deprecated;
 
 use ReflectionClass;
 use ReflectionParameter;

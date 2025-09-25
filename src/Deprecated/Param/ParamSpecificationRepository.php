@@ -3,6 +3,7 @@
 namespace Tcds\Io\Serializer\Param;
 
 /**
+ * @deprecated
  * @phpstan-type ParamName string
  */
 interface ParamSpecificationRepository

@@ -3,9 +3,10 @@
 namespace Tcds\Io\Serializer\Param;
 
 use BackedEnum;
-use Tcds\Io\Serializer\Metadata\Generic;
+use Tcds\Io\Serializer\Deprecated\Generic;
 
 /**
+ * @deprecated
  * @phpstan-type Definition string|array<string, Definition>
  */
 interface ParamSpecification
