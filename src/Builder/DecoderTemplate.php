@@ -6,7 +6,7 @@ namespace Serializer\Builder;
 
 class DecoderTemplate implements FileTemplate
 {
-    private const TEMPLATE = <<<STIRNG
+    private const TEMPLATE = <<<STRING
 <?php /** @noinspection ALL */
 
 declare(strict_types=1);
@@ -41,7 +41,7 @@ class [cacheClassName] extends Decoder
         return [isCollection];
     }
 }
-STIRNG;
+STRING;
 
     private ClassDefinition $definition;
     private string $factoryName;

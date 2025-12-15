@@ -60,6 +60,10 @@ class ClassProperty
             return '[]';
         }
 
+        if ($this->isBoolean() && is_bool($this->defaultValue)) {
+            return $this->defaultValue ? 'true' : 'false';
+        }
+
         if ($this->isString() && is_string($this->defaultValue)) {
             return sprintf("'%s'", $this->defaultValue);
         }
@@ -107,5 +111,10 @@ class ClassProperty
     public function isString(): bool
     {
         return $this->type === 'string';
+    }
+
+    public function isBoolean(): bool
+    {
+        return $this->type === 'bool';
     }
 }
