@@ -22,6 +22,7 @@ class DefaultValuesTest extends JsonSerializerTestCase
 
         $this->assertEquals(
             new DefaultValues(
+                bool: true,
                 int: 15,
                 string: 'foo-bar',
                 float: 100.99,
@@ -35,6 +36,7 @@ class DefaultValuesTest extends JsonSerializerTestCase
     #[Test] public function givenTheObjectThenParseIntoPayload(): void
     {
         $object = new DefaultValues(
+            bool: false,
             int: 20,
             string: 'something-else',
             float: 88.54,
@@ -48,6 +50,7 @@ class DefaultValuesTest extends JsonSerializerTestCase
             $json,
             <<<JSON
             {
+                "bool": false,
                 "int": 20,
                 "string": "something-else",
                 "float": 88.54,
